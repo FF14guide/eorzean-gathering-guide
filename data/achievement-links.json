@@ -1,0 +1,17 @@
+{
+  "_comment": "唯一の手動データ層。アチーブメントの名称・条件文は build.mjs が datamining から自動取得する。ここでは『どのノード/エリア/アイテムに紐づくか』と『攻略メモ(tip)』だけを書く。ach_id は ac_<XIVID>。link_type は node/item/zone。",
+  "links": [
+    {
+      "ach_id": "ac_113",
+      "link_type": "zone",
+      "link_ids": ["ツインプールズ"],
+      "tip": "伝承録ノードを含むエリア。伝承録を確保してから周回すると効率的。"
+    },
+    {
+      "ach_id": "ac_190",
+      "link_type": "node",
+      "link_ids": ["nd_289"],
+      "tip": "採掘名人系はエリア内の採取回数で進む。未知/伝説ノードを巡回して稼ぐ。"
+    }
+  ]
+}
