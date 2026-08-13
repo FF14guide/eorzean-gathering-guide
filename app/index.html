@@ -377,7 +377,7 @@ function renderList(){
     const fill=t.state==='live'?100:Math.max(2,100-(t.real/600*100));
     const clsTag=n.class==='MIN'?'<span class="tag min">採掘</span>':'<span class="tag btn">園芸</span>';
     const more=n.items.length>1?` <span style="color:var(--faint)">＋${n.items.length-1}種</span>`:'';
-    return `<button class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}">
+    return `<div class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}" role="button" tabindex="0">
       ${t.state==='live'?'<span class="livepulse"></span>':''}
       <button class="fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="お気に入り">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
       <div class="top">${clsTag}<span class="tag lv">Lv${n.level}</span><span class="kind">${LAB.node_type[n.node_type]}の採取場</span></div>
@@ -385,7 +385,7 @@ function renderList(){
       <div class="where">${ICON.pin}${n.area} ・ ${n.aetheryte}</div>
       <div class="eta"><span class="big">${mmss(t.real)}</span><span class="lab">${t.state==='live'?'採取可 残り':'まで'}</span><span class="win">${winLabel(t.win)}</span></div>
       <div class="bar" style="width:${fill}%"></div>
-    </button>`;
+    </div>`;
   }).join('');
 }
 
@@ -465,6 +465,13 @@ document.addEventListener('click',e=>{
   if(al){const id=al.dataset.alarm;state.alarms.has(id)?state.alarms.delete(id):state.alarms.add(id);renderDetail();renderSchedule();toast(state.alarms.has(id)?'アラームを登録しました':'アラームを解除しました');return;}
   const card=e.target.closest('.card');
   if(card){state.selected=card.dataset.id;renderList();renderDetail();}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const card=e.target.closest('.card');
+  if(!card)return;
+  e.preventDefault();
+  state.selected=card.dataset.id;renderList();renderDetail();
 });
 
 let toastTimer;
