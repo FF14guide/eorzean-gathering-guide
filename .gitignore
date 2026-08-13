@@ -1,0 +1,6 @@
+node_modules/
+tools/.cache/
+dist/
+
+# ビルドのたびに作り直される生成物。上流データから毎回組み立てるので追跡しない。
+data/gathering.json
