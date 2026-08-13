@@ -61,6 +61,7 @@ data/achievement-links.json  唯一の手動データ：アチーブメントの
 | アイテム名・地名・エーテライト | Teamcraft `items`/`places`/`aetherytes` | 日本語名。最寄りエーテライトは同マップ最短で解決 |
 | 用途（精選・スクリップ色） | Teamcraft `reverse-reduction`/`collectables` | 精選対象＝「精選」、収集品は報酬通貨名から色（例 橙貨・紫貨） |
 | 実装パッチ | Teamcraft `item-patch`/`patch-names` | 見出し取得物の最大パッチ |
+| 地図画像・座標変換 | Teamcraft `maps.json`（XIVAPI v2アセット配信） | ノードの`map`IDから画像URLと`size_factor`を解決。座標をマップ画像上の%位置に変換 |
 | アチーブメント名称・条件文 | xivapi/ffxiv-datamining `ja/Achievement.csv` | 採集系を名称で絞り、`Name`/`Description` を取得 |
 
 **唯一の手動データ**は `data/achievement-links.json`。アチーブメントの名称・条件文は自動で入るので、

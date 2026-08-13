@@ -177,6 +177,15 @@
   .d-eta .meta b{color:var(--ink);font-weight:700}
 
   .rows{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;margin:16px 0;font-size:13px}
+
+  /* ---------- Map ---------- */
+  .mapbox{position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--line);margin:14px 0;background:var(--bg3)}
+  .mapbox .inner{position:relative;width:100%;padding-top:100%;overflow:hidden}
+  .mapbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .mapdot{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--gold);border:2px solid #1a1300;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(0,0,0,.6);z-index:2}
+  .mapring{position:absolute;width:56px;height:56px;border-radius:50%;border:2px solid var(--gold);opacity:.6;transform:translate(-50%,-50%);animation:ringpulse 2.2s infinite}
+  @keyframes ringpulse{0%{transform:translate(-50%,-50%) scale(.8);opacity:.7}70%{transform:translate(-50%,-50%) scale(1.15);opacity:0}100%{opacity:0}}
+  .mapfail{padding:14px;font-size:12px;color:var(--faint);text-align:center}
   .rows dt{color:var(--faint);font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding-top:1px}
   .rows dd{margin:0;color:var(--ink)}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -405,6 +414,12 @@ function renderDetail(){
       <div class="meta">${t.state==='live'?'<b>いま採取できます</b>（枠が閉じるまで）':`次の枠まで（現実 約${Math.round(t.real/60)}分）`}<br>
         出現枠：<b>${n.windows.map(winLabel).join(' / ')}</b></div>
     </div>
+    ${n.map?`<div class="mapbox"><div class="inner">
+        <img src="${n.map.image}" alt="" loading="lazy"
+          onerror="this.closest('.mapbox').innerHTML='<div class=&quot;mapfail&quot;>地図を読み込めませんでした</div>'">
+        <span class="mapring" style="left:${n.map.px}%;top:${n.map.py}%"></span>
+        <span class="mapdot" style="left:${n.map.px}%;top:${n.map.py}%"></span>
+      </div></div>`:''}
     <dl class="rows">
       <dt>AREA</dt><dd>${n.area}</dd>
       <dt>AETHERYTE</dt><dd>${n.aetheryte}</dd>

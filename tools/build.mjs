@@ -40,6 +40,7 @@ const SOURCES = {
   'items.json':            `${TC}/items.json`,
   'places.json':           `${TC}/places.json`,
   'aetherytes.json':       `${TC}/aetherytes.json`,
+  'maps.json':             `${TC}/maps.json`,
   'collectables.json':     `${TC}/collectables.json`,
   'reverse-reduction.json': `${TC}/reverse-reduction.json`,
   'item-patch.json':       `${TC}/item-patch.json`,
@@ -92,6 +93,7 @@ async function main() {
   const items  = JSON.parse(raw['items.json']);
   const places = JSON.parse(raw['places.json']);
   const aeth   = JSON.parse(raw['aetherytes.json']);
+  const gameMaps = JSON.parse(raw['maps.json']);
   const coll   = JSON.parse(raw['collectables.json']);
   const rrev   = JSON.parse(raw['reverse-reduction.json']);
   const ipatch = JSON.parse(raw['item-patch.json']);
@@ -154,6 +156,9 @@ async function main() {
     if (!n.limited || n.type > 3) continue;        // 時間限定の陸ノードのみ（漁除外）
     const cls = classOf(n.type);
     const a = nearestAeth(n);
+    const gm = n.map != null ? gameMaps[n.map] : null;
+    // ゲーム内座標(1-41付近)→画像上の%位置。釣り図鑑と同じ変換式。
+    const mapPct = (coord) => (((coord - 1) * ((gm?.size_factor ?? 100) / 100)) / 41) * 100;
     const visible = (n.items || []).concat(n.hiddenItems || []);
     for (const it of visible) {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
@@ -163,6 +168,7 @@ async function main() {
       id: `nd_${id}`, class: cls, node_type: nodeType(n), level: n.level,
       area: placeJa(n.zoneid), aetheryte: a ? placeJa(a.nameid) : '',
       x: n.x, y: n.y,
+      map: gm ? { image: gm.image, px: mapPct(n.x), py: mapPct(n.y) } : null,
       windows: windows(n).map((w) => { const [s, e] = w.split('-').map(Number); return [s, e]; }),
       patch: nodePatch(n.items || []),
       folklore: n.folklore ? itemJa(n.folklore) : '',
