@@ -65,7 +65,13 @@
   }
   .brand h1{font-size:clamp(16px,2.4vw,21px);font-weight:900;margin:2px 0 0;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-  .clocks{display:flex;gap:10px;flex:none}
+  .clocks{display:flex;gap:10px;flex:none;align-items:center}
+  .notifybtn{
+    display:flex;align-items:center;gap:6px;font-family:var(--sans);font-weight:700;font-size:12.5px;
+    background:var(--bg3);border:1px solid var(--line);border-radius:9px;padding:8px 12px;color:var(--dim);cursor:pointer;transition:.15s;
+  }
+  .notifybtn:hover{border-color:var(--gold-line);color:var(--ink)}
+  .notifybtn.on{background:var(--gold);color:#1a1300;border-color:var(--gold)}
   .clock{
     background:var(--bg3);border:1px solid var(--line);border-radius:10px;
     padding:6px 12px;text-align:right;min-width:104px;
@@ -123,7 +129,11 @@
   .tag.btn{color:var(--btn);background:rgba(123,178,85,.13);border:1px solid rgba(123,178,85,.4)}
   .tag.lv{color:var(--dim);background:var(--bg3);border:1px solid var(--line)}
   .kind{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.05em;margin-left:auto;flex:none}
-  .card h3{font-size:15px;font-weight:700;margin:9px 0 2px}
+  .card h3{font-size:14.5px;font-weight:700;margin:9px 0 6px;display:flex;align-items:center;gap:6px;color:var(--ink)}
+  .card h3 svg{flex:none;opacity:.85;color:var(--gold)}
+  .items-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px}
+  .ichip{font-size:11px;line-height:1.5;padding:2px 8px;border-radius:999px;background:var(--bg3);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .ichip.coll{border-color:var(--gold-line);color:var(--gold);background:var(--gold-soft)}
   .card .where{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px}
   .card .where svg{width:12px;height:12px;flex:none;opacity:.7}
 
@@ -182,8 +192,8 @@
   .mapbox{position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--line);margin:14px 0;background:var(--bg3)}
   .mapbox .inner{position:relative;width:100%;padding-top:100%;overflow:hidden}
   .mapbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .mapdot{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--gold);border:2px solid #1a1300;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(0,0,0,.6);z-index:2}
-  .mapring{position:absolute;width:56px;height:56px;border-radius:50%;border:2px solid var(--gold);opacity:.6;transform:translate(-50%,-50%);animation:ringpulse 2.2s infinite}
+  .mapdot{position:absolute;width:14px;height:14px;border-radius:50%;background:#FF2D4D;border:2.5px solid #fff;transform:translate(-50%,-50%);box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 12px rgba(255,45,77,.9);z-index:3}
+  .mapring{position:absolute;width:60px;height:60px;border-radius:50%;border:2.5px solid #fff;opacity:.85;transform:translate(-50%,-50%);animation:ringpulse 1.8s infinite;box-shadow:0 0 0 1px rgba(0,0,0,.5);z-index:2}
   @keyframes ringpulse{0%{transform:translate(-50%,-50%) scale(.8);opacity:.7}70%{transform:translate(-50%,-50%) scale(1.15);opacity:0}100%{opacity:0}}
   .mapfail{padding:14px;font-size:12px;color:var(--faint);text-align:center}
   .rows dt{color:var(--faint);font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding-top:1px}
@@ -204,13 +214,18 @@
   .ach .tip{color:var(--btn);border-left:2px solid var(--btn);padding-left:9px;margin-top:7px}
 
   /* schedule strip */
-  .sched{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-  .sched h5{margin:0 0 8px;font-size:12px;color:var(--gold);font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase}
-  .sched .row{display:flex;align-items:center;gap:10px;font-size:13px;padding:6px 0;border-top:1px solid var(--line)}
-  .sched .row:first-of-type{border-top:0}
-  .sched .row .t{font-family:var(--mono);color:var(--gold);font-weight:700}
+  .sched{margin:0 0 14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .sched h5{margin:0 0 10px;font-size:12px;color:var(--gold);font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+  .sched h5 .cnt{font-family:var(--mono);font-size:11px;color:var(--bg2);background:var(--gold);border-radius:999px;padding:1px 7px;font-weight:700}
+  .sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px 12px}
+  .sched .row{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:6px 9px;border-radius:8px;background:var(--bg3);border:1px solid var(--line)}
+  .sched .row.live{border-color:var(--live);background:rgba(74,222,128,.08)}
+  .sched .row .t{font-family:var(--mono);color:var(--soon);font-weight:700;flex:none;min-width:44px}
+  .sched .row.live .t{color:var(--live)}
+  .sched .row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+  .sched .row .nm i{font-style:normal;color:var(--faint);margin-left:5px}
   .sched .empty2{font-size:12.5px;color:var(--faint);padding:4px 0}
-  .sched .row button{margin-left:auto;background:transparent;border:0;color:var(--faint);cursor:pointer;font-size:16px;line-height:1}
+  .sched .row button{margin-left:auto;flex:none;background:transparent;border:0;color:var(--faint);cursor:pointer;font-size:15px;line-height:1}
   .sched .row button:hover{color:var(--soon)}
 
   footer{max-width:1240px;margin:40px auto 0;padding:22px clamp(12px,3vw,24px);border-top:1px solid var(--line);color:var(--faint);font-size:11.5px;line-height:1.7}
@@ -238,6 +253,10 @@
     </div>
   </div>
   <div class="clocks">
+    <button class="notifybtn" id="notifyToggle" aria-pressed="false" title="採取可能になったらデスクトップ通知でお知らせ">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      通知
+    </button>
     <div class="clock et"><div class="lab">EORZEA</div><div class="val" id="etClock">--:--</div></div>
     <div class="clock"><div class="lab">LOCAL</div><div class="val" id="ltClock">--:--</div></div>
   </div>
@@ -257,6 +276,7 @@
     <div class="spacer"></div>
     <div class="count" id="count"></div>
   </div>
+  <div id="wrapSched"></div>
   <div class="grid">
     <div class="list" id="list"></div>
     <aside class="detail" id="detail">
@@ -376,13 +396,13 @@ function renderList(){
     const sc=t.state==='live'?'state-live':(t.real<600?'state-soon':'state-far');
     const fill=t.state==='live'?100:Math.max(2,100-(t.real/600*100));
     const clsTag=n.class==='MIN'?'<span class="tag min">採掘</span>':'<span class="tag btn">園芸</span>';
-    const more=n.items.length>1?` <span style="color:var(--faint)">＋${n.items.length-1}種</span>`:'';
+    const itemChips=n.items.map(i=>`<span class="ichip${i.collectable?' coll':''}">${i.name}${i.collectable?' ◆':''}</span>`).join('');
     return `<div class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}" role="button" tabindex="0">
       ${t.state==='live'?'<span class="livepulse"></span>':''}
       <button class="fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="お気に入り">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
       <div class="top">${clsTag}<span class="tag lv">Lv${n.level}</span><span class="kind">${LAB.node_type[n.node_type]}の採取場</span></div>
-      <h3>${nodeTitle(n)}${more}</h3>
-      <div class="where">${ICON.pin}${n.area} ・ ${n.aetheryte}</div>
+      <h3>${ICON.pin}${n.area} ・ ${n.aetheryte}</h3>
+      <div class="items-row">${itemChips}</div>
       <div class="eta"><span class="big">${mmss(t.real)}</span><span class="lab">${t.state==='live'?'採取可 残り':'まで'}</span><span class="win">${winLabel(t.win)}</span></div>
       <div class="bar" style="width:${fill}%"></div>
     </div>`;
@@ -440,12 +460,13 @@ function renderSchedule(){
   const sod=eorzeaNow().sod;
   const items=[...state.alarms].map(id=>{const n=NODES.find(x=>x.id===id);return {n,t:nodeTiming(n.windows,sod)};})
     .sort((a,b)=>(a.t.state==='live'?0:1)-(b.t.state==='live'?0:1)||a.t.real-b.t.real);
-  wrap.innerHTML=`<div class="sched"><h5>⏰ My Schedule / アラーム</h5>${
-    items.length?items.map(({n,t})=>`<div class="row">
+  wrap.innerHTML=`<div class="sched">
+    <h5>⏰ My Schedule<span class="cnt">${items.length}</span></h5>
+    ${items.length?`<div class="sched-grid">${items.map(({n,t})=>`<div class="row${t.state==='live'?' live':''}">
         <span class="t">${t.state==='live'?'採取可':mmss(t.real)}</span>
-        <span>${nodeTitle(n)}<span style="color:var(--faint)"> ・ ${n.area}</span></span>
-        <button data-alarm="${n.id}" title="解除">×</button></div>`).join('')
-    :'<div class="empty2">詳細の「アラーム」で登録すると、取得可能になった瞬間に通知します。</div>'}</div>`;
+        <span class="nm">${n.items[0]?.name||n.area}<i>${n.area}</i></span>
+        <button data-alarm="${n.id}" title="解除">×</button></div>`).join('')}</div>`
+    :'<div class="empty2">気になるポイントの詳細で「アラーム」を押すと、ここに追加され、採取可能になった瞬間に通知します。</div>'}</div>`;
 }
 
 document.getElementById('segClass').addEventListener('click',e=>{
@@ -476,7 +497,39 @@ document.addEventListener('keydown',e=>{
 
 let toastTimer;
 function toast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
-document.querySelector('.grid').insertAdjacentHTML('afterend','<div id="wrapSched"></div>');
+
+/* ---- デスクトップ通知 ---- */
+const notify={
+  on:false,
+  async enable(){
+    if(!('Notification' in window))return false;
+    if(Notification.permission==='granted')return true;
+    if(Notification.permission==='denied')return false;
+    return (await Notification.requestPermission())==='granted';
+  },
+  beep(){
+    try{
+      const ac=new (window.AudioContext||window.webkitAudioContext)();
+      const g=ac.createGain();g.connect(ac.destination);g.gain.value=.06;
+      [880,1320].forEach((f,i)=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=f;o.connect(g);o.start(ac.currentTime+i*.14);o.stop(ac.currentTime+i*.14+.12);});
+      setTimeout(()=>ac.close(),800);
+    }catch(e){}
+  },
+  fire(n){
+    this.beep();
+    try{ new Notification(`「${nodeTitle(n)}」が採取可能になりました`,{body:`${n.area} ・ ${n.aetheryte}`,tag:'gather-'+n.id}); }
+    catch(e){}
+  }
+};
+document.getElementById('notifyToggle').addEventListener('click',async e=>{
+  if(!notify.on){
+    const ok=await notify.enable();
+    notify.on=ok;
+    if(!ok)toast('ブラウザの設定で通知が許可されていません');
+  }else notify.on=false;
+  e.currentTarget.setAttribute('aria-pressed',notify.on);
+  e.currentTarget.classList.toggle('on',notify.on);
+});
 
 function tickClocks(){
   const et=eorzeaNow(),lt=new Date();
@@ -487,7 +540,11 @@ function checkAlarms(){
   const sod=eorzeaNow().sod;
   state.alarms.forEach(id=>{
     const n=NODES.find(x=>x.id===id);const t=nodeTiming(n.windows,sod);
-    if(t.state==='live'&&!state.notified.has(id)){state.notified.add(id);toast(`「${nodeTitle(n)}」が採取可能になりました`);}
+    if(t.state==='live'&&!state.notified.has(id)){
+      state.notified.add(id);
+      toast(`「${nodeTitle(n)}」が採取可能になりました`);
+      if(notify.on)notify.fire(n);
+    }
     if(t.state!=='live')state.notified.delete(id);
   });
 }
