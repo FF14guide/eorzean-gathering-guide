@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0C1526">
-<title>エオルゼア採集手帳 — Eorzean Gathering Guide</title>
+<title>エオルゼア採集図鑑 — Eorzean Gathering Guide</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -14,8 +14,8 @@
 <meta name="description" content="FF14の採掘師・園芸師の時間限定ノードを、いつ・どこで・何が取れるかで一覧。エオルゼア時間でカウントダウンし、用途・アチーブメントまでガイドする非公式データベース。">
 <link rel="canonical" href="__SITE_URL__/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="エオルゼア採集手帳">
-<meta property="og:title" content="エオルゼア採集手帳 — Eorzean Gathering Guide">
+<meta property="og:site_name" content="エオルゼア採集図鑑">
+<meta property="og:title" content="エオルゼア採集図鑑 — Eorzean Gathering Guide">
 <meta property="og:description" content="どの採取場で、いつ、何が取れるのか。用途・アチーブメントまで。">
 <meta property="og:url" content="__SITE_URL__/">
 <meta property="og:image" content="__SITE_URL__/ogp.png">
@@ -48,9 +48,20 @@
   a{color:inherit}
   ::selection{background:var(--gold);color:#1a1300}
 
+  /* ---------- Sister sites nav ---------- */
+  .sisternav{
+    position:sticky; top:0; z-index:31;
+    display:flex; gap:18px; justify-content:flex-end;
+    padding:6px clamp(14px,4vw,32px);
+    background:#070c18; border-bottom:1px solid var(--line);
+    font-family:var(--sans); font-size:11.5px;
+  }
+  .sisternav a{color:var(--faint); text-decoration:none; transition:.15s}
+  .sisternav a:hover{color:var(--gold)}
+
   /* ---------- Header ---------- */
   header{
-    position:sticky; top:0; z-index:30;
+    position:sticky; top:25px; z-index:30;
     display:flex; align-items:center; justify-content:space-between; gap:16px;
     padding:14px clamp(14px,4vw,32px);
     background:rgba(10,17,33,.86); backdrop-filter:blur(10px);
@@ -278,6 +289,10 @@
 </style>
 </head>
 <body>
+<nav class="sisternav">
+  <a href="https://eorzeanfishing.com/" title="姉妹サイト：エオルゼア釣り図鑑">エオルゼア釣り図鑑 →</a>
+  <a href="https://collection.eorzeanfishing.com/" title="姉妹サイト：エオルゼア蒐集録">エオルゼア蒐集録 →</a>
+</nav>
 <header>
   <div class="brand">
     <div class="glyph"><svg viewBox="0 0 100 170" width="20" height="34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -286,10 +301,9 @@
       <rect x="58" y="74" width="20" height="90" rx="3" fill="#1a1300"/>
       <rect x="66.5" y="78" width="2.6" height="82" fill="#a5791f"/>
     </svg></div>
-    </svg></div>
     <div class="txt">
       <div class="eyebrow">Eorzean Gathering Guide</div>
-      <h1>エオルゼア採集手帳</h1>
+      <h1>エオルゼア採集図鑑</h1>
     </div>
   </div>
   <div class="clocks">

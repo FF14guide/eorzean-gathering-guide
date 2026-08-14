@@ -30,7 +30,7 @@ GitHub Actions ──毎日──▶ 上流データを取り直して push（�
 cd eorzean-gathering-guide      # このフォルダ
 git init
 git add .
-git commit -m "エオルゼア採集手帳"
+git commit -m "エオルゼア採集図鑑"
 git branch -M main
 git remote add origin https://github.com/ユーザー名/eorzean-gathering-guide.git
 git push -u origin main
