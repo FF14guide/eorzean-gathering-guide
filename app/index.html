@@ -537,6 +537,7 @@ const timingClass=t=>t.state==='live'?'state-live':(t.real<600?'state-soon':'sta
 const timingLabel=t=>t.state==='live'?'採取可 残り':'まで';
 const timingFill=t=>t.state==='live'?100:Math.max(2,100-(t.real/600*100));
 function detailTimingHtml(t,windows){
+  if(!windows?.length) return `<div class="d-eta state-live"><div class="num">∞</div><div class="meta"><b>常時採取</b></div></div>`;
   const sc=timingClass(t);
   const message=t.state==='live'
     ?'<b>いま採取できます</b>（枠が閉じるまで）'
@@ -726,6 +727,7 @@ const expansionLabel=major=>EXPANSION_NAMES[major]?.[state.locale]||EXPANSION_NA
 function filtered(skipArea=false){
   const q=state.text.toLowerCase();
   return NODES.filter(n=>{
+    if(!skipArea&&state.viewMode==='time'&&n.normal)return false;
     if(state.cls!=='all'&&n.class!==state.cls)return false;
     if(state.type!=='all'&&n.node_type!==state.type)return false;
     if(!skipArea&&state.area!=='all'&&n.area!==state.area)return false;
@@ -802,8 +804,8 @@ function renderCatalog(){
         <div class="cat-nodes">${areaNodes.map(n=>{
           const t=nodeTiming(n.windows,sod);
           const clsTag=n.class==='MIN'?'<span class="tag tmin">採掘</span>':'<span class="tag tbtn">園芸</span>';
-          const timeTxt=t.state==='live'?'採取可':`${Math.round(t.real/60)}分後`;
-          const timeClass=t.state==='live'?'clive':(t.real<600?'csoon':'cfar');
+          const timeTxt=n.normal?'常時採取':(t.state==='live'?'採取可':`${Math.round(t.real/60)}分後`);
+          const timeClass=n.normal?'clive':(t.state==='live'?'clive':(t.real<600?'csoon':'cfar'));
           const names=n.items.filter(i=>!i.hidden).map(i=>i.name).join('・');
           return `<div class="cat-node" data-id="${n.id}" role="button" tabindex="0" aria-selected="${state.selected===n.id}">
             ${clsTag}<span class="tag lv">Lv${n.level}</span>

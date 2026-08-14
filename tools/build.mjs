@@ -47,6 +47,8 @@ const SOURCES = {
   'patch-names.json':      `${TC}/patch-names.json`,
   'Achievement_ja.csv':    `${DM}/ja/Achievement.csv`,
   'Item_ja.csv':           `${DM}/ja/Item.csv`,
+  'GatheringPoint.csv':     `${DM}/en/GatheringPoint.csv`,
+  'ExportedGatheringPoint.csv': `${DM}/en/ExportedGatheringPoint.csv`,
   'GatheringPointBase.csv': `${DM}/en/GatheringPointBase.csv`,
   'GatheringItem.csv':      `${DM}/en/GatheringItem.csv`,
 };
@@ -100,6 +102,8 @@ async function main() {
   const coll   = JSON.parse(raw['collectables.json']);
   const rrev   = JSON.parse(raw['reverse-reduction.json']);
   const ipatch = JSON.parse(raw['item-patch.json']);
+  const gpRows = parseCsv(raw['GatheringPoint.csv']);
+  const exportedGp = new Map(parseCsv(raw['ExportedGatheringPoint.csv']).map((r) => [r['#'], r]));
   const pnames = JSON.parse(raw['patch-names.json']);
 
   const localized = (dict, id, fallback = '') => ({
@@ -199,7 +203,7 @@ async function main() {
 
   // ─── ノード正規化 ─────────────────────────────────────────────
   const LABEL = {
-    node_type: { unspoiled: '未知', legendary: '伝説', ephemeral: '刻限', folklore: '伝承' },
+    node_type: { normal: '通常', unspoiled: '未知', legendary: '伝説', ephemeral: '刻限', folklore: '伝承' },
     use: useLabels,
     class: { MIN: '採掘師', BTN: '園芸師' },
   };
@@ -243,6 +247,57 @@ async function main() {
         .concat(hiddenIds.map((it, i) => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: true, stars: i + 1, icon: iconUrl(it) }))),
       use: [...new Set(allIds.flatMap((it) => usesFor(it)))],
       achievements: [],
+    });
+  }
+
+  // ─── 常時採取ノード（シャード・クリスタル・種など） ───────────────
+  // Teamcraft の nodes.json は時間限定ノードを中心に収録しているため、
+  // 通常ノードは公式 GatheringPoint / GatheringPointBase から補完する。
+  const limitedBases = new Set(Object.values(nodes).filter(n => n.limited && n.base != null).map(n => String(n.base)));
+  const mapByTerritory = new Map();
+  for (const gm of Object.values(gameMaps)) {
+    if (gm.territory_id == null || gm.dungeon || !gm.image) continue;
+    const key = String(gm.territory_id);
+    const old = mapByTerritory.get(key);
+    if (!old || (gm.index ?? 0) < (old.index ?? 0) || (gm.priority_ui ?? 999) < (old.priority_ui ?? 999)) mapByTerritory.set(key, gm);
+  }
+  const normalRows = new Map();
+  for (const r of gpRows) {
+    const baseId = String(r.GatheringPointBase || '');
+    if (!baseId || baseId === '0' || r.PlaceName === '0') continue;
+    const b = gpBase.get(baseId);
+    const gatheringType = Number(b?.GatheringType);
+    if (!b || !Number.isInteger(gatheringType) || gatheringType < 0 || gatheringType > 3 || limitedBases.has(baseId)) continue;
+    const gm = mapByTerritory.get(String(r.TerritoryType));
+    const ep = exportedGp.get(baseId);
+    if (!gm || !ep || ep.X === '' || ep.Y === '') continue;
+    const key = `${r.TerritoryType}:${r.PlaceName}:${gatheringType}:${baseId}`;
+    if (!normalRows.has(key)) normalRows.set(key, { r, b, gm, ep, gatheringType });
+  }
+  const normalMapPct = (coord, gm) => (((coord - 1) * ((gm?.size_factor ?? 100) / 100)) / 41) * 100;
+  for (const [key, row] of normalRows) {
+    const { r, b, gm, ep, gatheringType } = row;
+    const worldX = Number(ep.X), worldY = Number(ep.Y);
+    // ExportedGatheringPoint はワールド座標。ゲーム内マップ座標へ変換する。
+    const x = 21.5 + worldX / 50;
+    const y = 21.5 + worldY / 50;
+    const a = nearestAeth({ map: gm.id, x, y, zoneid: gm.placename_id });
+    const itemIds = resolveSlots(String(r.GatheringPointBase))?.filter((id) => id != null && items[id]) || [];
+    if (!itemIds.length) continue;
+    for (const it of itemIds) {
+      if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
+      itemInfo.get(it).jobs.add(gatheringType <= 1 ? 'MIN' : 'BTN');
+    }
+    const tool = toolOf(gatheringType);
+    const names = itemIds.map(it => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }));
+    const patch = nodePatch(itemIds);
+    runtimeNodes.push({
+      id: `nd_normal_${key.replace(/[^a-zA-Z0-9_:-]/g, '_')}`, class: gatheringType <= 1 ? 'MIN' : 'BTN', tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon,
+      node_type: 'normal', normal: true, limited: false, level: Number(b.GatheringLevel) || 1,
+      area: placeJa(gm.placename_id), areaNames: placeNames(gm.placename_id),
+      map: { image: gm.image, px: normalMapPct(x, gm), py: normalMapPct(y, gm), id: gm.id, names: placeNames(gm.placename_id) },
+      aetheryte: a ? placeJa(a.nameid) : '', aetheryteNames: a ? placeNames(a.nameid) : {ja:'',en:'',de:'',fr:''},
+      x, y, windows: [], patch, folklore: '', slots: names, items: names, use: [...new Set(itemIds.flatMap(it => usesFor(it)))], achievements: [],
     });
   }
 
