@@ -122,15 +122,24 @@
   .card[aria-selected="true"]{border-color:var(--gold-line);background:#13223c}
   .card .top{display:flex;align-items:center;gap:9px}
   .tag{
-    font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
-    padding:2px 7px;border-radius:5px;flex:none;
+    font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.02em;
+    padding:2px 8px;border-radius:5px;flex:none;line-height:1.6;
   }
   .tag.min{color:var(--min);background:rgba(208,123,65,.13);border:1px solid rgba(208,123,65,.4)}
   .tag.btn{color:var(--btn);background:rgba(123,178,85,.13);border:1px solid rgba(123,178,85,.4)}
   .tag.lv{color:var(--dim);background:var(--bg3);border:1px solid var(--line)}
-  .kind{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.05em;margin-left:auto;flex:none}
+  .top{display:flex;align-items:center;gap:9px}
+  .top .tbig{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.01em;margin-left:auto}
+  .top .tlab{font-size:10px;color:var(--dim)}
+  .top .twin{font-family:var(--mono);font-size:10px;color:var(--faint)}
+  .state-live .top .tbig{color:var(--live)}
+  .state-soon .top .tbig{color:var(--soon)}
+  .state-far  .top .tbig{color:var(--far)}
+  .kind{font-family:var(--sans);font-size:10.5px;color:var(--faint);letter-spacing:.02em;flex:none}
   .card h3{font-size:14.5px;font-weight:700;margin:9px 0 6px;display:flex;align-items:center;gap:6px;color:var(--ink)}
   .card h3 svg{flex:none;opacity:.85;color:var(--gold)}
+  .h3-tail{margin-left:auto;display:flex;align-items:center;gap:7px;flex:none}
+  .livepulse{width:7px;height:7px;border-radius:50%;background:var(--live);flex:none;box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 1.8s infinite}
   .items-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px}
   .ichip{display:inline-flex;align-items:center;gap:4px;font-size:11px;line-height:1.5;padding:2px 8px 2px 2px;border-radius:999px;background:var(--bg3);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
   .ichip img{width:16px;height:16px;border-radius:4px;flex:none;object-fit:cover}
@@ -140,23 +149,16 @@
   .card .where{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px}
   .card .where svg{width:12px;height:12px;flex:none;opacity:.7}
 
-  .eta{display:flex;align-items:baseline;gap:8px;margin-top:11px}
-  .eta .big{font-family:var(--mono);font-weight:700;font-size:19px;letter-spacing:.01em}
-  .eta .lab{font-size:11px;color:var(--dim)}
   .card .win{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:auto}
-  .state-live .eta .big{color:var(--live)}
-  .state-soon .eta .big{color:var(--soon)}
-  .state-far  .eta .big{color:var(--far)}
 
   .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--far);width:0;transition:width .5s linear}
   .state-live .bar{background:var(--live);box-shadow:0 0 10px var(--live)}
   .state-soon .bar{background:var(--soon)}
 
-  .fav{position:absolute;top:10px;right:10px;background:transparent;border:0;cursor:pointer;color:var(--faint);padding:4px;line-height:0}
+  .fav{background:transparent;border:0;cursor:pointer;color:var(--faint);padding:2px;line-height:0;flex:none}
   .fav:hover{color:var(--gold)}
   .fav.on{color:var(--gold)}
   .fav svg{width:16px;height:16px}
-  .livepulse{position:absolute;top:12px;right:34px;width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 1.8s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.55)}70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
 
   /* ---------- Detail ---------- */
@@ -437,12 +439,10 @@ function renderList(){
     const clsTag=n.class==='MIN'?'<span class="tag min">採掘</span>':'<span class="tag btn">園芸</span>';
     const itemChips=n.items.map(i=>`<span class="ichip${i.collectable?' coll':''}${i.hidden?' hidden':''}">${i.icon?`<img src="${i.icon}" alt="" loading="lazy" onerror="this.remove()">`:''}${i.hidden?'<i>HIDDEN</i> ':''}${i.name}${i.collectable?' ◆':''}</span>`).join('');
     return `<div class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}" role="button" tabindex="0">
-      ${t.state==='live'?'<span class="livepulse"></span>':''}
-      <button class="fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="お気に入り">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
-      <div class="top">${clsTag}<span class="tag lv">Lv${n.level}</span><span class="kind">${LAB.node_type[n.node_type]}の採取場</span></div>
-      <h3>${ICON.pin}${n.area} ・ ${n.aetheryte}</h3>
+      <div class="top">${clsTag}<span class="tag lv">Lv${n.level}</span>
+        <span class="tbig">${mmss(t.real)}</span><span class="tlab">${t.state==='live'?'採取可 残り':'まで'}</span><span class="twin">${winLabel(t.win)}</span></div>
+      <h3>${ICON.pin}${n.area} ・ ${n.aetheryte}<span class="h3-tail"><span class="kind">${LAB.node_type[n.node_type]}の採取場</span>${t.state==='live'?'<span class="livepulse"></span>':''}<button class="fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="お気に入り">${state.favs.has(n.id)?ICON.star:ICON.starO}</button></span></h3>
       <div class="items-row">${itemChips}</div>
-      <div class="eta"><span class="big">${mmss(t.real)}</span><span class="lab">${t.state==='live'?'採取可 残り':'まで'}</span><span class="win">${winLabel(t.win)}</span></div>
       <div class="bar" style="width:${fill}%"></div>
     </div>`;
   }).join('');
