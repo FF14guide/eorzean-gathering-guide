@@ -102,8 +102,16 @@ async function main() {
   const ipatch = JSON.parse(raw['item-patch.json']);
   const pnames = JSON.parse(raw['patch-names.json']);
 
-  const placeJa = (id) => (places[id]?.ja || places[id]?.en || '').trim();
-  const itemJa  = (id) => (items[id]?.ja || items[id]?.en || `#${id}`).trim();
+  const localized = (dict, id, fallback = '') => ({
+    ja: (dict[id]?.ja || dict[id]?.en || fallback).trim(),
+    en: (dict[id]?.en || dict[id]?.ja || fallback).trim(),
+    de: (dict[id]?.de || dict[id]?.en || dict[id]?.ja || fallback).trim(),
+    fr: (dict[id]?.fr || dict[id]?.en || dict[id]?.ja || fallback).trim(),
+  });
+  const placeNames = (id) => localized(places, id);
+  const itemNames  = (id) => localized(items, id, `#${id}`);
+  const placeJa = (id) => placeNames(id).ja;
+  const itemJa  = (id) => itemNames(id).ja;
 
   // ─── 最寄りエーテライト（type0＝テレポ可、同 map で最短） ───────────
   const mains = Object.values(aeth).filter((a) => a.type === 0);
@@ -219,19 +227,20 @@ async function main() {
     }
     const rawSlots = resolveSlots(n.base);
     const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : {
-      id: `it_${itemId}`, name: itemJa(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
+      id: `it_${itemId}`, name: itemJa(itemId), names: itemNames(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
     }) : null;
     runtimeNodes.push({
       id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon, node_type: nodeType(n), level: n.level,
-      area: gm ? placeJa(gm.placename_id) : placeJa(effZoneId), aetheryte: a ? placeJa(a.nameid) : '',
+      area: gm ? placeJa(gm.placename_id) : placeJa(effZoneId), areaNames: gm ? placeNames(gm.placename_id) : placeNames(effZoneId),
+      map: gm ? { image: gm.image, px: mapPct(n.x), py: mapPct(n.y), id: effMapId, names: placeNames(gm.placename_id) } : null,
+      aetheryte: a ? placeJa(a.nameid) : '', aetheryteNames: a ? placeNames(a.nameid) : {ja:'',en:'',de:'',fr:''},
       x: n.x, y: n.y,
-      map: gm ? { image: gm.image, px: mapPct(n.x), py: mapPct(n.y) } : null,
       windows: windows(n).map((w) => { const [s, e] = w.split('-').map(Number); return [s, e]; }),
       patch: nodePatch(n.items || []),
       folklore: n.folklore ? itemJa(n.folklore) : '',
       slots,
-      items: visibleIds.map((it) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }))
-        .concat(hiddenIds.map((it, i) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it), hidden: true, stars: i + 1, icon: iconUrl(it) }))),
+      items: visibleIds.map((it) => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }))
+        .concat(hiddenIds.map((it, i) => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: true, stars: i + 1, icon: iconUrl(it) }))),
       use: [...new Set(allIds.flatMap((it) => usesFor(it)))],
       achievements: [],
     });

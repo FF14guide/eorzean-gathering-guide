@@ -317,6 +317,14 @@
   .sched .empty2{font-size:12.5px;color:var(--faint);padding:4px 0}
   .sched .row button{margin-left:auto;flex:none;background:transparent;border:0;color:var(--faint);cursor:pointer;font-size:15px;line-height:1}
   .sched .row button:hover{color:var(--soon)}
+  .language-switch{display:inline-flex;align-items:center}.language-switch select{width:auto;min-width:92px;padding:6px 22px 6px 8px;border:1px solid var(--border);border-radius:8px;background:#0a1628;color:var(--ink);font:700 11px var(--sans)}
+  .label-wrap{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .spot-row .nm,.spot-row .area,.spot-row .tool,.cat-nm,.cat-area-name,.cat-ver-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .area-map{border-left:2px solid rgba(133,185,245,.18);margin:2px 0 4px 8px;padding-left:5px}
+  .area-map>summary{font-size:10.5px!important;color:#8fa7c7!important;padding:6px 6px!important}
+  .area-map .area-btn{padding-left:8px}
+  .area-map .area-btn__name{font-size:11.5px}
+  @media(max-width:760px){.language-switch select{min-width:76px;font-size:10px}.language-switch{order:3}.clocks{flex-wrap:wrap;justify-content:flex-end}}
 
   footer{max-width:1240px;margin:40px auto 0;padding:22px clamp(12px,3vw,24px);border-top:1px solid var(--line);color:var(--faint);font-size:11.5px;line-height:1.7}
   footer b{color:var(--dim)}
@@ -386,6 +394,7 @@
     </div>
   </div>
   <div class="clocks">
+    <label class="language-switch"><span class="sr-only">表示言語</span><select id="localeSelect" aria-label="表示言語"><option value="ja">日本語</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
     <button class="notifybtn" id="notifyToggle" aria-pressed="false" title="採取可能になったらデスクトップ通知でお知らせ">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
       通知
@@ -563,9 +572,11 @@ function savePreferences(){
   }));}catch(e){}
 }
 const savedPreferences=loadPreferences();
+const savedLocale=localStorage.getItem('eorzean_gathering_locale')||'ja';
+const stateLocale=['ja','en','de','fr'].includes(savedLocale)?savedLocale:'ja';
 const PATCH_VALUES=[...new Set(NODES.map(n=>n.patch).filter(Boolean))].sort((a,b)=>parseFloat(a)-parseFloat(b));
 const LATEST_PATCH=PATCH_VALUES.at(-1)||'';
-const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,viewMode:'time',sort:'time',latestOnly:false,
+const state={locale:stateLocale,cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,viewMode:'time',sort:'time',latestOnly:false,
   favs:new Set(savedPreferences.favs),alarms:new Set(savedPreferences.alarms),notified:new Set(),obtained:new Set(savedPreferences.obtained)};
 
 /* ---- Marketboard (Universalis) ---- */
@@ -685,7 +696,32 @@ const ICON={
 const listEl=document.getElementById('list'),detailEl=document.getElementById('detail'),countEl=document.getElementById('count');
 const areaNavEl=document.getElementById('areaNav'),areaAllEl=document.getElementById('areaAll'),areaAllCountEl=document.getElementById('areaAllCount');
 const resultTitleEl=document.getElementById('resultTitle'),resultCaptionEl=document.getElementById('resultCaption');
-const EXPANSION_NAMES={2:'新生エオルゼア',3:'蒼天のイシュガルド',4:'紅蓮のリベレーター',5:'漆黒のヴィランズ',6:'暁月のフィナーレ',7:'黄金のレガシー'};
+const EXPANSION_NAMES={2:{ja:'新生エオルゼア',en:'A Realm Reborn',de:'A Realm Reborn',fr:'Un royaume renaissant'},3:{ja:'蒼天のイシュガルド',en:'Heavensward',de:'Heavensward',fr:'Heavensward'},4:{ja:'紅蓮のリベレーター',en:'Stormblood',de:'Stormblood',fr:'Stormblood'},5:{ja:'漆黒のヴィランズ',en:'Shadowbringers',de:'Shadowbringers',fr:'Shadowbringers'},6:{ja:'暁月のフィナーレ',en:'Endwalker',de:'Endwalker',fr:'Endwalker'},7:{ja:'黄金のレガシー',en:'Dawntrail',de:'Dawntrail',fr:'Dawntrail'}};
+const UI={ja:{all:'すべての採取場',spots:'採取場',map:'MAP',gathered:'取得',gatherable:'取得物を確認',gathering:'採集',schedule:'採集スケジュール',search:'アイテム名・採取場所で検索',browse:'場所から探す',browseCaption:'拡張とエリアから、目的の採取場所を探せます。',handbook:'採集手帳',handbookCaption:'公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。'},en:{all:'All gathering spots',spots:'Spots',map:'MAP',gathered:'Collected',gatherable:'View items',gathering:'Gathering',schedule:'Gathering schedule',search:'Search items or locations',browse:'Browse by location',browseCaption:'Find gathering spots by expansion and area.',handbook:'Gathering handbook',handbookCaption:'Track collection progress by official tool type and level range.'},de:{all:'Alle Sammelstellen',spots:'Sammelstellen',map:'Karte',gathered:'Gesammelt',gatherable:'Gegenstände anzeigen',gathering:'Sammeln',schedule:'Sammelplan',search:'Gegenstände oder Orte suchen',browse:'Nach Ort suchen',browseCaption:'Sammelstellen nach Erweiterung und Gebiet finden.',handbook:'Sammelhandbuch',handbookCaption:'Fortschritt nach Werkzeugtyp und Stufenbereich verfolgen.'},fr:{all:'Tous les points de récolte',spots:'Points',map:'Carte',gathered:'Obtenus',gatherable:'Voir les objets',gathering:'Récolte',schedule:'Planning de récolte',search:'Rechercher objets ou lieux',browse:'Chercher par lieu',browseCaption:'Trouvez les points par extension et par zone.',handbook:'Carnet de récolte',handbookCaption:'Suivez la progression par outil et tranche de niveaux.'}};
+const ui=k=>UI[state.locale]?.[k]||UI.ja[k]||k;
+const nlabel=(obj,fallback='')=>obj?.names?.[state.locale]||obj?.[state.locale]||obj?.name||fallback;
+const TOOL_NAMES={ja:{採掘:'採掘',砕岩:'砕岩',伐採:'伐採',草刈:'草刈'},en:{採掘:'Mining',砕岩:'Quarrying',伐採:'Logging',草刈:'Harvesting'},de:{採掘:'Bergbau',砕岩:'Steinbruch',伐採:'Holzfällerei',草刈:'Ernten'},fr:{採掘:'Minage',砕岩:'Extraction',伐採:'Abattage',草刈:'Récolte'}};
+const toolDisplay=n=>{const name=TOOL_NAMES[state.locale]?.[n.toolLabel]||n.toolLabel;return state.locale==='ja'?`${n.toolMain?'主':'副'}${name}`:`${n.toolMain?'Main':'Off-hand'} ${name}`};
+const FIXED_I18N={
+  en:{'エオルゼア採集図鑑':'Eorzean Gathering Guide','エオルゼア釣り図鑑':'Eorzean Fishing Guide','エオルゼア蒐集録':'Eorzean Collection Log','表示言語':'Language','通知':'Notifications','採取可能になったらデスクトップ通知でお知らせ':'Notify when available','アイテム名または採取場所を検索':'Search items or locations','アイテム名・採取場所で検索':'Search items or locations','ジョブ':'Job','← 左のポイントを選ぶと':'← Select a spot on the left to','取得物・座標・アチーブメント攻略を表示します':'view items, coordinates and achievement guides','ブラウザの設定で通知が許可されていません':'Notifications are not permitted in browser settings','が採取可能になりました':'is now available to gather','の採取場':' gathering spot','採取場所':'Gathering spot','この場所で採れるもの':'Items available here','取得済みにする':'Mark as collected','解除':'Remove','伝承録':'Folklore','地図を読み込めませんでした':'Unable to load map','条件':'Condition','攻略':'Guide','マイスケジュール':'My schedule','気になるポイントの詳細で「アラーム」を押すと、ここに追加され、採取可能になった瞬間に通知します。':'Press “Alarm” in a spot’s details to add it here and receive a notification when gathering becomes available.','最安価格と直近4日平均を表示':'Shows the lowest price and the latest 4-day average','最新素材スケジュール（Patch':'Latest material schedule (Patch','ET時刻と残り時間で、次に向かう採取場を決められます。':'Use Eorzea Time and remaining time to choose your next gathering spot.','新しいパッチの素材から並べています。':'Sorted from the newest patch materials.','古いパッチの素材から並べています。':'Sorted from the oldest patch materials.','選択中のMarketboardにおける代表素材の最安価格順です。':'Sorted by the lowest price of the representative item on the selected Marketboard.','最新パッチの時間限定素材を、次に採取できる順で並べています。':'Time-limited materials from the latest patch, sorted by the next available window.','全て':'All','採掘師':'Miner','園芸師':'Botanist','採掘':'Mining','園芸':'Botany','砕岩':'Quarrying','草刈':'Harvesting','最新素材スケジュール':'Latest material schedule','最新素材':'Latest materials','表示方法':'View','スケジュール':'Schedule','場所':'Locations','手帳':'Handbook','絞り込み':'Filters','種別':'Type','全種別':'All types','未知':'Unspoiled','伝説':'Legendary','刻限':'Ephemeral','エリア':'Area','全エリア':'All areas','拡張':'Expansion','全拡張':'All expansions','用途':'Use','全用途':'All uses','並び順':'Sort','時刻順':'By time','パッチが新しい順':'Newest patch','パッチが古い順':'Oldest patch','最安価格が高い順':'Highest lowest price','Marketboard価格':'Marketboard prices','データセンター':'Data Center','ワールド':'World','価格を更新':'Refresh prices','読み込み中…':'Loading…','価格データを準備中':'Preparing price data','採取場と取得物':'Spots and items','場所ごとの採取素材':'Materials by location','すべての採取場':'All gathering spots','採集スケジュール':'Gathering schedule','取得物を確認':'View items','場所を選ぶと、地図・座標・取得物をまとめて確認できます':'Select a spot to view its map, coordinates and items','取得物・座標・アチーブメント攻略を表示します':'View items, coordinates and achievement guides','お気に入りに追加':'Add to favorites','お気に入りを解除':'Remove from favorites','お気に入り':'Favorite','アラーム':'Alarm','主道具':'Main tool','副道具':'Off-hand tool','主採掘':'Main mining','副砕岩':'Off-hand quarrying','主伐採':'Main logging','副草刈':'Off-hand harvesting','精選用':'For aetherial reduction','紫貨スクリップ':'Purple Scrip','橙貨スクリップ':'Orange Scrip','MAP：':'MAP: ','場所から探す':'Browse by location','拡張とエリアから、目的の採取場所を探せます。':'Find gathering spots by expansion and area.','採集手帳':'Gathering handbook','公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。':'Track collection progress by official tool type and level range.','残り':'left','あと':'in','採取可':'Available','採取できます':'Available to gather','採集':'Gathering','取得':'Collected','未取得':'Not collected','価格なし':'No price','DC最安':'DC lowest','最安':'Lowest','平均':'Avg.','現在の価格':'Current price','全取得物':'All items','座標':'Coordinates','地図':'Map','エーテライト':'Aetheryte','次の枠まで':'Until next window','現実':'real','分後':'min later','分':'min','場':' spots','件':' items','全':'All','を更新':'updated'},
+  de:{'エオルゼア採集図鑑':'Eorzean Gathering Guide','エオルゼア釣り図鑑':'Eorzean Fishing Guide','エオルゼア蒐集録':'Eorzean Collection Log','表示言語':'Sprache','通知':'Benachrichtigungen','採取可能になったらデスクトップ通知でお知らせ':'Bei Verfügbarkeit benachrichtigen','アイテム名または採取場所を検索':'Gegenstände oder Orte suchen','アイテム名・採取場所で検索':'Gegenstände oder Orte suchen','ジョブ':'Job','← 左のポイントを選ぶと':'← Wähle links eine Stelle, um','取得物・座標・アチーブメント攻略を表示します':'Gegenstände, Koordinaten und Erfolge zu sehen','ブラウザの設定で通知が許可されていません':'Benachrichtigungen sind in den Browsereinstellungen nicht erlaubt','が採取可能になりました':'ist jetzt verfügbar','の採取場':' Sammelstelle','採取場所':'Sammelstelle','この場所で採れるもの':'Hier erhältliche Gegenstände','取得済みにする':'Als gesammelt markieren','解除':'Entfernen','伝承録':'Folklore','地図を読み込めませんでした':'Karte konnte nicht geladen werden','条件':'Bedingung','攻略':'Guide','マイスケジュール':'Mein Plan','気になるポイントの詳細で「アラーム」を押すと、ここに追加され、採取可能になった瞬間に通知します。':'Drücke in den Details einer Stelle auf „Alarm“, um sie hier hinzuzufügen und bei Verfügbarkeit benachrichtigt zu werden.','最安価格と直近4日平均を表示':'Zeigt den niedrigsten Preis und den aktuellen 4-Tage-Durchschnitt','最新素材スケジュール（Patch':'Plan der neuesten Materialien (Patch','ET時刻と残り時間で、次に向かう採取場を決められます。':'Nutze Eorzea-Zeit und Restzeit für die nächste Sammelstelle.','新しいパッチの素材から並べています。':'Nach Materialien des neuesten Patches sortiert.','古いパッチの素材から並べています。':'Nach Materialien des ältesten Patches sortiert.','選択中のMarketboardにおける代表素材の最安価格順です。':'Nach dem niedrigsten Preis des repräsentativen Gegenstands sortiert.','最新パッチの時間限定素材を、次に採取できる順で並べています。':'Zeitlimitierte Materialien des neuesten Patches, nach Verfügbarkeit sortiert.','全て':'Alle','採掘師':'Minenarbeiter','園芸師':'Gärtner','採掘':'Bergbau','園芸':'Botanik','砕岩':'Steinbruch','草刈':'Ernten','最新素材スケジュール':'Plan der neuesten Materialien','最新素材':'Neueste Materialien','表示方法':'Ansicht','スケジュール':'Plan','場所':'Orte','手帳':'Handbuch','絞り込み':'Filter','種別':'Typ','全種別':'Alle Typen','未知':'Unerschlossen','伝説':'Legendär','刻限':'Ephemer','エリア':'Gebiet','全エリア':'Alle Gebiete','拡張':'Erweiterung','全拡張':'Alle Erweiterungen','用途':'Verwendung','全用途':'Alle Verwendungen','並び順':'Sortierung','時刻順':'Nach Zeit','パッチが新しい順':'Neuester Patch','パッチが古い順':'Ältester Patch','最安価格が高い順':'Höchster Mindestpreis','Marketboard価格':'Marktpreise','データセンター':'Datenzentrum','ワールド':'Welt','価格を更新':'Preise aktualisieren','読み込み中…':'Wird geladen…','価格データを準備中':'Preisdaten werden vorbereitet','採取場と取得物':'Sammelstellen und Gegenstände','場所ごとの採取素材':'Materialien nach Ort','すべての採取場':'Alle Sammelstellen','採集スケジュール':'Sammelplan','取得物を確認':'Gegenstände anzeigen','場所を選ぶと、地図・座標・取得物をまとめて確認できます':'Wähle eine Stelle für Karte, Koordinaten und Gegenstände','お気に入りに追加':'Zu Favoriten hinzufügen','お気に入りを解除':'Aus Favoriten entfernen','お気に入り':'Favorit','アラーム':'Alarm','主道具':'Hauptwerkzeug','副道具':'Nebenhandwerkzeug','主採掘':'Hauptwerkzeug Bergbau','副砕岩':'Nebenhandwerkzeug Steinbruch','主伐採':'Hauptwerkzeug Holzfällerei','副草刈':'Nebenhandwerkzeug Ernten','精選用':'Für ätherische Reduktion','紫貨スクリップ':'Lila-Scheine','橙貨スクリップ':'Orange-Scheine','MAP：':'Karte: ','場所から探す':'Nach Ort suchen','拡張とエリアから、目的の採取場所を探せます。':'Sammelstellen nach Erweiterung und Gebiet finden.','採集手帳':'Sammelhandbuch','公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。':'Fortschritt nach Werkzeugtyp und Stufenbereich verfolgen.','残り':'übrig','あと':'in','採取可':'Verfügbar','未取得':'Nicht gesammelt','価格なし':'Kein Preis','DC最安':'Niedrigster DC-Preis','最安':'Niedrigster','平均':'Durchschn.','座標':'Koordinaten','地図':'Karte','エーテライト':'Ätheryt','次の枠まで':'Bis zum nächsten Fenster','現実':'real','分後':'Min. später','分':'Min.','場':' Stellen','件':' Einträge'},
+  fr:{'エオルゼア採集図鑑':'Guide de récolte éorzéen','エオルゼア釣り図鑑':'Guide de pêche éorzéen','エオルゼア蒐集録':'Journal de collection éorzéen','表示言語':'Langue','通知':'Notifications','採取可能になったらデスクトップ通知でお知らせ':'Notifier quand disponible','アイテム名または採取場所を検索':'Rechercher objets ou lieux','アイテム名・採取場所で検索':'Rechercher objets ou lieux','ジョブ':'Classe','← 左のポイントを選ぶと':'← Sélectionnez un point à gauche pour','取得物・座標・アチーブメント攻略を表示します':'voir les objets, coordonnées et guides de succès','ブラウザの設定で通知が許可されていません':'Les notifications sont refusées par le navigateur','が採取可能になりました':'est maintenant disponible','の採取場':' point de récolte','採取場所':'Point de récolte','この場所で採れるもの':'Objets disponibles ici','取得済みにする':'Marquer comme obtenu','解除':'Retirer','伝承録':'Carnet de légendes','地図を読み込めませんでした':'Impossible de charger la carte','条件':'Condition','攻略':'Guide','マイスケジュール':'Mon planning','気になるポイントの詳細で「アラーム」を押すと、ここに追加され、採取可能になった瞬間に通知します。':'Appuyez sur « Alarme » dans les détails d’un point pour l’ajouter ici et être notifié dès qu’il est disponible.','最安価格と直近4日平均を表示':'Affiche le prix minimum et la moyenne récente sur 4 jours','最新素材スケジュール（Patch':'Planning des derniers matériaux (Patch','ET時刻と残り時間で、次に向かう採取場を決められます。':'Utilisez l’heure d’Éorzéa et le temps restant pour choisir le prochain point.','新しいパッチの素材から並べています。':'Trié depuis les matériaux du patch le plus récent.','古いパッチの素材から並べています。':'Trié depuis les matériaux du patch le plus ancien.','選択中のMarketboardにおける代表素材の最安価格順です。':'Trié par prix minimum de l’objet représentatif du marché sélectionné.','最新パッチの時間限定素材を、次に採取できる順で並べています。':'Matériaux temporaires du dernier patch, triés selon la prochaine disponibilité.','全て':'Tous','採掘師':'Mineur','園芸師':'Botaniste','採掘':'Minage','園芸':'Botanique','砕岩':'Extraction','草刈':'Récolte','最新素材スケジュール':'Planning des derniers matériaux','最新素材':'Derniers matériaux','表示方法':'Vue','スケジュール':'Planning','場所':'Lieux','手帳':'Carnet','絞り込み':'Filtres','種別':'Type','全種別':'Tous les types','未知':'Intact','伝説':'Légendaire','刻限':'Éphémère','エリア':'Zone','全エリア':'Toutes les zones','拡張':'Extension','全拡張':'Toutes les extensions','用途':'Usage','全用途':'Tous les usages','並び順':'Tri','時刻順':'Par heure','パッチが新しい順':'Patch le plus récent','パッチが古い順':'Patch le plus ancien','最安価格が高い順':'Prix minimum décroissant','Marketboard価格':'Prix du marché','データセンター':'Centre de données','ワールド':'Monde','価格を更新':'Actualiser les prix','読み込み中…':'Chargement…','価格データを準備中':'Préparation des prix','採取場と取得物':'Points et objets','場所ごとの採取素材':'Matériaux par lieu','すべての採取場':'Tous les points de récolte','採集スケジュール':'Planning de récolte','取得物を確認':'Voir les objets','場所を選ぶと、地図・座標・取得物をまとめて確認できます':'Sélectionnez un point pour voir carte, coordonnées et objets','お気に入りに追加':'Ajouter aux favoris','お気に入りを解除':'Retirer des favoris','お気に入り':'Favori','アラーム':'Alarme','主道具':'Outil principal','副道具':'Outil secondaire','主採掘':'Minage principal','副砕岩':'Extraction secondaire','主伐採':'Abattage principal','副草刈':'Récolte secondaire','精選用':'Pour la réduction éthéréenne','紫貨スクリップ':'Assignats violets','橙貨スクリップ':'Assignats orange','MAP：':'Carte : ','場所から探す':'Chercher par lieu','拡張とエリアから、目的の採取場所を探せます。':'Trouvez les points par extension et par zone.','採集手帳':'Carnet de récolte','公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。':'Suivez la progression par outil et tranche de niveaux.','残り':'restantes','あと':'dans','採取可':'Disponible','未取得':'Non obtenu','価格なし':'Pas de prix','DC最安':'Minimum du DC','最安':'Minimum','平均':'Moy.','座標':'Coordonnées','地図':'Carte','エーテライト':'Éthérite','次の枠まで':'Jusqu’à la prochaine fenêtre','現実':'réel','分後':'min restantes','分':'min','場':' points','件':' éléments'}
+};
+function localizePage(){
+  const dict=FIXED_I18N[state.locale]||{};
+  const entries=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
+  const replaceText=value=>entries.reduce((text,[from,to])=>text.split(from).join(to),value);
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(node=>{if(node.parentElement?.tagName!=='SCRIPT'&&node.parentElement?.tagName!=='STYLE')node.nodeValue=replaceText(node.nodeValue||'');});
+  document.querySelectorAll('[title],[aria-label],[placeholder]').forEach(el=>['title','aria-label','placeholder'].forEach(attr=>{if(el.hasAttribute(attr))el.setAttribute(attr,replaceText(el.getAttribute(attr)||''));}));
+  const areaByJa=new Map(NODES.map(n=>[n.area,n.areaNames]));
+  document.querySelectorAll('select option').forEach(option=>{option.textContent=replaceText(option.textContent||'');});
+  document.querySelectorAll('#fArea option').forEach(option=>{const names=areaByJa.get(option.value);if(names)option.textContent=nlabel(names,option.textContent);});
+  document.title=state.locale==='ja'?'エオルゼア採集図鑑 — Eorzean Gathering Guide':(state.locale==='fr'?'Guide de récolte éorzéen — Eorzean Gathering Guide':'Eorzean Gathering Guide');
+  document.documentElement.lang=state.locale;
+}
+const expansionLabel=major=>EXPANSION_NAMES[major]?.[state.locale]||EXPANSION_NAMES[major]?.en||`Patch ${major}.x`;
 
 function filtered(skipArea=false){
   const q=state.text.toLowerCase();
@@ -699,7 +735,7 @@ function filtered(skipArea=false){
       }else if(n.patch!==state.patch)return false;
     }
     if(state.use!=='all'&&!n.use.includes(state.use))return false;
-    if(q&&!(nodeTitle(n)+' '+n.items.map(i=>i.name).join(' ')+' '+n.area).toLowerCase().includes(q))return false;
+    if(q&&!(nodeTitle(n)+' '+n.items.map(i=>nlabel(i)).join(' ')+' '+nlabel(n.areaNames,n.area)).toLowerCase().includes(q))return false;
     return true;
   });
 }
@@ -709,23 +745,29 @@ function renderAreaNav(){
   const groups=new Map();
   filtered(true).forEach(n=>{
     const major=Math.floor(parseFloat(n.patch))||0;
-    if(!groups.has(major))groups.set(major,[]);
-    groups.get(major).push(n);
+    if(!groups.has(major))groups.set(major,new Map());
+    const mapKey=String(n.map?.id??`${n.area}:${n.x}:${n.y}`);
+    if(!groups.get(major).has(mapKey))groups.get(major).set(mapKey,[]);
+    groups.get(major).get(mapKey).push(n);
   });
   const majors=[...groups.keys()].sort((a,b)=>a-b);
   const selected=NODES_BY_ID.get(state.selected);
-  areaAllCountEl.textContent=`${filtered(true).length}場`;
+  areaAllCountEl.textContent=`${filtered(true).length}${ui('spots')}`;
+  const areaAllLabel=areaAllEl.querySelector('span'); if(areaAllLabel)areaAllLabel.textContent=ui('all');
   areaAllEl.setAttribute('aria-pressed',String(state.area==='all'&&!state.selected));
   areaNavEl.innerHTML=majors.map(major=>{
-    const nodes=groups.get(major).slice().sort((a,b)=>a.area.localeCompare(b.area,'ja')||a.level-b.level||a.id.localeCompare(b.id));
+    const mapGroups=groups.get(major);
+    const nodeCount=[...mapGroups.values()].reduce((s,ns)=>s+ns.length,0);
     const isOpen=selected&&Math.floor(parseFloat(selected.patch))===major || major===majors.at(-1);
-    return `<details class="area-group" ${isOpen?'open':''}><summary>${EXPANSION_NAMES[major]||`Patch ${major}.x`}<span class="area-group__count">${nodes.length}場</span></summary><div class="area-group__body">${nodes.map(n=>{
-      const names=n.items.filter(i=>!i.hidden).map(i=>i.name).join('・')||'取得物を確認';
-      const toolKind=n.toolMain?'主':'副';
-      return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${n.area} ／ ${names}">
-        <img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'">
-        <span class="area-spot__items">${n.area}：${names}</span><span class="area-spot__meta">${toolKind}${n.toolLabel}</span>
-      </button>`;
+    const maps=[...mapGroups.entries()].sort((a,b)=>nlabel(a[1][0].map,a[1][0].area).localeCompare(nlabel(b[1][0].map,b[1][0].area),state.locale));
+    return `<details class="area-group" ${isOpen?'open':''}><summary>${expansionLabel(major)}<span class="area-group__count">${nodeCount}${ui('spots')}</span></summary><div class="area-group__body">${maps.map(([mapKey,nodes])=>{
+      const mapName=nlabel(nodes[0].map,nodes[0].area);
+      const mapOpen=selected&&String(selected.map?.id??`${selected.area}:${selected.x}:${selected.y}`)===mapKey;
+      return `<details class="area-map" ${mapOpen?'open':''}><summary>${ui('map')}: ${mapName}<span class="area-group__count">${nodes.length}${ui('spots')}</span></summary><div class="area-group__body">${nodes.slice().sort((a,b)=>a.area.localeCompare(b.area,state.locale)||a.level-b.level||a.id.localeCompare(b.id)).map(n=>{
+        const names=n.items.filter(i=>!i.hidden).map(i=>nlabel(i)).join('・')||ui('gatherable');
+        const toolKind=n.toolMain?'主':'副';
+        return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${nlabel(n.areaNames,n.area)} ／ ${names}"><img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"><span class="area-spot__items">${nlabel(n.areaNames,n.area)}：${names}</span><span class="area-spot__meta">${toolDisplay(n)}</span></button>`;
+      }).join('')}</div></details>`;
     }).join('')}</div></details>`;
   }).join('');
 }
@@ -842,8 +884,8 @@ function nodeBadge(n){
 const compactTimingLabel=t=>t.state==='live'?'残り':'あと';
 const compactWindowLabel=w=>`ET ${pad(w[0])}`;
 function renderList(){
-  if(state.viewMode==='catalog'){ resultTitleEl.textContent='場所から探す';resultCaptionEl.textContent='拡張とエリアから、目的の採取場所を探せます。';renderCatalog();return; }
-  if(state.viewMode==='log'){ resultTitleEl.textContent='採集手帳';resultCaptionEl.textContent='公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。';renderLog();return; }
+  if(state.viewMode==='catalog'){ resultTitleEl.textContent=ui('browse');resultCaptionEl.textContent=ui('browseCaption');renderCatalog();localizePage();return; }
+  if(state.viewMode==='log'){ resultTitleEl.textContent=ui('handbook');resultCaptionEl.textContent=ui('handbookCaption');renderLog();localizePage();return; }
   const sod=eorzeaNow().sod;
   const rows=filtered().map(n=>({n,t:nodeTiming(n.windows,sod),price:priceForNode(n)}));
   rows.sort((a,b)=>{
@@ -871,6 +913,7 @@ function renderList(){
       <button class="fav spot-row__fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="${state.favs.has(n.id)?'お気に入りを解除':'お気に入りに追加'}">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
     </div>`;
   }).join('');
+  localizePage();
 }
 
 function refreshTimeList(sod){
@@ -1026,7 +1069,13 @@ function renderProgress(){
   </div>`;
 }
 
-function refreshViews(){renderAreaNav();renderList();}
+function refreshViews(){renderAreaNav();renderList();localizePage();}
+const _renderDetail=renderDetail;renderDetail=()=>{_renderDetail();localizePage();};
+const _renderSchedule=renderSchedule;renderSchedule=()=>{_renderSchedule();localizePage();};
+const _renderProgress=renderProgress;renderProgress=()=>{_renderProgress();localizePage();};
+const localeSelect=document.getElementById('localeSelect');
+if(localeSelect){localeSelect.value=state.locale;localeSelect.addEventListener('change',e=>{state.locale=e.target.value;localStorage.setItem('eorzean_gathering_locale',state.locale);location.reload();});}
+
 document.getElementById('segClass').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
@@ -1129,7 +1178,7 @@ function checkAlarms(sod=eorzeaNow().sod){
     if(t.state!=='live')state.notified.delete(id);
   });
 }
-renderAreaNav();renderList();renderDetail();renderSchedule();renderProgress();initMarket();
+renderAreaNav();renderList();renderDetail();renderSchedule();renderProgress();initMarket();localizePage();
 function tick(){
   const et=eorzeaNow();
   tickClocks(et);
