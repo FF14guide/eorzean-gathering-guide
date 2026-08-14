@@ -46,6 +46,7 @@ const SOURCES = {
   'item-patch.json':       `${TC}/item-patch.json`,
   'patch-names.json':      `${TC}/patch-names.json`,
   'Achievement_ja.csv':    `${DM}/ja/Achievement.csv`,
+  'Item_ja.csv':           `${DM}/ja/Item.csv`,
 };
 
 // 採集系アチーブメントを名称で絞る語彙（DoL のみ拾う）
@@ -143,6 +144,18 @@ async function main() {
   };
   const nodePatch = (ids) => { const vs = ids.map(itemVersion).filter((v) => v != null); return vs.length ? Math.max(...vs).toFixed(1) : ''; };
 
+  // ─── アイテムアイコン（xivapi-datamining Item.csv の Icon列 → XIVAPI v2アセットURL） ───
+  const itemCsv = parseCsv(raw['Item_ja.csv']);
+  const iconIdByItem = new Map(itemCsv.map((r) => [r['#'], r.Icon]).filter(([, i]) => i && i !== '0'));
+  const iconUrl = (id) => {
+    const iid = iconIdByItem.get(String(id));
+    if (!iid) return null;
+    const n = parseInt(iid, 10);
+    const folder = String(Math.floor(n / 1000) * 1000).padStart(6, '0');
+    const file = String(n).padStart(6, '0');
+    return `https://v2.xivapi.com/api/asset?path=ui/icon/${folder}/${file}.tex&format=png`;
+  };
+
   // ─── ノード正規化 ─────────────────────────────────────────────
   const LABEL = {
     node_type: { unspoiled: '未知', legendary: '伝説', ephemeral: '幻想', folklore: '伝承' },
@@ -159,8 +172,10 @@ async function main() {
     const gm = n.map != null ? gameMaps[n.map] : null;
     // ゲーム内座標(1-41付近)→画像上の%位置。釣り図鑑と同じ変換式。
     const mapPct = (coord) => (((coord - 1) * ((gm?.size_factor ?? 100) / 100)) / 41) * 100;
-    const visible = (n.items || []).concat(n.hiddenItems || []);
-    for (const it of visible) {
+    const visibleIds = n.items || [];
+    const hiddenIds  = n.hiddenItems || [];
+    const allIds = visibleIds.concat(hiddenIds);
+    for (const it of allIds) {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
       itemInfo.get(it).jobs.add(cls);
     }
@@ -172,8 +187,9 @@ async function main() {
       windows: windows(n).map((w) => { const [s, e] = w.split('-').map(Number); return [s, e]; }),
       patch: nodePatch(n.items || []),
       folklore: n.folklore ? itemJa(n.folklore) : '',
-      items: visible.map((it) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it) })),
-      use: [...new Set(visible.flatMap((it) => usesFor(it)))],
+      items: visibleIds.map((it) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }))
+        .concat(hiddenIds.map((it, i) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it), hidden: true, stars: i + 1, icon: iconUrl(it) }))),
+      use: [...new Set(allIds.flatMap((it) => usesFor(it)))],
       achievements: [],
     });
   }

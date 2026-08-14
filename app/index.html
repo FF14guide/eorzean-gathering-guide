@@ -132,8 +132,11 @@
   .card h3{font-size:14.5px;font-weight:700;margin:9px 0 6px;display:flex;align-items:center;gap:6px;color:var(--ink)}
   .card h3 svg{flex:none;opacity:.85;color:var(--gold)}
   .items-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px}
-  .ichip{font-size:11px;line-height:1.5;padding:2px 8px;border-radius:999px;background:var(--bg3);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .ichip{display:inline-flex;align-items:center;gap:4px;font-size:11px;line-height:1.5;padding:2px 8px 2px 2px;border-radius:999px;background:var(--bg3);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .ichip img{width:16px;height:16px;border-radius:4px;flex:none;object-fit:cover}
   .ichip.coll{border-color:var(--gold-line);color:var(--gold);background:var(--gold-soft)}
+  .ichip.hidden{border-style:dashed;border-color:var(--btn);color:var(--btn)}
+  .ichip.hidden i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;opacity:.85;margin-right:2px}
   .card .where{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px}
   .card .where svg{width:12px;height:12px;flex:none;opacity:.7}
 
@@ -201,6 +204,20 @@
   .chips{display:flex;flex-wrap:wrap;gap:6px}
   .chip{font-size:12px;background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--dim)}
   .chip.use{border-color:var(--gold-line);color:var(--gold);background:var(--gold-soft)}
+  .chip.hidden{border-style:dashed;border-color:var(--btn);color:var(--btn)}
+  .chip.hidden i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;opacity:.85;margin-right:2px}
+
+  /* ---------- Item list (icon + name + Lv, detail panel) ---------- */
+  .itemlist{margin:14px 0;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--bg3)}
+  .irow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line)}
+  .irow:first-child{border-top:0}
+  .iico{width:28px;height:28px;flex:none;border-radius:6px;background:var(--bg2);border:1px solid var(--line);object-fit:cover}
+  .iico.ph{display:inline-block}
+  .inm{flex:1;min-width:0;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .inm b{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;color:var(--btn);background:rgba(123,178,85,.15);border:1px solid rgba(123,178,85,.4);border-radius:5px;padding:1px 5px;margin-right:6px;font-style:normal}
+  .ilv{flex:none;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .irow.hidden{background:rgba(123,178,85,.05)}
+  .irow.hidden .ilv{color:var(--btn)}
 
   .sec-label{
     font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--gold);
@@ -271,6 +288,7 @@
     </div>
     <select id="fType"><option value="all">全種別</option></select>
     <select id="fArea"><option value="all">全エリア</option></select>
+    <select id="fPatch"><option value="all">全拡張</option></select>
     <select id="fUse"><option value="all">全用途</option></select>
     <input type="search" id="fText" placeholder="アイテム名で検索（逆引き）…">
     <div class="spacer"></div>
@@ -347,16 +365,30 @@ const winLabel=w=>`ET ${pad(w[0])}:00–${pad(w[1]%24)}:00`;
 const nodeTitle=n=>(n.items[0]&&n.items[0].name)||n.area||n.id;
 
 /* ---- state ---- */
-const state={cls:'all',type:'all',area:'all',use:'all',text:'',selected:null,favs:new Set(),alarms:new Set(),notified:new Set()};
+const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,favs:new Set(),alarms:new Set(),notified:new Set()};
 
 (function initFilters(){
   const areas=[...new Set(NODES.map(n=>n.area).filter(Boolean))].sort();
   const uses=[...new Set(NODES.flatMap(n=>n.use))];
-  const fType=document.getElementById('fType'),fArea=document.getElementById('fArea'),fUse=document.getElementById('fUse');
+  const fType=document.getElementById('fType'),fArea=document.getElementById('fArea'),fUse=document.getElementById('fUse'),fPatch=document.getElementById('fPatch');
   for(const k of ['unspoiled','legendary','ephemeral','folklore'])
     if(NODES.some(n=>n.node_type===k)) fType.insertAdjacentHTML('beforeend',`<option value="${k}">${LAB.node_type[k]}</option>`);
   areas.forEach(a=>fArea.insertAdjacentHTML('beforeend',`<option value="${a}">${a}</option>`));
   uses.forEach(u=>fUse.insertAdjacentHTML('beforeend',`<option value="${u}">${(LAB.use&&LAB.use[u])||u}</option>`));
+
+  // 拡張(パッチ)フィルタ：旧拡張は「X.x」、現行拡張は個別パッチ＋「X.x」集約
+  const patches=[...new Set(NODES.map(n=>n.patch).filter(Boolean))].sort((a,b)=>parseFloat(a)-parseFloat(b));
+  const majors=[...new Set(patches.map(p=>Math.floor(parseFloat(p))))].sort((a,b)=>a-b);
+  const curMajor=majors[majors.length-1];
+  majors.forEach(maj=>{
+    if(maj===curMajor){
+      patches.filter(p=>Math.floor(parseFloat(p))===maj).forEach(p=>
+        fPatch.insertAdjacentHTML('beforeend',`<option value="${p}">${p}</option>`));
+      fPatch.insertAdjacentHTML('beforeend',`<option value="${maj}.x">${maj}.x</option>`);
+    }else{
+      fPatch.insertAdjacentHTML('beforeend',`<option value="${maj}.x">${maj}.x</option>`);
+    }
+  });
 })();
 
 const ICON={
@@ -375,6 +407,11 @@ function filtered(){
     if(state.cls!=='all'&&n.class!==state.cls)return false;
     if(state.type!=='all'&&n.node_type!==state.type)return false;
     if(state.area!=='all'&&n.area!==state.area)return false;
+    if(state.patch!=='all'){
+      if(state.patch.endsWith('.x')){
+        if(Math.floor(parseFloat(n.patch))!==parseInt(state.patch))return false;
+      }else if(n.patch!==state.patch)return false;
+    }
     if(state.use!=='all'&&!n.use.includes(state.use))return false;
     if(q&&!(nodeTitle(n)+' '+n.items.map(i=>i.name).join(' ')+' '+n.area).toLowerCase().includes(q))return false;
     return true;
@@ -396,7 +433,7 @@ function renderList(){
     const sc=t.state==='live'?'state-live':(t.real<600?'state-soon':'state-far');
     const fill=t.state==='live'?100:Math.max(2,100-(t.real/600*100));
     const clsTag=n.class==='MIN'?'<span class="tag min">採掘</span>':'<span class="tag btn">園芸</span>';
-    const itemChips=n.items.map(i=>`<span class="ichip${i.collectable?' coll':''}">${i.name}${i.collectable?' ◆':''}</span>`).join('');
+    const itemChips=n.items.map(i=>`<span class="ichip${i.collectable?' coll':''}${i.hidden?' hidden':''}">${i.icon?`<img src="${i.icon}" alt="" loading="lazy" onerror="this.remove()">`:''}${i.hidden?'<i>HIDDEN</i> ':''}${i.name}${i.collectable?' ◆':''}</span>`).join('');
     return `<div class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}" role="button" tabindex="0">
       ${t.state==='live'?'<span class="livepulse"></span>':''}
       <button class="fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="お気に入り">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
@@ -444,10 +481,16 @@ function renderDetail(){
       <dt>AREA</dt><dd>${n.area}</dd>
       <dt>AETHERYTE</dt><dd>${n.aetheryte}</dd>
       <dt>COORD</dt><dd>X:${n.x} Y:${n.y}</dd>
-      <dt>ITEMS</dt><dd class="chips">${n.items.map(i=>`<span class="chip">${i.name}${i.collectable?' ◆':''}</span>`).join('')}</dd>
       ${n.use.length?`<dt>USE</dt><dd class="chips">${n.use.map(u=>`<span class="chip use">${(LAB.use&&LAB.use[u])||u}</span>`).join('')}</dd>`:''}
       ${n.folklore?`<dt>伝承録</dt><dd>${n.folklore}</dd>`:''}
     </dl>
+    <div class="itemlist">${n.items.map(i=>`
+      <div class="irow${i.hidden?' hidden':''}">
+        ${i.icon?`<img class="iico" src="${i.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">`:'<span class="iico ph"></span>'}
+        <span class="inm">${i.hidden?'<b>HIDDEN</b> ':''}${i.name}${i.collectable?' ◆':''}</span>
+        <span class="ilv">Lv${n.level}${i.hidden?'★'.repeat(i.stars):''}</span>
+      </div>`).join('')}
+    </div>
     ${others.length?`<div class="note">「${head.name}」は他 ${others.length} か所でも採取可能（逆引き）</div>`:''}
     ${achs.length?`<div class="sec-label">Achievement Guide</div>${achs.map(a=>`
       <div class="ach"><h4>${ICON.medal}${a.name}</h4>
@@ -476,6 +519,7 @@ document.getElementById('segClass').addEventListener('click',e=>{
 });
 document.getElementById('fType').addEventListener('change',e=>{state.type=e.target.value;renderList();});
 document.getElementById('fArea').addEventListener('change',e=>{state.area=e.target.value;renderList();});
+document.getElementById('fPatch').addEventListener('change',e=>{state.patch=e.target.value;renderList();});
 document.getElementById('fUse').addEventListener('change',e=>{state.use=e.target.value;renderList();});
 document.getElementById('fText').addEventListener('input',e=>{state.text=e.target.value;renderList();});
 
