@@ -196,7 +196,7 @@ async function main() {
   // GatheringItem.Item が実アイテムID。位置(枠番号)を保持したまま復元する。
   const gpBase = new Map(parseCsv(raw['GatheringPointBase.csv']).map((r) => [r['#'], r]));
   const gItem  = new Map(parseCsv(raw['GatheringItem.csv']).map((r) => [r['#'], r]));
-  const resolveSlots = (baseId) => {
+  const resolveSlotDetails = (baseId) => {
     const b = gpBase.get(String(baseId));
     if (!b) return null;
     const slots = [];
@@ -206,10 +206,14 @@ async function main() {
       const gi = gItem.get(giId);
       const itemId = gi?.Item;
       const parsedId = itemId && itemId !== '0' ? parseInt(itemId, 10) : null;
-      slots.push(parsedId != null && !isObsoleteDiademItem(parsedId) ? parsedId : null);
+      slots.push(parsedId != null && !isObsoleteDiademItem(parsedId) ? {
+        itemId: parsedId,
+        gatheringLevel: Number(gi?.GatheringItemLevel) || Number(b.GatheringLevel) || null,
+      } : null);
     }
     return slots;
   };
+  const resolveSlots = (baseId) => resolveSlotDetails(baseId)?.map((slot) => slot?.itemId ?? null) || null;
 
   // ─── ノード正規化 ─────────────────────────────────────────────
   const LABEL = {
@@ -240,10 +244,14 @@ async function main() {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
       itemInfo.get(it).jobs.add(cls);
     }
-    const rawSlots = resolveSlots(n.base);
-    const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : {
+    const rawSlotDetails = resolveSlotDetails(n.base);
+    const levelByItem = new Map((rawSlotDetails || []).filter(Boolean).map((slot) => [slot.itemId, slot.gatheringLevel]));
+    const rawSlots = rawSlotDetails?.map((slot) => slot?.itemId ?? null) || null;
+    const makeItem = (itemId, extra = {}) => ({
       id: `it_${itemId}`, name: itemJa(itemId), names: itemNames(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
-    }) : null;
+      gatheringLevel: levelByItem.get(itemId) || Number(n.level) || null, ...extra,
+    });
+    const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : makeItem(itemId)) : null;
     runtimeNodes.push({
       id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon, node_type: nodeType(n), level: n.level,
       area: gm ? placeJa(gm.placename_id) : placeJa(effZoneId), areaNames: gm ? placeNames(gm.placename_id) : placeNames(effZoneId),
@@ -254,8 +262,8 @@ async function main() {
       patch: nodePatch(n.items || []),
       folklore: n.folklore ? itemJa(n.folklore) : '',
       slots,
-      items: visibleIds.map((it) => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }))
-        .concat(hiddenIds.map((it, i) => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: true, stars: i + 1, icon: iconUrl(it) }))),
+      items: visibleIds.map((it) => makeItem(it, { hidden: false }))
+        .concat(hiddenIds.map((it, i) => makeItem(it, { hidden: true, stars: i + 1 }))),
       use: [...new Set(allIds.flatMap((it) => usesFor(it)))],
       achievements: [],
     });
@@ -293,14 +301,15 @@ async function main() {
     const x = 21.5 + worldX / 50;
     const y = 21.5 + worldY / 50;
     const a = nearestAeth({ map: gm.id, x, y, zoneid: gm.placename_id });
-    const itemIds = resolveSlots(String(r.GatheringPointBase))?.filter((id) => id != null && items[id] && !isObsoleteDiademItem(id)) || [];
+    const itemDetails = (resolveSlotDetails(String(r.GatheringPointBase)) || []).filter((slot) => slot && items[slot.itemId] && !isObsoleteDiademItem(slot.itemId));
+    const itemIds = itemDetails.map((slot) => slot.itemId);
     if (!itemIds.length) continue;
     for (const it of itemIds) {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
       itemInfo.get(it).jobs.add(gatheringType <= 1 ? 'MIN' : 'BTN');
     }
     const tool = toolOf(gatheringType);
-    const names = itemIds.map(it => ({ id: `it_${it}`, name: itemJa(it), names: itemNames(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }));
+    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: slot.gatheringLevel || Number(b.GatheringLevel) || null }));
     const patch = nodePatch(itemIds);
     runtimeNodes.push({
       id: `nd_normal_${key.replace(/[^a-zA-Z0-9_:-]/g, '_')}`, class: gatheringType <= 1 ? 'MIN' : 'BTN', tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon,

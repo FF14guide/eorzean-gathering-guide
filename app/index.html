@@ -841,11 +841,13 @@ function renderLog(){
     // レベル帯でグルーピングし、帯ごとにユニークなアイテムを集約
     const byBucket=new Map();
     toolNodes.forEach(n=>{
-      const b=levelBucket(n.level);
-      if(!byBucket.has(b.label))byBucket.set(b.label,{s:b.s,items:new Map()});
-      const bucket=byBucket.get(b.label);
       n.items.forEach(it=>{
-        if(!bucket.items.has(it.id))bucket.items.set(it.id,{...it,lv:n.level,nodeId:n.id,area:n.area});
+        // アイテムごとの公式GatheringItemLevelを優先し、シャード等をノードレベル帯へ誤混在させない。
+        const itemLevel=Number(it.gatheringLevel)||Number(n.level)||1;
+        const b=levelBucket(itemLevel);
+        if(!byBucket.has(b.label))byBucket.set(b.label,{s:b.s,items:new Map()});
+        const bucket=byBucket.get(b.label);
+        if(!bucket.items.has(it.id))bucket.items.set(it.id,{...it,lv:itemLevel,nodeId:n.id,area:n.area});
       });
     });
     const buckets=[...byBucket.entries()].sort((a,b)=>a[1].s-b[1].s);
