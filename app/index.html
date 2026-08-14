@@ -122,8 +122,10 @@
   .card[aria-selected="true"]{border-color:var(--gold-line);background:#13223c}
   .card .top{display:flex;align-items:center;gap:9px}
   .tag{
+    display:inline-flex;align-items:center;justify-content:center;
+    box-sizing:border-box;min-width:36px;height:20px;
     font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.02em;
-    padding:2px 8px;border-radius:5px;flex:none;line-height:1.6;
+    padding:0 8px;border-radius:5px;flex:none;white-space:nowrap;
   }
   .tag.min{color:var(--min);background:rgba(208,123,65,.13);border:1px solid rgba(208,123,65,.4)}
   .tag.btn{color:var(--btn);background:rgba(123,178,85,.13);border:1px solid rgba(123,178,85,.4)}
@@ -191,7 +193,9 @@
   .d-eta .meta{font-size:12px;color:var(--dim)}
   .d-eta .meta b{color:var(--ink);font-weight:700}
 
-  .rows{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;margin:16px 0;font-size:13px}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 10px;margin:14px 0;font-size:12px}
+  .meta .m{display:inline-flex;align-items:baseline;gap:5px;background:var(--bg3);border:1px solid var(--line);border-radius:7px;padding:4px 9px;color:var(--ink);white-space:nowrap}
+  .meta .m i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--faint)}
 
   /* ---------- Map ---------- */
   .mapbox{position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--line);margin:14px 0;background:var(--bg3)}
@@ -201,8 +205,6 @@
   .mapring{position:absolute;width:60px;height:60px;border-radius:50%;border:2.5px solid #fff;opacity:.85;transform:translate(-50%,-50%);animation:ringpulse 1.8s infinite;box-shadow:0 0 0 1px rgba(0,0,0,.5);z-index:2}
   @keyframes ringpulse{0%{transform:translate(-50%,-50%) scale(.8);opacity:.7}70%{transform:translate(-50%,-50%) scale(1.15);opacity:0}100%{opacity:0}}
   .mapfail{padding:14px;font-size:12px;color:var(--faint);text-align:center}
-  .rows dt{color:var(--faint);font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding-top:1px}
-  .rows dd{margin:0;color:var(--ink)}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
   .chip{font-size:12px;background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--dim)}
   .chip.use{border-color:var(--gold-line);color:var(--gold);background:var(--gold-soft)}
@@ -481,13 +483,13 @@ function renderDetail(){
         <span class="mapring" style="left:${n.map.px}%;top:${n.map.py}%"></span>
         <span class="mapdot" style="left:${n.map.px}%;top:${n.map.py}%"></span>
       </div></div>`:''}
-    <dl class="rows">
-      <dt>AREA</dt><dd>${n.area}</dd>
-      <dt>AETHERYTE</dt><dd>${n.aetheryte}</dd>
-      <dt>COORD</dt><dd>X:${n.x} Y:${n.y}</dd>
-      ${n.use.length?`<dt>USE</dt><dd class="chips">${n.use.map(u=>`<span class="chip use">${(LAB.use&&LAB.use[u])||u}</span>`).join('')}</dd>`:''}
-      ${n.folklore?`<dt>伝承録</dt><dd>${n.folklore}</dd>`:''}
-    </dl>
+    <div class="meta">
+      <span class="m"><i>AREA</i>${n.area}</span>
+      <span class="m"><i>AETHERYTE</i>${n.aetheryte}</span>
+      <span class="m"><i>COORD</i>X:${n.x} Y:${n.y}</span>
+      ${n.use.length?`<span class="m"><i>USE</i>${n.use.map(u=>(LAB.use&&LAB.use[u])||u).join('・')}</span>`:''}
+      ${n.folklore?`<span class="m"><i>伝承録</i>${n.folklore}</span>`:''}
+    </div>
     <div class="itemlist">${(n.slots||n.items.filter(i=>!i.hidden)).map((s,idx)=>s?`
       <div class="irow">
         <span class="islot">${idx+1}</span>
