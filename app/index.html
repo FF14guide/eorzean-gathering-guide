@@ -356,6 +356,20 @@
   .result-pane .grid:has(.spot-row){grid-template-columns:minmax(380px,.92fr) minmax(330px,1.08fr)}
   @media(max-width:1080px){.result-pane .grid:has(.spot-row){grid-template-columns:1fr}.spot-row__area{max-width:45%}}
   @media(max-width:640px){.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 22px;gap:6px;min-height:42px;padding:5px 7px}.spot-row__job{width:25px;height:25px}.spot-row__job svg{width:13px;height:13px}.spot-row__area,.spot-row__kind{display:none}.spot-row__items{font-size:11.5px}.spot-row__et{font-size:10.5px}.spot-row__remain{font-size:9px}}
+
+  /* ---------- v4: material schedule & marketboard ---------- */
+  .schedule-chip button{color:#e8c579}.schedule-chip button[aria-pressed="true"]{background:#4a3820;color:#fff3d0}
+  .marketbar{display:flex;align-items:center;gap:9px;min-height:48px;margin:-4px 0 14px;padding:8px 10px;border:1px solid var(--border);border-radius:12px;background:rgba(12,24,43,.74)}
+  .marketbar__title{display:flex;align-items:center;gap:6px;margin-right:auto;color:#c9d9ed;font-size:11px;font-weight:800;white-space:nowrap}.marketbar__title svg{width:15px;height:15px;color:var(--amber)}
+  .marketbar select{min-width:118px;height:32px;padding:4px 25px 4px 9px;border-color:var(--border);border-radius:8px;background:#0a1628;color:var(--ink);font-size:11px}.marketbar button{height:32px;border:1px solid var(--border);border-radius:8px;padding:0 10px;background:#142640;color:#d7e8ff;font:700 11px var(--sans);cursor:pointer}.marketbar button:disabled{opacity:.55;cursor:wait}.marketbar__status{min-width:120px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7993b6;font-size:10.5px}.marketbar__status.error{color:#f1a1a8}.marketbar__status.ready{color:#94d9b7}
+  .filter-popover{grid-template-columns:repeat(3,minmax(0,1fr))}.filter-popover .wide{grid-column:span 1}.filter-popover select{height:34px}
+  .area-rail__head{align-items:flex-start}.area-rail__title{line-height:1.15}.area-rail__title small{display:block;margin-top:3px;color:#6d88ab;font-size:9px;font-weight:600;letter-spacing:.04em}.area-rail__hint{padding-top:2px}
+  .area-groups{gap:7px}.area-group>summary{padding-bottom:5px}.area-spot{display:grid;grid-template-columns:25px minmax(0,1fr) auto;gap:6px;align-items:center;width:100%;padding:6px 6px;border:0;border-radius:7px;background:transparent;color:var(--dim);text-align:left;cursor:pointer}.area-spot:hover{background:rgba(133,185,245,.08);color:var(--ink)}.area-spot[aria-pressed="true"]{background:#193454;color:#fff}.area-spot__tool{width:22px;height:22px;border:1px solid rgba(151,178,220,.16);border-radius:5px;background:#0c182a;object-fit:cover}.area-spot__items{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10.5px;font-weight:700}.area-spot__meta{font:9px var(--mono);color:#7896bb;white-space:nowrap}.area-spot[aria-pressed="true"] .area-spot__meta{color:#b7d7ff}
+  .spot-row{grid-template-columns:70px 42px minmax(0,1fr) auto 72px 24px}.spot-row__job img{width:18px;height:18px;object-fit:cover;border-radius:4px}.spot-row__price{min-width:64px;text-align:right;font:10px var(--mono);color:#9bc9b4;white-space:nowrap}.spot-row__price.loading{color:#7690b4}.spot-row__price.empty{color:#637b9d}.spot-row__price b{font-size:11px;color:#c8edd7}.spot-row__price small{display:block;color:#6f89ab;font:8px var(--sans)}
+  .tool-badge{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:6px;padding:2px 5px;background:#0b1729;color:#aac0db;font-size:10px;font-weight:800}.tool-badge img{width:16px;height:16px;border-radius:4px;object-fit:cover}.tool-badge small{color:#7590b4;font-size:9px}
+  .item-price{margin-left:auto;min-width:82px;text-align:right;font:10px var(--mono);color:#9bc9b4;white-space:nowrap}.item-price strong{color:#c8edd7;font-size:11px}.item-price small{display:block;color:#718bad;font:9px var(--sans)}.item-price.empty{color:#637b9d}.market-detail{margin:8px 0 0;color:#7792b5;font-size:10px}.market-detail b{color:#9bc9b4}.market-detail.error{color:#efabb0}
+  @media(max-width:1080px){.marketbar{flex-wrap:wrap}.marketbar__title{min-width:100%}.marketbar__status{margin-left:auto}.spot-row{grid-template-columns:70px 42px minmax(0,1fr) auto 70px 24px}}
+  @media(max-width:640px){.marketbar{gap:7px;margin-bottom:12px}.marketbar select{min-width:0;flex:1}.marketbar button{padding:0 8px}.marketbar__status{display:none}.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 58px 22px}.spot-row__price{min-width:0;font-size:9px}.spot-row__price b{font-size:10px}.spot-row__kind{display:none}.area-spot{padding:6px}.filter-popover{grid-template-columns:1fr 1fr}.filter-popover .wide{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -388,18 +402,19 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.2 4.2"/></svg>
       <input type="search" id="fText" placeholder="アイテム名・採取場所で検索">
     </label>
-    <div class="mode-groups">
-      <div class="quick-seg" id="segClass" role="group" aria-label="ジョブ">
-        <button data-c="all" data-v="all" aria-pressed="true">全て</button>
-        <button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button>
-        <button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button>
+      <div class="mode-groups">
+        <div class="quick-seg" id="segClass" role="group" aria-label="ジョブ">
+          <button data-c="all" data-v="all" aria-pressed="true">全て</button>
+          <button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button>
+          <button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button>
+        </div>
+        <div class="quick-seg schedule-chip" id="segLatest" role="group" aria-label="最新素材スケジュール"><button data-latest="true" aria-pressed="false">最新素材</button></div>
+        <div class="quick-seg" id="segView" role="group" aria-label="表示方法">
+          <button data-v="time" aria-pressed="true">スケジュール</button>
+          <button data-v="catalog" aria-pressed="false">場所</button>
+          <button data-v="log" aria-pressed="false">手帳</button>
+        </div>
       </div>
-      <div class="quick-seg" id="segView" role="group" aria-label="表示方法">
-        <button data-v="time" aria-pressed="true">現在</button>
-        <button data-v="catalog" aria-pressed="false">場所</button>
-        <button data-v="log" aria-pressed="false">手帳</button>
-      </div>
-    </div>
     <details class="filterbox">
       <summary class="filter-trigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>絞り込み</summary>
       <div class="filter-popover">
@@ -407,20 +422,29 @@
         <label><span class="sr-only">エリア</span><select id="fArea"><option value="all">全エリア</option></select></label>
         <label><span class="sr-only">拡張</span><select id="fPatch"><option value="all">全拡張</option></select></label>
         <label><span class="sr-only">用途</span><select id="fUse"><option value="all">全用途</option></select></label>
+        <label><span class="sr-only">並び順</span><select id="fSort"><option value="time">時刻順</option><option value="patch-desc">パッチが新しい順</option><option value="patch-asc">パッチが古い順</option><option value="price-desc">最安価格が高い順</option></select></label>
       </div>
     </details>
   </section>
 
+  <section class="marketbar" aria-label="Marketboard価格の対象ワールド">
+    <div class="marketbar__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 10h8M8 14h8M12 6v12"/></svg>Marketboard価格</div>
+    <select id="fMarketDc" aria-label="データセンター" disabled><option>読み込み中…</option></select>
+    <select id="fMarketWorld" aria-label="ワールド" disabled><option>DC集計</option></select>
+    <button id="refreshMarket" type="button" disabled>価格を更新</button>
+    <span class="marketbar__status" id="marketStatus">価格データを準備中</span>
+  </section>
+
   <div class="app-shell">
     <aside class="area-rail" aria-label="採取エリア一覧">
-      <div class="area-rail__head"><div class="area-rail__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2v14l-4 2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg>採取場所</div><span class="area-rail__hint">AREA</span></div>
-      <button class="area-all" id="areaAll" aria-pressed="true"><span>すべてのエリア</span><span id="areaAllCount"></span></button>
+      <div class="area-rail__head"><div class="area-rail__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2v14l-4 2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg><span>採取場と取得物<small>場所ごとの採取素材</small></span></div><span class="area-rail__hint">SPOTS</span></div>
+      <button class="area-all" id="areaAll" aria-pressed="true"><span>すべての採取場</span><span id="areaAllCount"></span></button>
       <div class="area-groups" id="areaNav"></div>
     </aside>
 
     <main class="result-pane">
       <div class="result-header">
-        <div><h2 id="resultTitle">いまの採取場所</h2><p id="resultCaption">開いている場所を、採取可能な順に表示しています。</p></div>
+        <div><h2 id="resultTitle">採集スケジュール</h2><p id="resultCaption">ET時刻・最新素材・Marketboard価格で、次に向かう採取場を決められます。</p></div>
         <div class="count" id="count"></div>
       </div>
       <details class="utility-drawer">
@@ -440,6 +464,7 @@
 <footer>
   本サイトは個人運営の<b>非公式ファンサイト</b>です。データは <b>FFXIV Teamcraft</b>（MIT）と
   <b>xivapi/ffxiv-datamining</b> のオープンデータを基に生成しています。<br>
+  Marketboard価格は <b>Universalis</b> の公開APIから画面表示時に取得しています。価格・出品状況は取得時点の情報であり、変動します。<br>
   ゲーム内データ・テキスト・名称の著作権は <b>© SQUARE ENIX CO., LTD. All Rights Reserved.</b> に帰属します。<br>
   <b>© SQUARE ENIX</b><br>
   FINAL FANTASY XIV は株式会社スクウェア・エニックスの登録商標です。<br>
@@ -538,8 +563,81 @@ function savePreferences(){
   }));}catch(e){}
 }
 const savedPreferences=loadPreferences();
-const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,viewMode:'time',
+const PATCH_VALUES=[...new Set(NODES.map(n=>n.patch).filter(Boolean))].sort((a,b)=>parseFloat(a)-parseFloat(b));
+const LATEST_PATCH=PATCH_VALUES.at(-1)||'';
+const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,viewMode:'time',sort:'time',latestOnly:false,
   favs:new Set(savedPreferences.favs),alarms:new Set(savedPreferences.alarms),notified:new Set(),obtained:new Set(savedPreferences.obtained)};
+
+/* ---- Marketboard (Universalis) ---- */
+const market={dcs:[],worlds:[],prices:new Map(),loading:false,target:'Elemental',isWorld:false,updatedAt:null};
+const marketDcEl=document.getElementById('fMarketDc'),marketWorldEl=document.getElementById('fMarketWorld');
+const marketRefreshEl=document.getElementById('refreshMarket'),marketStatusEl=document.getElementById('marketStatus');
+const itemNum=it=>Number(String(it?.id||it).replace(/^it_/,''))||0;
+const gil=n=>new Intl.NumberFormat('ja-JP').format(Math.round(n));
+const marketTarget=()=>marketWorldEl.value==='__dc__'?marketDcEl.value:marketWorldEl.value;
+const marketScope=()=>marketWorldEl.value==='__dc__'?'dc':'world';
+function setMarketStatus(text,tone=''){
+  marketStatusEl.textContent=text;marketStatusEl.className=`marketbar__status${tone?` ${tone}`:''}`;
+}
+function priceForItem(it){return market.prices.get(itemNum(it))||null;}
+function primaryItem(n){return n.items.find(i=>!i.hidden)||n.items[0]||null;}
+function priceForNode(n){return priceForItem(primaryItem(n));}
+function priceCell(it,compact=false){
+  if(market.loading)return `<span class="${compact?'spot-row__price':'item-price'} loading">…<small>取得中</small></span>`;
+  const p=priceForItem(it);
+  if(!p||p.min==null)return `<span class="${compact?'spot-row__price':'item-price'} empty">—<small>価格なし</small></span>`;
+  const label=market.isWorld?'最安':'DC最安';
+  return `<span class="${compact?'spot-row__price':'item-price'}"><b>${gil(p.min)} G</b><small>${label}${p.avg!=null?` ・平均 ${gil(p.avg)}`:''}</small></span>`;
+}
+function updateWorldChoices(){
+  const dc=marketDcEl.value;
+  const ids=new Set((market.dcs.find(d=>d.name===dc)?.worlds)||[]);
+  const worlds=market.worlds.filter(w=>ids.has(w.id));
+  marketWorldEl.innerHTML=`<option value="__dc__">${dc}（DC集計）</option>${worlds.map(w=>`<option value="${w.name}">${w.name}</option>`).join('')}`;
+  marketWorldEl.disabled=false;
+}
+function marketItemIds(){return [...new Set(filtered().flatMap(n=>[...n.items.filter(i=>!i.hidden),...(n.slots||[]).filter(Boolean)].map(itemNum)).filter(Boolean))];}
+function chunks(values,size){return Array.from({length:Math.ceil(values.length/size)},(_,i)=>values.slice(i*size,(i+1)*size));}
+function resultPrice(result,scope){
+  const nq=result.nq||{};
+  return {min:nq.minListing?.[scope]?.price??null,avg:nq.averageSalePrice?.[scope]?.price??null,velocity:nq.dailySaleVelocity?.[scope]?.quantity??null};
+}
+async function refreshMarketPrices(){
+  const ids=marketItemIds();
+  if(!ids.length){setMarketStatus('対象素材がありません');return;}
+  market.loading=true;marketRefreshEl.disabled=true;setMarketStatus(`${ids.length}素材の価格を取得中`);renderList();if(state.selected)renderDetail();
+  try{
+    const target=encodeURIComponent(marketTarget()),scope=marketScope();
+    const responses=await Promise.all(chunks(ids,100).map(async group=>{
+      const r=await fetch(`https://universalis.app/api/v2/aggregated/${target}/${group.join(',')}`);
+      if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json();
+    }));
+    const prices=new Map();
+    responses.flatMap(r=>r.results||[]).forEach(r=>prices.set(r.itemId,resultPrice(r,scope)));
+    market.prices=prices;market.target=marketTarget();market.isWorld=scope==='world';market.updatedAt=Date.now();
+    setMarketStatus(`${market.target} ・ ${prices.size}素材を更新`, 'ready');
+  }catch(e){setMarketStatus('価格の取得に失敗しました', 'error');toast('Marketboard価格を取得できませんでした');}
+  finally{market.loading=false;marketRefreshEl.disabled=false;renderList();if(state.selected)renderDetail();}
+}
+async function initMarket(){
+  try{
+    const [dcs,worlds]=await Promise.all([
+      fetch('https://universalis.app/api/v2/data-centers').then(r=>r.json()),
+      fetch('https://universalis.app/api/v2/worlds').then(r=>r.json()),
+    ]);
+    market.dcs=dcs||[];market.worlds=worlds||[];
+    const saved=localStorage.getItem('eorzean_gathering_market_dc');
+    const defaultDc=market.dcs.some(d=>d.name===saved)?saved:(market.dcs.some(d=>d.name==='Elemental')?'Elemental':market.dcs[0]?.name);
+    marketDcEl.innerHTML=market.dcs.map(d=>`<option value="${d.name}">${d.name}（${d.region}）</option>`).join('');
+    marketDcEl.value=defaultDc||marketDcEl.value;marketDcEl.disabled=false;updateWorldChoices();marketRefreshEl.disabled=false;
+    await refreshMarketPrices();
+  }catch(e){setMarketStatus('価格APIを準備できませんでした', 'error');marketDcEl.innerHTML='<option>利用不可</option>';}
+}
+function syncLatestButton(){document.querySelector('#segLatest button').setAttribute('aria-pressed',String(state.latestOnly));}
+function setLatestSchedule(enabled){
+  state.latestOnly=enabled;state.patch=enabled?LATEST_PATCH:'all';document.getElementById('fPatch').value=state.patch;syncLatestButton();
+  if(enabled)state.viewMode='time';document.querySelectorAll('#segView button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===state.viewMode)));refreshViews();
+}
 
 (function initFilters(){
   const areaMinPatch=new Map();
@@ -608,24 +706,26 @@ function filtered(skipArea=false){
 
 const catOpen=new Set(); // 開いているバージョン/マップの折りたたみ状態を再描画をまたいで保持
 function renderAreaNav(){
-  const sod=eorzeaNow().sod;
   const groups=new Map();
   filtered(true).forEach(n=>{
     const major=Math.floor(parseFloat(n.patch))||0;
-    if(!groups.has(major))groups.set(major,new Map());
-    const byArea=groups.get(major);
-    if(!byArea.has(n.area))byArea.set(n.area,[]);
-    byArea.get(n.area).push(n);
+    if(!groups.has(major))groups.set(major,[]);
+    groups.get(major).push(n);
   });
   const majors=[...groups.keys()].sort((a,b)=>a-b);
-  areaAllCountEl.textContent=`${filtered(true).length}件`;
-  areaAllEl.setAttribute('aria-pressed',String(state.area==='all'));
+  const selected=NODES_BY_ID.get(state.selected);
+  areaAllCountEl.textContent=`${filtered(true).length}場`;
+  areaAllEl.setAttribute('aria-pressed',String(state.area==='all'&&!state.selected));
   areaNavEl.innerHTML=majors.map(major=>{
-    const areas=[...groups.get(major).entries()].sort((a,b)=>a[0].localeCompare(b[0],'ja'));
-    const isOpen=state.area!=='all'&&areas.some(([area])=>area===state.area) || major===majors.at(-1);
-    return `<details class="area-group" ${isOpen?'open':''}><summary>${EXPANSION_NAMES[major]||`Patch ${major}.x`}<span class="area-group__count">${areas.length}</span></summary><div class="area-group__body">${areas.map(([area,nodes])=>{
-      const live=nodes.some(n=>nodeTiming(n.windows,sod).state==='live');
-      return `<button class="area-btn" data-area="${area}" aria-pressed="${state.area===area}"><span class="area-btn__name">${area}</span><span class="area-btn__meta">${live?'<i class="area-live-dot"></i>':''}${nodes.length}</span></button>`;
+    const nodes=groups.get(major).slice().sort((a,b)=>a.area.localeCompare(b.area,'ja')||a.level-b.level||a.id.localeCompare(b.id));
+    const isOpen=selected&&Math.floor(parseFloat(selected.patch))===major || major===majors.at(-1);
+    return `<details class="area-group" ${isOpen?'open':''}><summary>${EXPANSION_NAMES[major]||`Patch ${major}.x`}<span class="area-group__count">${nodes.length}場</span></summary><div class="area-group__body">${nodes.map(n=>{
+      const names=n.items.filter(i=>!i.hidden).map(i=>i.name).join('・')||'取得物を確認';
+      const toolKind=n.toolMain?'主':'副';
+      return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${n.area} ／ ${names}">
+        <img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'">
+        <span class="area-spot__items">${n.area}：${names}</span><span class="area-spot__meta">${toolKind}${n.toolLabel}</span>
+      </button>`;
     }).join('')}</div></details>`;
   }).join('');
 }
@@ -725,7 +825,7 @@ function renderLog(){
     }).join('');
 
     return `<details class="cat-ver" data-key="${toolKey}" ${catOpen.has(toolKey)?'open':''}>
-      <summary><span class="cat-ver-name">${label}<i class="log-sub">（${mainSub}）</i></span><span class="cat-cnt">取得${gotTotal}/${total.size}</span></summary>
+      <summary><span class="cat-ver-name"><img class="area-spot__tool" src="${sample?.toolIcon||''}" alt="${label}" loading="lazy" onerror="this.style.visibility='hidden'">${label}<i class="log-sub">（${mainSub}）</i></span><span class="cat-cnt">取得${gotTotal}/${total.size}</span></summary>
       <div class="cat-areas">${bucketsHtml}</div>
     </details>`;
   }).join('');
@@ -743,28 +843,31 @@ const compactTimingLabel=t=>t.state==='live'?'残り':'あと';
 const compactWindowLabel=w=>`ET ${pad(w[0])}`;
 function renderList(){
   if(state.viewMode==='catalog'){ resultTitleEl.textContent='場所から探す';resultCaptionEl.textContent='拡張とエリアから、目的の採取場所を探せます。';renderCatalog();return; }
-  if(state.viewMode==='log'){ resultTitleEl.textContent='採集手帳';resultCaptionEl.textContent='道具とレベル帯ごとの収集進捗を確認できます。';renderLog();return; }
+  if(state.viewMode==='log'){ resultTitleEl.textContent='採集手帳';resultCaptionEl.textContent='公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。';renderLog();return; }
   const sod=eorzeaNow().sod;
-  const rows=filtered().map(n=>({n,t:nodeTiming(n.windows,sod)}));
+  const rows=filtered().map(n=>({n,t:nodeTiming(n.windows,sod),price:priceForNode(n)}));
   rows.sort((a,b)=>{
-    const fa=state.favs.has(a.n.id)?0:1,fb=state.favs.has(b.n.id)?0:1;
-    if(fa!==fb)return fa-fb;
+    if(state.sort==='patch-desc')return parseFloat(b.n.patch||0)-parseFloat(a.n.patch||0)||a.t.real-b.t.real;
+    if(state.sort==='patch-asc')return parseFloat(a.n.patch||0)-parseFloat(b.n.patch||0)||a.t.real-b.t.real;
+    if(state.sort==='price-desc')return (b.price?.min??-1)-(a.price?.min??-1)||parseFloat(b.n.patch||0)-parseFloat(a.n.patch||0)||a.t.real-b.t.real;
     const sa=a.t.state==='live'?0:1,sb=b.t.state==='live'?0:1;
-    if(sa!==sb)return sa-sb;
-    return a.t.real-b.t.real;
+    return sa-sb||a.t.real-b.t.real;
   });
-  resultTitleEl.textContent=state.area==='all'?'いまの採取場所':state.area;
-  resultCaptionEl.textContent=state.area==='all'?'ET時刻・残り時間・取得物を一覧で比較できます。':'選択中のエリアにある採取場所を時刻順に表示しています。';
-  countEl.textContent=`${rows.length} 件 / 全${NODES.length}`;
+  const captions={time:'ET時刻と残り時間で、次に向かう採取場を決められます。','patch-desc':'新しいパッチの素材から並べています。','patch-asc':'古いパッチの素材から並べています。','price-desc':'選択中のMarketboardにおける代表素材の最安価格順です。'};
+  resultTitleEl.textContent=state.latestOnly?`最新素材スケジュール（Patch ${LATEST_PATCH}）`:(state.area==='all'?'採集スケジュール':state.area);
+  resultCaptionEl.textContent=state.latestOnly?'最新パッチの時間限定素材を、次に採取できる順で並べています。':(captions[state.sort]||captions.time);
+  countEl.textContent=`${rows.length} 場 / 全${NODES.length}`;
   listEl.innerHTML=rows.map(({n,t})=>{
-    const sc=timingClass(t),isMin=n.class==='MIN';
+    const sc=timingClass(t);
     const names=n.items.filter(i=>!i.hidden).map(i=>i.name+(i.collectable?' ◆':'')).join(' ／ ')||'取得物を確認';
     const kind=(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','');
+    const toolLabel=`${n.toolMain?'主道具':'副道具'}：${n.toolLabel}`;
     return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" role="button" tabindex="0" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
       <div class="spot-row__time"><span class="spot-row__et" data-timing-window>${compactWindowLabel(t.win)}</span><span class="spot-row__remain"><span data-countdown>${mmss(t.real)}</span> <span data-timing-label>${compactTimingLabel(t)}</span></span></div>
-      <span class="spot-row__job ${isMin?'min':'btn'}" aria-label="${isMin?'採掘師':'園芸師'} Lv${n.level}">${isMin?ICON.pick:ICON.leaf}</span>
+      <span class="spot-row__job" aria-label="${toolLabel}" title="${toolLabel}"><img src="${n.toolIcon||''}" alt="${toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"></span>
       <div class="spot-row__main"><span class="spot-row__items">${names}</span><span class="spot-row__area">${n.area}</span></div>
       <span class="spot-row__kind">${kind}</span>
+      ${priceCell(primaryItem(n),true)}
       <button class="fav spot-row__fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="${state.favs.has(n.id)?'お気に入りを解除':'お気に入りに追加'}">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
     </div>`;
   }).join('');
@@ -797,7 +900,7 @@ function renderDetail(){
   detailEl.innerHTML=`
     <div class="d-head">
       <div><h2>${ICON.pin}${n.area}</h2>
-        <div class="d-sub">${n.aetheryte} ・ X:${n.x} Y:${n.y} ／ ${subBits.join(' ／ ')}${n.folklore?' ／ '+n.folklore:''}</div></div>
+        <div class="d-sub"><span class="tool-badge"><img src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'">${LAB.class[n.class]} <small>${n.toolMain?'主道具':'副道具'}・${n.toolLabel}</small></span> ${n.aetheryte} ・ X:${n.x} Y:${n.y} ／ ${subBits.join(' ／ ')}${n.folklore?' ／ '+n.folklore:''}</div></div>
       <div class="d-actions">
         <button class="btn ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}">${ICON.starO}お気に入り</button>
         <button class="btn ${state.alarms.has(n.id)?'on':''}" data-alarm="${n.id}">${ICON.bell}アラーム</button>
@@ -825,6 +928,7 @@ function renderDetail(){
         <img class="iico" src="${s.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">
         <span class="inm">${s.name}${s.collectable?' ◆':''}</span>
         <span class="ilv">Lv${n.level}</span>
+        ${priceCell(s)}
         <button class="obtain${state.obtained.has(s.id)?' on':''}" data-obtain="${s.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>
       </div>`:`
       <div class="irow vacant"><span class="islot">${idx+1}</span><span class="inm">-</span></div>`).join('')}
@@ -834,9 +938,11 @@ function renderDetail(){
         ${i.icon?`<img class="iico" src="${i.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">`:'<span class="iico ph"></span>'}
         <span class="inm"><b>HIDDEN</b> ${i.name}${i.collectable?' ◆':''}</span>
         <span class="ilv">Lv${n.level}${'★'.repeat(i.stars)}</span>
+        ${priceCell(i)}
         <button class="obtain${state.obtained.has(i.id)?' on':''}" data-obtain="${i.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>
       </div>`).join('')}
     </div>`:''}
+    <div class="market-detail${marketStatusEl.classList.contains('error')?' error':''}">Marketboard：<b>${market.target||'—'}${market.isWorld?'（ワールド）':'（DC集計）'}</b> ／ 最安価格と直近4日平均を表示 ${market.updatedAt?`・${new Date(market.updatedAt).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}更新`:''}</div>
     ${others.length?`<div class="note">「${head.name}」は他 ${others.length} か所でも採取可能（逆引き）</div>`:''}
     ${achs.length?`<div class="sec-label">Achievement Guide</div>${achs.map(a=>`
       <div class="ach"><h4>${ICON.medal}${a.name}</h4>
@@ -928,11 +1034,16 @@ document.getElementById('segClass').addEventListener('click',e=>{
 });
 document.getElementById('fType').addEventListener('change',e=>{state.type=e.target.value;refreshViews();});
 document.getElementById('fArea').addEventListener('change',e=>{state.area=e.target.value;refreshViews();});
-document.getElementById('fPatch').addEventListener('change',e=>{state.patch=e.target.value;refreshViews();});
+document.getElementById('fPatch').addEventListener('change',e=>{state.patch=e.target.value;state.latestOnly=false;syncLatestButton();refreshViews();});
 document.getElementById('fUse').addEventListener('change',e=>{state.use=e.target.value;refreshViews();});
+document.getElementById('fSort').addEventListener('change',e=>{state.sort=e.target.value;renderList();});
+document.getElementById('segLatest').addEventListener('click',()=>{setLatestSchedule(!state.latestOnly);});
+marketDcEl.addEventListener('change',()=>{localStorage.setItem('eorzean_gathering_market_dc',marketDcEl.value);updateWorldChoices();refreshMarketPrices();});
+marketWorldEl.addEventListener('change',refreshMarketPrices);
+marketRefreshEl.addEventListener('click',refreshMarketPrices);
 document.getElementById('fText').addEventListener('input',e=>{state.text=e.target.value;refreshViews();});
-areaAllEl.addEventListener('click',()=>{state.area='all';document.getElementById('fArea').value='all';refreshViews();});
-areaNavEl.addEventListener('click',e=>{const b=e.target.closest('[data-area]');if(!b)return;state.area=b.dataset.area;document.getElementById('fArea').value=state.area;refreshViews();});
+areaAllEl.addEventListener('click',()=>{state.area='all';state.selected=null;document.getElementById('fArea').value='all';refreshViews();renderDetail();});
+areaNavEl.addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;state.selected=b.dataset.id;renderAreaNav();renderList();renderDetail();});
 document.getElementById('segView').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
@@ -952,18 +1063,18 @@ document.addEventListener('click',e=>{
   const obt=e.target.closest('[data-obtain]');
   if(obt){e.stopPropagation();const id=obt.dataset.obtain;state.obtained.has(id)?state.obtained.delete(id):state.obtained.add(id);savePreferences();renderDetail();renderProgress();if(state.viewMode==='catalog')renderList();return;}
   const catNode=e.target.closest('.cat-node');
-  if(catNode){state.selected=catNode.dataset.id;renderList();renderDetail();return;}
+  if(catNode){state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
-  if(card){state.selected=card.dataset.id;renderList();renderDetail();}
+  if(card){state.selected=card.dataset.id;renderAreaNav();renderList();renderDetail();}
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
   const catNode=e.target.closest('.cat-node');
-  if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderList();renderDetail();return;}
+  if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
   if(!card)return;
   e.preventDefault();
-  state.selected=card.dataset.id;renderList();renderDetail();
+  state.selected=card.dataset.id;renderAreaNav();renderList();renderDetail();
 });
 
 let toastTimer;
@@ -1018,7 +1129,7 @@ function checkAlarms(sod=eorzeaNow().sod){
     if(t.state!=='live')state.notified.delete(id);
   });
 }
-renderAreaNav();renderList();renderDetail();renderSchedule();renderProgress();
+renderAreaNav();renderList();renderDetail();renderSchedule();renderProgress();initMarket();
 function tick(){
   const et=eorzeaNow();
   tickClocks(et);

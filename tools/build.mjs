@@ -125,7 +125,15 @@ async function main() {
   // ゲーム本来の採集手帳の4分類。0=採掘(主道具) 1=砕岩(副道具) 2=伐採(主道具) 3=草刈(副道具)
   const TOOL_LABEL = { 0: '採掘', 1: '砕岩', 2: '伐採', 3: '草刈' };
   const TOOL_MAIN  = { 0: true, 1: false, 2: true, 3: false }; // true=主道具 false=副道具
-  const toolOf = (t) => ({ id: t, label: TOOL_LABEL[t], main: TOOL_MAIN[t] });
+  // 各分類に対応するゲーム内の初期道具アイコン。アイテムアイコンと同じXIVAPI v2アセット経路を使う。
+  // 0: ウェザードピック / 1: ウェザードモール / 2: ウェザードハチェット / 3: ウェザードサイズ
+  const TOOL_ICON = {
+    0: 'https://v2.xivapi.com/api/asset?path=ui/icon/038000/038003.tex&format=png',
+    1: 'https://v2.xivapi.com/api/asset?path=ui/icon/038000/038051.tex&format=png',
+    2: 'https://v2.xivapi.com/api/asset?path=ui/icon/038000/038103.tex&format=png',
+    3: 'https://v2.xivapi.com/api/asset?path=ui/icon/038000/038151.tex&format=png',
+  };
+  const toolOf = (t) => ({ id: t, label: TOOL_LABEL[t], main: TOOL_MAIN[t], icon: TOOL_ICON[t] });
 
   // ─── 用途タグ（精選 / スクリップ色）を外部データから導出 ───────────
   const useLabels = {};
@@ -214,7 +222,7 @@ async function main() {
       id: `it_${itemId}`, name: itemJa(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
     }) : null;
     runtimeNodes.push({
-      id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, node_type: nodeType(n), level: n.level,
+      id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon, node_type: nodeType(n), level: n.level,
       area: gm ? placeJa(gm.placename_id) : placeJa(effZoneId), aetheryte: a ? placeJa(a.nameid) : '',
       x: n.x, y: n.y,
       map: gm ? { image: gm.image, px: mapPct(n.x), py: mapPct(n.y) } : null,
