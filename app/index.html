@@ -209,19 +209,21 @@
   .chip.hidden{border-style:dashed;border-color:var(--btn);color:var(--btn)}
   .chip.hidden i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;opacity:.85;margin-right:2px}
 
-  /* ---------- Item list (icon + name + Lv, detail panel) ---------- */
-  .itemlist{margin:14px 0;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--bg3)}
-  .irow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line)}
+  /* ---------- Item list (slot番号 + icon + name + Lv, detail panel) ---------- */
+  .itemlist{margin:14px 0;border:1px solid var(--line2);border-radius:11px;overflow:hidden;background:var(--bg3)}
+  .irow{display:flex;align-items:center;gap:9px;padding:7px 12px;border-top:1px solid var(--line2)}
   .irow:first-child{border-top:0}
-  .iico{width:28px;height:28px;flex:none;border-radius:6px;background:var(--bg2);border:1px solid var(--line);object-fit:cover}
-  .iico.ph{display:inline-block}
+  .islot{flex:none;width:16px;font-family:var(--mono);font-size:10px;color:var(--faint);text-align:right}
+  .iico{width:26px;height:26px;flex:none;border-radius:6px;background:var(--bg2);border:1px solid var(--line);object-fit:cover}
+  .iico.ph{display:none}
   .inm{flex:1;min-width:0;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .inm b{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;color:var(--btn);background:rgba(123,178,85,.15);border:1px solid rgba(123,178,85,.4);border-radius:5px;padding:1px 5px;margin-right:6px;font-style:normal}
   .ilv{flex:none;font-family:var(--mono);font-size:11px;color:var(--faint)}
   .irow.hidden{background:rgba(123,178,85,.05)}
   .irow.hidden .ilv{color:var(--btn)}
-  .irow.empty .inm{color:var(--faint);opacity:.5}
-  .itemlist.hiddenlist{margin-top:10px;border-color:rgba(123,178,85,.3)}
+  .irow.empty{padding:4px 12px}
+  .irow.empty .inm{color:var(--faint);opacity:.4;font-size:11px}
+  .itemlist.hiddenlist{margin-top:10px;border-color:rgba(123,178,85,.35)}
 
   .sec-label{
     font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--gold);
@@ -486,13 +488,14 @@ function renderDetail(){
       ${n.use.length?`<dt>USE</dt><dd class="chips">${n.use.map(u=>`<span class="chip use">${(LAB.use&&LAB.use[u])||u}</span>`).join('')}</dd>`:''}
       ${n.folklore?`<dt>伝承録</dt><dd>${n.folklore}</dd>`:''}
     </dl>
-    <div class="itemlist">${(n.slots||n.items.filter(i=>!i.hidden)).map((s)=>s?`
+    <div class="itemlist">${(n.slots||n.items.filter(i=>!i.hidden)).map((s,idx)=>s?`
       <div class="irow">
+        <span class="islot">${idx+1}</span>
         <img class="iico" src="${s.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">
         <span class="inm">${s.name}${s.collectable?' ◆':''}</span>
         <span class="ilv">Lv${n.level}</span>
       </div>`:`
-      <div class="irow empty"><span class="iico ph"></span><span class="inm">-</span></div>`).join('')}
+      <div class="irow empty"><span class="islot">${idx+1}</span><span class="inm">-</span></div>`).join('')}
     </div>
     ${n.items.some(i=>i.hidden)?`<div class="itemlist hiddenlist">${n.items.filter(i=>i.hidden).map(i=>`
       <div class="irow hidden">
