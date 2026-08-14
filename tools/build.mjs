@@ -284,6 +284,44 @@ async function main() {
     targets.forEach((id) => nodeById.get(id)?.achievements.push(rec.id));
     if (targets.size) linked++;
   }
+  // 自動リンク: 地域別・レベル帯別の採掘名人系は、条件に合う全ノードへ紐付ける。
+  // 手動リンクは攻略メモを保持しつつ、対象ノードだけ自動リンクで補完する。
+  const addAchievementTargets = (rec, targets) => {
+    const ids = [...new Set(targets.map((n) => n.id))];
+    if (!ids.length) return;
+    const existing = new Set(rec.link_ids || []);
+    ids.forEach((id) => existing.add(id));
+    rec.link_ids = [...existing];
+    if (!rec.link_type) rec.link_type = 'node';
+    ids.forEach((id) => {
+      const node = nodeById.get(id);
+      if (node && !node.achievements.includes(rec.id)) node.achievements.push(rec.id);
+    });
+  };
+  const regionMatchers = [
+    ['ラノシア', (n) => n.area.includes('ラノシア')],
+    ['黒衣森', (n) => n.area.includes('黒衣森')],
+    ['ザナラーン', (n) => n.area.includes('ザナラーン')],
+  ];
+  for (const rec of achDefs.values()) {
+    const regional = rec.name.match(/^(ラノシア|黒衣森|ザナラーン)の採掘(名人|王)/);
+    if (regional) {
+      const [, region, kind] = regional;
+      const matcher = regionMatchers.find(([prefix]) => prefix === region)?.[1];
+      const grade = rec.name.match(/グレード(\d+)/);
+      const minLevel = grade ? (Number(grade[1]) - 1) * 10 + 1 : 1;
+      const maxLevel = grade ? minLevel + 9 : 50;
+      addAchievementTargets(rec, runtimeNodes.filter((n) => matcher?.(n) && n.class === 'MIN' && n.level >= minLevel && n.level <= maxLevel));
+      continue;
+    }
+    if (/採掘名人$/.test(rec.name)) {
+      const range = rec.condition.match(/レベル(\d+)-(\d+)/);
+      if (range) {
+        const minLevel = Number(range[1]); const maxLevel = Number(range[2]);
+        addAchievementTargets(rec, runtimeNodes.filter((n) => n.class === 'MIN' && n.level >= minLevel && n.level <= maxLevel));
+      }
+    }
+  }
   const runtimeAchs = [...achDefs.values()];
 
   // ─── 出力データ ───────────────────────────────────────────────
