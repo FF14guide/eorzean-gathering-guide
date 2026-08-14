@@ -127,8 +127,8 @@
     font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.02em;
     padding:0 8px;border-radius:5px;flex:none;white-space:nowrap;
   }
-  .tag.min{color:var(--min);background:rgba(208,123,65,.13);border:1px solid rgba(208,123,65,.4)}
-  .tag.btn{color:var(--btn);background:rgba(123,178,85,.13);border:1px solid rgba(123,178,85,.4)}
+  .tag.tmin{color:var(--min);background:rgba(208,123,65,.13);border:1px solid rgba(208,123,65,.4)}
+  .tag.tbtn{color:var(--btn);background:rgba(123,178,85,.13);border:1px solid rgba(123,178,85,.4)}
   .tag.lv{color:var(--dim);background:var(--bg3);border:1px solid var(--line)}
   .top{display:flex;align-items:center;gap:9px}
   .top .tbig{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.01em;margin-left:auto}
@@ -223,8 +223,8 @@
   .ilv{flex:none;font-family:var(--mono);font-size:11px;color:var(--faint)}
   .irow.hidden{background:rgba(123,178,85,.05)}
   .irow.hidden .ilv{color:var(--btn)}
-  .irow.empty{padding:4px 12px}
-  .irow.empty .inm{color:var(--faint);opacity:.4;font-size:11px}
+  .irow.vacant{padding:4px 12px}
+  .irow.vacant .inm{color:var(--faint);opacity:.4;font-size:11px}
   .itemlist.hiddenlist{margin-top:10px;border-color:rgba(123,178,85,.35)}
 
   .sec-label{
@@ -440,7 +440,7 @@ function renderList(){
   listEl.innerHTML=rows.map(({n,t})=>{
     const sc=t.state==='live'?'state-live':(t.real<600?'state-soon':'state-far');
     const fill=t.state==='live'?100:Math.max(2,100-(t.real/600*100));
-    const clsTag=n.class==='MIN'?'<span class="tag min">採掘</span>':'<span class="tag btn">園芸</span>';
+    const clsTag=n.class==='MIN'?'<span class="tag tmin">採掘</span>':'<span class="tag tbtn">園芸</span>';
     const itemChips=n.items.map(i=>`<span class="ichip${i.collectable?' coll':''}${i.hidden?' hidden':''}">${i.icon?`<img src="${i.icon}" alt="" loading="lazy" onerror="this.remove()">`:''}${i.hidden?'<i>HIDDEN</i> ':''}${i.name}${i.collectable?' ◆':''}</span>`).join('');
     return `<div class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}" role="button" tabindex="0">
       <div class="top">${clsTag}<span class="tag lv">Lv${n.level}</span>
@@ -497,7 +497,7 @@ function renderDetail(){
         <span class="inm">${s.name}${s.collectable?' ◆':''}</span>
         <span class="ilv">Lv${n.level}</span>
       </div>`:`
-      <div class="irow empty"><span class="islot">${idx+1}</span><span class="inm">-</span></div>`).join('')}
+      <div class="irow vacant"><span class="islot">${idx+1}</span><span class="inm">-</span></div>`).join('')}
     </div>
     ${n.items.some(i=>i.hidden)?`<div class="itemlist hiddenlist">${n.items.filter(i=>i.hidden).map(i=>`
       <div class="irow hidden">
