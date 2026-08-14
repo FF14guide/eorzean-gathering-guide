@@ -185,12 +185,15 @@
   .btn.on{background:var(--gold);color:#1a1300;border-color:var(--gold)}
 
   .d-eta{
-    display:flex;align-items:center;gap:14px;margin:16px 0;
-    padding:14px 16px;border-radius:11px;background:var(--bg3);border:1px solid var(--line);
+    display:flex;align-items:center;gap:12px;margin:14px 0;
+    padding:10px 14px;border-radius:11px;background:var(--bg3);border:1px solid var(--line);
   }
-  .d-eta .num{font-family:var(--mono);font-size:32px;font-weight:700;line-height:1}
+  .d-eta .num{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1;flex:none}
   .d-eta.state-live .num{color:var(--live)} .d-eta.state-soon .num{color:var(--soon)} .d-eta.state-far .num{color:var(--far)}
-  .d-eta .meta{font-size:12px;color:var(--dim)}
+  .d-eta .meta{font-size:11.5px;color:var(--dim);line-height:1.5;min-width:0}
+  .d-eta .meta b{color:var(--ink)}
+  .wchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+  .wchip{font-family:var(--mono);font-size:10.5px;color:var(--ink);background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap}
   .d-eta .meta b{color:var(--ink);font-weight:700}
 
   .meta{display:flex;flex-wrap:wrap;gap:6px 10px;margin:14px 0;font-size:12px}
@@ -474,8 +477,9 @@ function renderDetail(){
     </div>
     <div class="d-eta ${sc}">
       <div class="num">${mmss(t.real)}</div>
-      <div class="meta">${t.state==='live'?'<b>いま採取できます</b>（枠が閉じるまで）':`次の枠まで（現実 約${Math.round(t.real/60)}分）`}<br>
-        出現枠：<b>${n.windows.map(winLabel).join(' / ')}</b></div>
+      <div class="meta">${t.state==='live'?'<b>いま採取できます</b>（枠が閉じるまで）':`次の枠まで（現実 約${Math.round(t.real/60)}分）`}
+        <div class="wchips">${n.windows.map(w=>`<span class="wchip">${winLabel(w)}</span>`).join('')}</div>
+      </div>
     </div>
     ${n.map?`<div class="mapbox"><div class="inner">
         <img src="${n.map.image}" alt="" loading="lazy"
