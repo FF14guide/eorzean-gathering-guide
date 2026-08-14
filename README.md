@@ -58,7 +58,7 @@ data/achievement-links.json  唯一の手動データ：アチーブメントの
 | 項目 | 出典 | 導出 |
 |---|---|---|
 | クラス・種別・Lv・座標・出現ET・取得物 | Teamcraft `nodes.json` | `spawns`+`duration` → 出現枠、`type` → 採掘/園芸、`ephemeral`/`folklore` → 種別 |
-| アイテム名・地名・エーテライト | Teamcraft `items`/`places`/`aetherytes` | 日本語名。最寄りエーテライトは同マップ最短で解決 |
+| アイテム名・地名・エーテライト | Teamcraft `items`/`places`/`aetherytes` | 日本語名。AREAは地図画像自体が持つ`placename_id`（MAP名単位）を使用。最寄りエーテライトは同マップ最短で解決。ノード側のzoneid/mapが欠損(0)の場合は最寄りエーテライト自身のzoneid/mapで補完 |
 | 用途（精選・スクリップ色） | Teamcraft `reverse-reduction`/`collectables` | 精選対象＝「精選」、収集品は報酬通貨名から色（例 橙貨・紫貨） |
 | 実装パッチ | Teamcraft `item-patch`/`patch-names` | 見出し取得物の最大パッチ |
 | 地図画像・座標変換 | Teamcraft `maps.json`（XIVAPI v2アセット配信） | ノードの`map`IDから画像URLと`size_factor`を解決。座標をマップ画像上の%位置に変換 |
