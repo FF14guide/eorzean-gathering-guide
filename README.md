@@ -45,7 +45,7 @@ SITE_URL=https://saisyu.eorzeanfishing.com node tools/build.mjs
 
 ```
 app/index.html               サイト本体（データ差し込み前のテンプレート）
-app/static/                  そのまま dist/ 直下へ複製される静的ファイル（ogp.png を置くと OGP が付く）
+app/static/                  そのまま dist/ 直下へ複製される静的ファイル（SNS共有用の ogp.png を含む）
 tools/build.mjs              ETL。外部データを取得して正規化し dist/ を書き出す
 tools/.cache/                ダウンロードした元データ（.gitignore 済み）
 data/achievement-links.json  唯一の手動データ：アチーブメントのノード紐付けと攻略メモ
@@ -85,7 +85,8 @@ data/achievement-links.json  唯一の手動データ：アチーブメントの
 - **絞り込み** — 採掘/園芸・種別（未知/伝説/幻想）・エリア・用途
 - **逆引き検索** — アイテム名で検索すると、それが取れるノードに絞れる。詳細には「この取得物は他◯か所でも取れる」も出る
 - **ノード詳細** — エリア・最寄りエーテライト・座標・全取得物（収集品は◆）・用途・伝承録・出現枠・アチーブメント攻略
-- **アラーム** — 詳細で登録すると、取得可能になった瞬間にトースト通知
+- **アラーム** — 詳細で登録すると、取得可能になった瞬間にトースト通知。ブラウザ通知を許可した場合はデスクトップ通知も使用できる
+- **端末内保存** — 取得済み・お気に入り・アラームは、このブラウザの端末内に保存され、再読み込み後も維持される。別ブラウザ／別端末への同期はしない
 - **ET時計** — エオルゼア時間と現地時間を並べて表示。カウントダウンは実時間で常に正確
 
 ## パッチが来たら
@@ -94,12 +95,11 @@ data/achievement-links.json  唯一の手動データ：アチーブメントの
 node tools/build.mjs --refresh
 ```
 
-上流（Teamcraft / datamining）が更新されていれば、新エリアのノードとアイテムが自動で入る。
-`.github/workflows/build.yml` が毎日正午（JST）に走るので、放っておいても追従する。
+上流（Teamcraft / datamining）が更新されていれば、新エリアのノードとアイテムが自動で入る。公開中のGitHub Actionsは毎日正午（JST）にこの検証ビルドを実行し、成功時にCloudflare PagesのDeploy Hookを呼び出す。初回公開前に、GitHub Actions Secret `CLOUDFLARE_PAGES_DEPLOY_HOOK` を設定すること。詳しくは [PUBLISHING.md](PUBLISHING.md) を参照。
 
 ## 公開する
 
-`dist/` を置くだけ。**サブドメインでの公開手順は [PUBLISHING.md](PUBLISHING.md)** にまとめてある。
+`dist/` を置くだけ。SNS共有では `app/static/ogp.png` がOGP画像として自動で含まれる。**サブドメインでの公開手順とDeploy Hookの設定は [PUBLISHING.md](PUBLISHING.md)** にまとめてある。
 
 ## 著作物利用条件について
 

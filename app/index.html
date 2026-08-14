@@ -331,6 +331,31 @@
   #toast .dot{width:9px;height:9px;border-radius:50%;background:var(--live)}
 
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---------- v2: place-first navigation ---------- */
+  :root{--surface:#111d32;--surface-raised:#162640;--surface-sunken:#0a1425;--border:rgba(151,178,220,.16);--border-strong:rgba(193,216,245,.28);--sky:#85b9f5;--mint:#67d4a1;--amber:#e7b25c;--danger:#fb6f7d;--radius:14px;--ease-out:cubic-bezier(.23,1,.32,1)}
+  body{background:linear-gradient(180deg,#091120 0,#0d192c 42%,#0a1425 100%)}
+  .sisternav{position:static;justify-content:flex-start;gap:16px;padding:7px clamp(16px,4vw,36px);background:#07101f;border-color:var(--border)}
+  header{top:0;padding:13px clamp(16px,4vw,36px);background:rgba(9,17,32,.94);border-color:var(--border)}
+  .brand{gap:10px}.brand .glyph{width:36px;height:36px;border-radius:10px;background:transparent;box-shadow:none;overflow:hidden}.brand .glyph svg{display:block;width:100%;height:100%}
+  .brand h1{font-size:18px}.brand .eyebrow{font-size:9px;letter-spacing:.19em}.clocks{gap:7px}.clock{min-width:78px;padding:5px 9px;border-radius:9px;border-color:var(--border);background:rgba(5,12,24,.66)}.clock .val{font-size:16px}.notifybtn{padding:7px 10px;border-color:var(--border);background:rgba(5,12,24,.66)}
+  .wrap{max-width:1480px;padding:0 clamp(14px,3vw,30px) 64px}.command-bar{display:grid;grid-template-columns:minmax(260px,1fr) auto auto;gap:10px;align-items:center;padding:16px 0}.searchbox{position:relative;min-width:0}.searchbox>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--faint);pointer-events:none}.searchbox input{width:100%;min-width:0;padding:10px 12px 10px 36px;border-radius:10px;background:var(--surface-sunken);border-color:var(--border);font-size:13px}.quick-seg{display:flex;gap:5px;padding:4px;border:1px solid var(--border);border-radius:11px;background:var(--surface-sunken)}.quick-seg button,.filter-trigger{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--dim);display:inline-flex;align-items:center;gap:6px;border:0;border-radius:8px;padding:8px 10px;background:transparent;cursor:pointer;transition:background .18s var(--ease-out),color .18s var(--ease-out),transform .18s var(--ease-out)}.quick-seg button svg,.filter-trigger svg{width:15px;height:15px}.quick-seg button[aria-pressed="true"]{background:#243a5d;color:#f2f7ff}.quick-seg button:active,.filter-trigger:active,.area-btn:active,.spot-card:active{transform:scale(.98)}.filterbox{position:relative}.filterbox>summary{list-style:none}.filterbox>summary::-webkit-details-marker{display:none}.filter-trigger{border:1px solid var(--border);background:var(--surface-sunken);color:var(--ink);height:100%}.filterbox[open] .filter-trigger{border-color:var(--sky);background:#152640}.filter-popover{position:absolute;right:0;top:calc(100% + 8px);z-index:20;width:min(430px,calc(100vw - 28px));padding:12px;border:1px solid var(--border-strong);border-radius:13px;background:#0c172a;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.filter-popover select{width:100%;min-width:0;border-color:var(--border);background:var(--surface-sunken)}.filter-count{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap;justify-self:end}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .mode-groups{display:flex;gap:6px;min-width:0}.app-shell{display:grid;grid-template-columns:264px minmax(0,1fr);gap:18px;align-items:start}.area-rail{position:sticky;top:79px;max-height:calc(100vh - 96px);overflow:auto;padding:11px;background:rgba(15,28,49,.78);border:1px solid var(--border);border-radius:var(--radius);scrollbar-color:#314968 transparent}.area-rail__head{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 11px}.area-rail__title{display:flex;align-items:center;gap:7px;color:var(--ink);font-size:13px;font-weight:900}.area-rail__title svg{width:16px;color:var(--sky)}.area-rail__hint{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--faint)}.area-all{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:9px;background:#0b1729;color:var(--dim);font:700 12px var(--sans);padding:9px 10px;cursor:pointer}.area-all:hover,.area-all[aria-pressed="true"]{border-color:var(--sky);background:#172b48;color:var(--ink)}.area-groups{display:flex;flex-direction:column;gap:4px;margin-top:8px}.area-group{border-bottom:1px solid rgba(151,178,220,.1);padding-bottom:4px}.area-group:last-child{border-bottom:0}.area-group>summary{display:flex;align-items:center;gap:7px;list-style:none;padding:8px 6px;cursor:pointer;font:700 11px var(--sans);color:var(--faint)}.area-group>summary::-webkit-details-marker{display:none}.area-group>summary::before{content:'›';font-size:18px;line-height:10px;color:var(--faint);transition:transform .18s var(--ease-out)}.area-group[open]>summary::before{transform:rotate(90deg)}.area-group__count{margin-left:auto;font:10px var(--mono);color:#6582aa}.area-group__body{display:flex;flex-direction:column;gap:2px;padding:0 0 5px}.area-btn{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;width:100%;border:0;border-radius:8px;padding:8px 7px;background:transparent;color:var(--dim);text-align:left;cursor:pointer;transition:background .16s var(--ease-out),color .16s var(--ease-out)}.area-btn:hover{background:rgba(133,185,245,.08);color:var(--ink)}.area-btn[aria-pressed="true"]{background:#193454;color:#fff}.area-btn__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:700}.area-btn__meta{display:flex;gap:4px;align-items:center;font:10px var(--mono);color:#7695bb}.area-btn[aria-pressed="true"] .area-btn__meta{color:#b7d7ff}.area-live-dot{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 7px rgba(103,212,161,.8)}
+  .utility-drawer{margin:0 0 12px;border:1px solid var(--border);border-radius:11px;background:rgba(17,30,53,.7);overflow:hidden}.utility-drawer>summary{display:flex;align-items:center;justify-content:space-between;list-style:none;padding:9px 12px;color:#b9c9df;font-size:11.5px;font-weight:700;cursor:pointer}.utility-drawer>summary::-webkit-details-marker{display:none}.utility-drawer>summary::before{content:'›';margin-right:7px;font-size:17px;color:#7895bc;transition:transform .18s var(--ease-out)}.utility-drawer>summary span{margin-right:auto}.utility-drawer>summary small{font-size:10px;color:#6f89ac;font-weight:500}.utility-drawer[open]>summary{border-bottom:1px solid var(--border)}.utility-drawer[open]>summary::before{transform:rotate(90deg)}.utility-drawer__body{padding:10px 12px}.utility-drawer__body .sched,.utility-drawer__body .prog{margin-bottom:10px}.utility-drawer__body .prog:last-child{margin-bottom:0}.result-pane{min-width:0}.result-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:1px 0 11px}.result-header h2{margin:0;font-size:15px;font-weight:900;letter-spacing:.01em}.result-header p{margin:2px 0 0;color:var(--faint);font-size:11px}.result-header .count{font-size:11px}.grid{grid-template-columns:minmax(330px,.88fr) minmax(360px,1.12fr);gap:18px}.list{gap:8px}.spot-card{position:relative;text-align:left;width:100%;overflow:hidden;padding:13px 14px 12px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(135deg,rgba(20,37,62,.98),rgba(12,24,43,.98));cursor:pointer;transition:border-color .18s var(--ease-out),background .18s var(--ease-out),transform .18s var(--ease-out),box-shadow .18s var(--ease-out)}.spot-card:hover{border-color:var(--border-strong);transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.14)}.spot-card[aria-selected="true"]{border-color:#83b7f0;background:linear-gradient(135deg,#1a3457,#122943);box-shadow:inset 3px 0 0 var(--sky)}.spot-card:focus-visible{outline:2px solid var(--sky);outline-offset:2px}.spot-card__top{display:flex;align-items:center;gap:6px}.job-badge,.node-badge{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:3px 6px;font-size:10px;font-weight:900;letter-spacing:.02em}.job-badge svg,.node-badge svg{width:12px;height:12px}.job-badge.min{color:#f0a16d;background:rgba(208,123,65,.14);border:1px solid rgba(208,123,65,.36)}.job-badge.btn{color:#a7dc89;background:rgba(123,178,85,.14);border:1px solid rgba(123,178,85,.36)}.node-badge{color:#b7c8e2;background:#0b1729;border:1px solid var(--border)}.node-badge.legendary{color:#f0ca73;background:rgba(231,178,92,.12);border-color:rgba(231,178,92,.36)}.node-badge.ephemeral{color:#bf9cff;background:rgba(167,126,255,.12);border-color:rgba(167,126,255,.36)}.spot-card .fav{margin-left:auto;padding:3px;color:#6e86a9}.spot-card__place{display:flex;align-items:center;gap:7px;margin-top:9px;color:#f1f6ff;min-width:0}.spot-card__place svg{width:15px;height:15px;color:var(--sky);flex:none}.spot-card__place strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spot-card__aeth{margin-left:22px;margin-top:2px;color:#8fa7c7;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spot-card__items{display:flex;align-items:center;gap:5px;margin:9px 0 10px;min-width:0}.spot-card__item{display:inline-flex;align-items:center;gap:4px;min-width:0;color:#c5d3e7;font-size:11px}.spot-card__item img{width:18px;height:18px;border-radius:4px;border:1px solid rgba(151,178,220,.2);flex:none}.spot-card__item b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spot-card__more{font:10px var(--mono);color:#7893b8;white-space:nowrap}.spot-card__foot{display:flex;align-items:center;gap:7px;padding-top:9px;border-top:1px solid rgba(151,178,220,.12)}.spot-card__time{display:flex;align-items:baseline;gap:5px;min-width:0}.spot-card__time svg{width:13px;height:13px;flex:none;color:#7893b8}.spot-card__time .tbig{font:700 13px var(--mono)}.spot-card__time .tlab{font-size:10px;color:#91a9c9}.spot-card__time .twin{font:10px var(--mono);color:#6f87aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.spot-card__coords{margin-left:auto;font:10px var(--mono);color:#6681a7;white-space:nowrap}.state-live .spot-card__time .tbig{color:var(--mint)}.state-soon .spot-card__time .tbig{color:var(--amber)}.state-far .spot-card__time .tbig{color:#83a1c8}.spot-card .bar{height:2px}.state-live .bar{background:var(--mint);box-shadow:0 0 9px rgba(103,212,161,.5)}
+  .detail{top:79px;border-radius:var(--radius);border-color:var(--border);background:linear-gradient(150deg,#14233c,#0d1a2e);padding:18px;box-shadow:0 16px 38px rgba(0,0,0,.24)}.detail .empty{height:360px;color:#6680a5}.d-head h2{display:flex;align-items:center;gap:8px;font-size:20px}.d-head h2 svg{width:19px;color:var(--sky)}.d-sub{font-family:var(--sans);font-size:11px;color:#9eb2cf;letter-spacing:0}.d-actions{gap:6px}.btn{border-color:var(--border);background:#0c182a;padding:7px 9px;font-size:11.5px}.btn:hover{border-color:var(--sky)}.d-eta{margin:13px 0;border-color:var(--border);background:#0a1628}.d-eta .num{font-size:23px}.meta{margin:12px 0}.meta .m{border-color:var(--border);background:#0a1628}.mapbox{border-color:var(--border);background:#0a1628}.mapbox .inner{padding-top:62%}.itemlist{border-color:var(--border);background:#0a1628}.irow{border-color:rgba(151,178,220,.12)}.iico{border-color:var(--border);background:#111f35}.sec-label{color:#9fc6fb}.prog,.sched{border-color:var(--border);background:#111e35;box-shadow:none}.prog h5,.sched h5{color:#9fc6fb;letter-spacing:.1em}.sched-grid{grid-template-columns:1fr}.sched .row{border-color:var(--border);background:#0a1628}.sched h5 svg,.prog h5 svg{width:15px;height:15px}
+  @media(max-width:1080px){.app-shell{grid-template-columns:225px minmax(0,1fr)}.grid{grid-template-columns:1fr}.detail{position:static}.area-rail{top:75px}.command-bar{grid-template-columns:minmax(180px,1fr) auto}.mode-groups{grid-column:1/-1;justify-content:space-between}.filter-popover{grid-template-columns:1fr 1fr}}
+  @media(max-width:760px){.mode-groups{grid-column:1/-1;overflow:auto}.mode-groups .quick-seg{flex:1;min-width:max-content}.sisternav{overflow:auto;white-space:nowrap}.sisternav a{font-size:10.5px}header{align-items:flex-start}.brand .glyph{width:32px;height:32px}.brand h1{font-size:16px}.brand .eyebrow{font-size:8px}.clock{display:none}.notifybtn{font-size:0;padding:8px}.notifybtn svg{width:16px;height:16px}.command-bar{grid-template-columns:1fr auto;gap:8px}.quick-seg{grid-column:1/-1;overflow:auto}.quick-seg button{flex:1;justify-content:center;white-space:nowrap}.filterbox{justify-self:end}.filter-count{display:none}.filter-popover{right:0;grid-template-columns:1fr;padding:10px}.app-shell{display:block}.area-rail{position:static;max-height:none;overflow:visible;margin-bottom:12px;padding:9px}.area-groups{max-height:208px;overflow:auto;padding-right:2px}.area-group>summary{padding:7px 5px}.area-btn{padding:7px}.result-header{margin-top:14px}.result-header h2{font-size:14px}.grid{gap:12px}.spot-card{padding:12px}.spot-card__place strong{font-size:13px}.spot-card__aeth{font-size:10.5px}.detail{padding:15px}.d-head{display:block}.d-actions{margin:10px 0 0}.mapbox .inner{padding-top:72%}.d-eta{padding:9px 11px}.d-eta .num{font-size:20px}}
+
+  /* ---------- v3: compact timetable ---------- */
+  .list:has(.spot-row){gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0b1729}
+  .spot-row{position:relative;display:grid;grid-template-columns:70px 42px minmax(0,1fr) auto 24px;align-items:center;gap:8px;min-height:43px;padding:5px 8px;border:0;border-top:1px solid rgba(151,178,220,.12);background:transparent;color:var(--ink);cursor:pointer;transition:background .14s var(--ease-out),box-shadow .14s var(--ease-out)}
+  .spot-row:first-child{border-top:0}.spot-row:hover{background:rgba(133,185,245,.08)}.spot-row[aria-selected="true"]{background:#173150;box-shadow:inset 3px 0 0 var(--sky)}.spot-row:focus-visible{z-index:1;outline:2px solid var(--sky);outline-offset:-2px}
+  .spot-row__time{display:flex;flex-direction:column;gap:1px;min-width:0;font-family:var(--mono);line-height:1.1}.spot-row__et{font-size:11px;font-weight:700;color:#c8d8ed}.spot-row__remain{font-size:9.5px;color:#7993b6;white-space:nowrap}.state-live .spot-row__et{color:var(--mint)}.state-soon .spot-row__et{color:var(--amber)}
+  .spot-row__job{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:#101e34}.spot-row__job svg{width:14px;height:14px}.spot-row__job.min{color:#eea36f}.spot-row__job.btn{color:#a7dc89}
+  .spot-row__main{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap}.spot-row__items{overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#e7eef9}.spot-row__area{flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;color:#738daf;font-size:10.5px}.spot-row__kind{font-family:var(--mono);font-size:9px;color:#8fa7c7;border:1px solid rgba(151,178,220,.16);border-radius:5px;padding:2px 4px;white-space:nowrap}.spot-row__fav{padding:3px!important;margin:0!important;color:#6e86a9}.spot-row__fav svg{width:14px;height:14px}.spot-row.state-live::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--mint);box-shadow:0 0 8px rgba(103,212,161,.6)}
+  .result-pane .grid:has(.spot-row){grid-template-columns:minmax(380px,.92fr) minmax(330px,1.08fr)}
+  @media(max-width:1080px){.result-pane .grid:has(.spot-row){grid-template-columns:1fr}.spot-row__area{max-width:45%}}
+  @media(max-width:640px){.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 22px;gap:6px;min-height:42px;padding:5px 7px}.spot-row__job{width:25px;height:25px}.spot-row__job svg{width:13px;height:13px}.spot-row__area,.spot-row__kind{display:none}.spot-row__items{font-size:11.5px}.spot-row__et{font-size:10.5px}.spot-row__remain{font-size:9px}}
 </style>
 </head>
 <body>
@@ -340,12 +365,7 @@
 </nav>
 <header>
   <div class="brand">
-    <div class="glyph"><svg viewBox="0 0 100 170" width="20" height="34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M42 2 C 22 2, 9 22, 9 50 C 9 70, 16 82, 26 90 C 21 96, 18 102, 21 107 C 32 102, 41 92, 43 80 C 49 68, 49 32, 42 2 Z" fill="#1a1300"/>
-      <rect x="48" y="22" width="34" height="52" rx="6" fill="#1a1300"/>
-      <rect x="58" y="74" width="20" height="90" rx="3" fill="#1a1300"/>
-      <rect x="66.5" y="78" width="2.6" height="82" fill="#a5791f"/>
-    </svg></div>
+    <div class="glyph" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="60" height="60" rx="12" fill="#E3B352"/><g fill="#0B162A"><rect x="29" y="23" width="6" height="32" rx="3"/><rect x="27" y="18" width="10" height="9" rx="2"/><path d="M22 19h5v7h-5c-1.7 0-3-1.3-3-3.5s1.3-3.5 3-3.5Z"/><path d="M37 18c6.2.1 12.3-2.3 17-7 2.8 8.9.9 18.4-4.9 25.6-3.2 4-7 7-11.1 9.1V27c4.7-.7 8.4-3 10.9-6.2-4 2-7.8 2.7-11.9 2.7V18Z"/></g></svg></div>
     <div class="txt">
       <div class="eyebrow">Eorzean Gathering Guide</div>
       <h1>エオルゼア採集図鑑</h1>
@@ -362,39 +382,66 @@
 </header>
 
 <div class="wrap">
-  <div class="toolbar">
-    <div class="seg" id="segClass" role="group" aria-label="クラス">
-      <button data-c="all" data-v="all" aria-pressed="true">全て</button>
-      <button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button>
-      <button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button>
+  <section class="command-bar" aria-label="採取場所の検索と絞り込み">
+    <label class="searchbox">
+      <span class="sr-only">アイテム名または採取場所を検索</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.2 4.2"/></svg>
+      <input type="search" id="fText" placeholder="アイテム名・採取場所で検索">
+    </label>
+    <div class="mode-groups">
+      <div class="quick-seg" id="segClass" role="group" aria-label="ジョブ">
+        <button data-c="all" data-v="all" aria-pressed="true">全て</button>
+        <button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button>
+        <button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button>
+      </div>
+      <div class="quick-seg" id="segView" role="group" aria-label="表示方法">
+        <button data-v="time" aria-pressed="true">現在</button>
+        <button data-v="catalog" aria-pressed="false">場所</button>
+        <button data-v="log" aria-pressed="false">手帳</button>
+      </div>
     </div>
-    <div class="seg" id="segView" role="group" aria-label="表示">
-      <button data-v="time" aria-pressed="true">時間順</button>
-      <button data-v="catalog" aria-pressed="false">図鑑順</button>
-      <button data-v="log" aria-pressed="false">採集手帳</button>
-    </div>
-    <select id="fType"><option value="all">全種別</option></select>
-    <select id="fArea"><option value="all">全エリア</option></select>
-    <select id="fPatch"><option value="all">全拡張</option></select>
-    <select id="fUse"><option value="all">全用途</option></select>
-    <input type="search" id="fText" placeholder="アイテム名で検索（逆引き）…">
-    <div class="spacer"></div>
-    <div class="count" id="count"></div>
-  </div>
-  <div id="wrapSched"></div>
-  <div id="wrapProgress"></div>
-  <div class="grid">
-    <div class="list" id="list"></div>
-    <aside class="detail" id="detail">
-      <div class="empty">← 左のポイントを選ぶと<br>取得物・座標・アチーブメント攻略を表示します</div>
+    <details class="filterbox">
+      <summary class="filter-trigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>絞り込み</summary>
+      <div class="filter-popover">
+        <label><span class="sr-only">種別</span><select id="fType"><option value="all">全種別</option></select></label>
+        <label><span class="sr-only">エリア</span><select id="fArea"><option value="all">全エリア</option></select></label>
+        <label><span class="sr-only">拡張</span><select id="fPatch"><option value="all">全拡張</option></select></label>
+        <label><span class="sr-only">用途</span><select id="fUse"><option value="all">全用途</option></select></label>
+      </div>
+    </details>
+  </section>
+
+  <div class="app-shell">
+    <aside class="area-rail" aria-label="採取エリア一覧">
+      <div class="area-rail__head"><div class="area-rail__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2v14l-4 2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg>採取場所</div><span class="area-rail__hint">AREA</span></div>
+      <button class="area-all" id="areaAll" aria-pressed="true"><span>すべてのエリア</span><span id="areaAllCount"></span></button>
+      <div class="area-groups" id="areaNav"></div>
     </aside>
+
+    <main class="result-pane">
+      <div class="result-header">
+        <div><h2 id="resultTitle">いまの採取場所</h2><p id="resultCaption">開いている場所を、採取可能な順に表示しています。</p></div>
+        <div class="count" id="count"></div>
+      </div>
+      <details class="utility-drawer">
+        <summary><span>個人メモと収集進捗</span><small>必要なときだけ開く</small></summary>
+        <div class="utility-drawer__body"><div id="wrapSched"></div><div id="wrapProgress"></div></div>
+      </details>
+      <div class="grid">
+        <div class="list" id="list"></div>
+        <aside class="detail" id="detail">
+          <div class="empty">場所を選ぶと、地図・座標・取得物を<br>まとめて確認できます</div>
+        </aside>
+      </div>
+    </main>
   </div>
 </div>
 
 <footer>
   本サイトは個人運営の<b>非公式ファンサイト</b>です。データは <b>FFXIV Teamcraft</b>（MIT）と
   <b>xivapi/ffxiv-datamining</b> のオープンデータを基に生成しています。<br>
-  ゲーム内データ・テキスト・名称の著作権は <b>© SQUARE ENIX CO., LTD. All Rights Reserved.</b> に帰属します。
+  ゲーム内データ・テキスト・名称の著作権は <b>© SQUARE ENIX CO., LTD. All Rights Reserved.</b> に帰属します。<br>
+  <b>© SQUARE ENIX</b><br>
   FINAL FANTASY XIV は株式会社スクウェア・エニックスの登録商標です。<br>
   スクウェア・エニックスの「FFXIV 著作物利用条件」に従い、日本国内向けの非営利運営です（広告・投げ銭・アフィリエイトは行いません）。当社から依頼があれば遅滞なく利用を中止します。
 </footer>
@@ -421,6 +468,7 @@ const DATA_URLS   = /*__URLS__*/null;
 function startApp(DB){
 const DATA = DB;
 const NODES = DATA.nodes;
+const NODES_BY_ID = new Map(NODES.map((n) => [n.id, n]));
 const LAB = DATA.meta.labels;
 const ACH = Object.fromEntries((DATA.achievements||[]).map(a => [a.id, a]));
 const ITEM2NODES = DATA.index.itemToNodes || {};
@@ -433,7 +481,7 @@ function eorzeaNow(){
   return {h,m,s,sod:h*3600+m*60+s};
 }
 const pad=n=>String(n).padStart(2,'0');
-const mmss=sec=>{sec=Math.max(0,Math.round(sec));return pad(Math.floor(sec/60))+':'+pad(sec%60)};
+const mmss=sec=>{sec=Math.max(0,Math.round(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`};
 function nodeTiming(windows,sod){
   let best=null;
   for(const [sh,eh] of windows){
@@ -451,17 +499,47 @@ function nodeTiming(windows,sod){
 }
 const winLabel=w=>`ET ${pad(w[0])}:00–${pad(w[1]%24)}:00`;
 const nodeTitle=n=>(n.items[0]&&n.items[0].name)||n.area||n.id;
+const timingClass=t=>t.state==='live'?'state-live':(t.real<600?'state-soon':'state-far');
+const timingLabel=t=>t.state==='live'?'採取可 残り':'まで';
+const timingFill=t=>t.state==='live'?100:Math.max(2,100-(t.real/600*100));
+function detailTimingHtml(t,windows){
+  const sc=timingClass(t);
+  const message=t.state==='live'
+    ?'<b>いま採取できます</b>（枠が閉じるまで）'
+    :`次の枠まで（現実 約${Math.round(t.real/60)}分）`;
+  return `<div class="d-eta ${sc}" data-detail-timing data-state="${t.state}">
+    <div class="num" data-detail-countdown>${mmss(t.real)}</div>
+    <div class="meta" data-detail-message>${message}
+      <div class="wchips" data-detail-windows>${(windows||[t.win]).map(w=>`<span class="wchip">${winLabel(w)}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
 
 /* ---- state ---- */
-function loadObtained(){
-  try{ return new Set(JSON.parse(localStorage.getItem('gh_obtained')||'[]')); }
-  catch(e){ return new Set(); }
+const PREFS_KEY='eorzean_gathering_preferences_v1';
+function readStoredArray(key){
+  try{const value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[];}
+  catch(e){return [];}
 }
-function saveObtained(){
-  try{ localStorage.setItem('gh_obtained', JSON.stringify([...state.obtained])); }catch(e){}
+function loadPreferences(){
+  try{
+    const value=JSON.parse(localStorage.getItem(PREFS_KEY)||'{}');
+    return {
+      // 旧バージョンの取得済みデータを初回のみ引き継ぐ。
+      obtained:Array.isArray(value.obtained)?value.obtained:readStoredArray('gh_obtained'),
+      favs:Array.isArray(value.favs)?value.favs:[],
+      alarms:Array.isArray(value.alarms)?value.alarms:[],
+    };
+  }catch(e){return {obtained:readStoredArray('gh_obtained'),favs:[],alarms:[]};}
 }
+function savePreferences(){
+  try{localStorage.setItem(PREFS_KEY,JSON.stringify({
+    obtained:[...state.obtained],favs:[...state.favs],alarms:[...state.alarms],
+  }));}catch(e){}
+}
+const savedPreferences=loadPreferences();
 const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,viewMode:'time',
-  favs:new Set(),alarms:new Set(),notified:new Set(),obtained:loadObtained()};
+  favs:new Set(savedPreferences.favs),alarms:new Set(savedPreferences.alarms),notified:new Set(),obtained:new Set(savedPreferences.obtained)};
 
 (function initFilters(){
   const areaMinPatch=new Map();
@@ -494,6 +572,10 @@ const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selec
 })();
 
 const ICON={
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2v14l-4 2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg>',
+  pick:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 5 5 5"/><path d="M12 7 5 14"/><path d="m8 11 5 5"/><path d="m4 20 10-10"/><path d="m3 5 6-2 4 4-2 6"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 8 4 16c0 2 1 4 3 4 8 0 13-7 13-16Z"/><path d="M4 20c3-5 7-8 12-10"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>',
   pin:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
   star:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.6 5.6 6.1.7-4.5 4.1 1.2 6L12 16.9 6.6 19.5l1.2-6L3.3 9.3l6.1-.7Z"/></svg>',
   starO:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 2.6 5.6 6.1.7-4.5 4.1 1.2 6L12 16.9 6.6 19.5l1.2-6L3.3 9.3l6.1-.7Z"/></svg>',
@@ -503,13 +585,16 @@ const ICON={
 };
 
 const listEl=document.getElementById('list'),detailEl=document.getElementById('detail'),countEl=document.getElementById('count');
+const areaNavEl=document.getElementById('areaNav'),areaAllEl=document.getElementById('areaAll'),areaAllCountEl=document.getElementById('areaAllCount');
+const resultTitleEl=document.getElementById('resultTitle'),resultCaptionEl=document.getElementById('resultCaption');
+const EXPANSION_NAMES={2:'新生エオルゼア',3:'蒼天のイシュガルド',4:'紅蓮のリベレーター',5:'漆黒のヴィランズ',6:'暁月のフィナーレ',7:'黄金のレガシー'};
 
-function filtered(){
+function filtered(skipArea=false){
   const q=state.text.toLowerCase();
   return NODES.filter(n=>{
     if(state.cls!=='all'&&n.class!==state.cls)return false;
     if(state.type!=='all'&&n.node_type!==state.type)return false;
-    if(state.area!=='all'&&n.area!==state.area)return false;
+    if(!skipArea&&state.area!=='all'&&n.area!==state.area)return false;
     if(state.patch!=='all'){
       if(state.patch.endsWith('.x')){
         if(Math.floor(parseFloat(n.patch))!==parseInt(state.patch))return false;
@@ -522,6 +607,28 @@ function filtered(){
 }
 
 const catOpen=new Set(); // 開いているバージョン/マップの折りたたみ状態を再描画をまたいで保持
+function renderAreaNav(){
+  const sod=eorzeaNow().sod;
+  const groups=new Map();
+  filtered(true).forEach(n=>{
+    const major=Math.floor(parseFloat(n.patch))||0;
+    if(!groups.has(major))groups.set(major,new Map());
+    const byArea=groups.get(major);
+    if(!byArea.has(n.area))byArea.set(n.area,[]);
+    byArea.get(n.area).push(n);
+  });
+  const majors=[...groups.keys()].sort((a,b)=>a-b);
+  areaAllCountEl.textContent=`${filtered(true).length}件`;
+  areaAllEl.setAttribute('aria-pressed',String(state.area==='all'));
+  areaNavEl.innerHTML=majors.map(major=>{
+    const areas=[...groups.get(major).entries()].sort((a,b)=>a[0].localeCompare(b[0],'ja'));
+    const isOpen=state.area!=='all'&&areas.some(([area])=>area===state.area) || major===majors.at(-1);
+    return `<details class="area-group" ${isOpen?'open':''}><summary>${EXPANSION_NAMES[major]||`Patch ${major}.x`}<span class="area-group__count">${areas.length}</span></summary><div class="area-group__body">${areas.map(([area,nodes])=>{
+      const live=nodes.some(n=>nodeTiming(n.windows,sod).state==='live');
+      return `<button class="area-btn" data-area="${area}" aria-pressed="${state.area===area}"><span class="area-btn__name">${area}</span><span class="area-btn__meta">${live?'<i class="area-live-dot"></i>':''}${nodes.length}</span></button>`;
+    }).join('')}</div></details>`;
+  }).join('');
+}
 function renderCatalog(){
   const sod=eorzeaNow().sod;
   const nodes=filtered();
@@ -624,9 +731,19 @@ function renderLog(){
   }).join('');
 }
 
+function jobBadge(n){
+  const isMin=n.class==='MIN';
+  return `<span class="job-badge ${isMin?'min':'btn'}">${isMin?ICON.pick:ICON.leaf}${isMin?'採掘':'園芸'} Lv${n.level}</span>`;
+}
+function nodeBadge(n){
+  const label=(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','');
+  return `<span class="node-badge ${n.node_type}">${label}</span>`;
+}
+const compactTimingLabel=t=>t.state==='live'?'残り':'あと';
+const compactWindowLabel=w=>`ET ${pad(w[0])}`;
 function renderList(){
-  if(state.viewMode==='catalog'){ renderCatalog(); return; }
-  if(state.viewMode==='log'){ renderLog(); return; }
+  if(state.viewMode==='catalog'){ resultTitleEl.textContent='場所から探す';resultCaptionEl.textContent='拡張とエリアから、目的の採取場所を探せます。';renderCatalog();return; }
+  if(state.viewMode==='log'){ resultTitleEl.textContent='採集手帳';resultCaptionEl.textContent='道具とレベル帯ごとの収集進捗を確認できます。';renderLog();return; }
   const sod=eorzeaNow().sod;
   const rows=filtered().map(n=>({n,t:nodeTiming(n.windows,sod)}));
   rows.sort((a,b)=>{
@@ -636,27 +753,41 @@ function renderList(){
     if(sa!==sb)return sa-sb;
     return a.t.real-b.t.real;
   });
+  resultTitleEl.textContent=state.area==='all'?'いまの採取場所':state.area;
+  resultCaptionEl.textContent=state.area==='all'?'ET時刻・残り時間・取得物を一覧で比較できます。':'選択中のエリアにある採取場所を時刻順に表示しています。';
   countEl.textContent=`${rows.length} 件 / 全${NODES.length}`;
   listEl.innerHTML=rows.map(({n,t})=>{
-    const sc=t.state==='live'?'state-live':(t.real<600?'state-soon':'state-far');
-    const fill=t.state==='live'?100:Math.max(2,100-(t.real/600*100));
-    const clsTag=n.class==='MIN'?'<span class="tag tmin">採掘</span>':'<span class="tag tbtn">園芸</span>';
-    const itemChips=n.items.map(i=>`<span class="ichip${i.collectable?' coll':''}${i.hidden?' hidden':''}">${i.icon?`<img src="${i.icon}" alt="" loading="lazy" onerror="this.remove()">`:''}${i.hidden?'<i>HIDDEN</i> ':''}${i.name}${i.collectable?' ◆':''}</span>`).join('');
-    return `<div class="card ${sc}" data-id="${n.id}" aria-selected="${state.selected===n.id}" role="button" tabindex="0">
-      <div class="top">${clsTag}<span class="tag lv">Lv${n.level}</span>
-        <span class="tbig">${mmss(t.real)}</span><span class="tlab">${t.state==='live'?'採取可 残り':'まで'}</span><span class="twin">${winLabel(t.win)}</span></div>
-      <h3>${ICON.pin}${n.area} ・ ${n.aetheryte}<span class="h3-tail"><span class="kind">${LAB.node_type[n.node_type]}の採取場</span>${t.state==='live'?'<span class="livepulse"></span>':''}<button class="fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="お気に入り">${state.favs.has(n.id)?ICON.star:ICON.starO}</button></span></h3>
-      <div class="items-row">${itemChips}</div>
-      <div class="bar" style="width:${fill}%"></div>
+    const sc=timingClass(t),isMin=n.class==='MIN';
+    const names=n.items.filter(i=>!i.hidden).map(i=>i.name+(i.collectable?' ◆':'')).join(' ／ ')||'取得物を確認';
+    const kind=(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','');
+    return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" role="button" tabindex="0" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
+      <div class="spot-row__time"><span class="spot-row__et" data-timing-window>${compactWindowLabel(t.win)}</span><span class="spot-row__remain"><span data-countdown>${mmss(t.real)}</span> <span data-timing-label>${compactTimingLabel(t)}</span></span></div>
+      <span class="spot-row__job ${isMin?'min':'btn'}" aria-label="${isMin?'採掘師':'園芸師'} Lv${n.level}">${isMin?ICON.pick:ICON.leaf}</span>
+      <div class="spot-row__main"><span class="spot-row__items">${names}</span><span class="spot-row__area">${n.area}</span></div>
+      <span class="spot-row__kind">${kind}</span>
+      <button class="fav spot-row__fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="${state.favs.has(n.id)?'お気に入りを解除':'お気に入りに追加'}">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
     </div>`;
   }).join('');
 }
 
+function refreshTimeList(sod){
+  if(state.viewMode!=='time')return;
+  for(const card of listEl.querySelectorAll('.spot-row[data-id]')){
+    const n=NODES_BY_ID.get(card.dataset.id);if(!n)continue;
+    const t=nodeTiming(n.windows,sod),sc=timingClass(t);
+    // 採取可／待機の切替時だけ並び替えを含む全体描画を行う。
+    if(card.dataset.timingState!==t.state){renderAreaNav();renderList();return;}
+    card.classList.remove('state-live','state-soon','state-far');card.classList.add(sc);
+    card.querySelector('[data-countdown]').textContent=mmss(t.real);
+    card.querySelector('[data-timing-label]').textContent=compactTimingLabel(t);
+    card.querySelector('[data-timing-window]').textContent=compactWindowLabel(t.win);
+  }
+}
+
 function renderDetail(){
-  const n=NODES.find(x=>x.id===state.selected);
+  const n=NODES_BY_ID.get(state.selected);
   if(!n){detailEl.innerHTML='<div class="empty">← 左のポイントを選ぶと<br>取得物・座標・アチーブメント攻略を表示します</div>';return;}
   const t=nodeTiming(n.windows,eorzeaNow().sod);
-  const sc=t.state==='live'?'state-live':(t.real<600?'state-soon':'state-far');
   const achs=(n.achievements||[]).map(id=>ACH[id]).filter(Boolean);
   const subBits=[LAB.class[n.class],`Lv${n.level}`,`${LAB.node_type[n.node_type]}の採取場`];
   if(n.patch)subBits.push('Patch '+n.patch);
@@ -665,19 +796,15 @@ function renderDetail(){
   const others=head?(ITEM2NODES[head.id]||[]).filter(id=>id!==n.id):[];
   detailEl.innerHTML=`
     <div class="d-head">
-      <div><h2>${nodeTitle(n)}</h2>
-        <div class="d-sub">${subBits.join(' ／ ')}${n.folklore?' ／ '+n.folklore:''}</div></div>
+      <div><h2>${ICON.pin}${n.area}</h2>
+        <div class="d-sub">${n.aetheryte} ・ X:${n.x} Y:${n.y} ／ ${subBits.join(' ／ ')}${n.folklore?' ／ '+n.folklore:''}</div></div>
       <div class="d-actions">
         <button class="btn ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}">${ICON.starO}お気に入り</button>
         <button class="btn ${state.alarms.has(n.id)?'on':''}" data-alarm="${n.id}">${ICON.bell}アラーム</button>
       </div>
     </div>
-    <div class="d-eta ${sc}">
-      <div class="num">${mmss(t.real)}</div>
-      <div class="meta">${t.state==='live'?'<b>いま採取できます</b>（枠が閉じるまで）':`次の枠まで（現実 約${Math.round(t.real/60)}分）`}
-        <div class="wchips">${n.windows.map(w=>`<span class="wchip">${winLabel(w)}</span>`).join('')}</div>
-      </div>
-    </div>
+    ${detailTimingHtml(t,n.windows)}
+    <div class="sec-label">採取場所</div>
     ${n.map?`<div class="mapbox"><div class="inner">
         <img src="${n.map.image}" alt="" loading="lazy"
           onerror="this.closest('.mapbox').innerHTML='<div class=&quot;mapfail&quot;>地図を読み込めませんでした</div>'">
@@ -691,6 +818,7 @@ function renderDetail(){
       ${n.use.length?`<span class="m"><i>USE</i>${n.use.map(u=>(LAB.use&&LAB.use[u])||u).join('・')}</span>`:''}
       ${n.folklore?`<span class="m"><i>伝承録</i>${n.folklore}</span>`:''}
     </div>
+    <div class="sec-label">この場所で採れるもの</div>
     <div class="itemlist">${(n.slots||n.items.filter(i=>!i.hidden)).map((s,idx)=>s?`
       <div class="irow">
         <span class="islot">${idx+1}</span>
@@ -716,18 +844,35 @@ function renderDetail(){
   `;
 }
 
+function refreshDetailTiming(sod){
+  if(!state.selected)return;
+  const n=NODES_BY_ID.get(state.selected),panel=detailEl.querySelector('[data-detail-timing]');
+  if(!n||!panel)return;
+  panel.outerHTML=detailTimingHtml(nodeTiming(n.windows,sod),n.windows);
+}
+
 function renderSchedule(){
   const wrap=document.getElementById('wrapSched');
   const sod=eorzeaNow().sod;
-  const items=[...state.alarms].map(id=>{const n=NODES.find(x=>x.id===id);return {n,t:nodeTiming(n.windows,sod)};})
+  const items=[...state.alarms].map(id=>{const n=NODES_BY_ID.get(id);return n?{n,t:nodeTiming(n.windows,sod)}:null;}).filter(Boolean)
     .sort((a,b)=>(a.t.state==='live'?0:1)-(b.t.state==='live'?0:1)||a.t.real-b.t.real);
   wrap.innerHTML=`<div class="sched">
-    <h5>⏰ My Schedule<span class="cnt">${items.length}</span></h5>
-    ${items.length?`<div class="sched-grid">${items.map(({n,t})=>`<div class="row${t.state==='live'?' live':''}">
-        <span class="t">${t.state==='live'?'採取可':mmss(t.real)}</span>
+    <h5>${ICON.bell} マイスケジュール<span class="cnt">${items.length}</span></h5>
+    ${items.length?`<div class="sched-grid">${items.map(({n,t})=>`<div class="row${t.state==='live'?' live':''}" data-schedule-id="${n.id}" data-schedule-state="${t.state}">
+        <span class="t" data-schedule-countdown>${t.state==='live'?'採取可':mmss(t.real)}</span>
         <span class="nm">${n.items[0]?.name||n.area}<i>${n.area}</i></span>
         <button data-alarm="${n.id}" title="解除">×</button></div>`).join('')}</div>`
     :'<div class="empty2">気になるポイントの詳細で「アラーム」を押すと、ここに追加され、採取可能になった瞬間に通知します。</div>'}</div>`;
+}
+
+function refreshScheduleTiming(sod){
+  for(const row of document.querySelectorAll('[data-schedule-id]')){
+    const n=NODES_BY_ID.get(row.dataset.scheduleId);if(!n)continue;
+    const t=nodeTiming(n.windows,sod);
+    // 採取可への切替時は表示順も更新する。
+    if(row.dataset.scheduleState!==t.state){renderSchedule();return;}
+    row.querySelector('[data-schedule-countdown]').textContent=t.state==='live'?'採取可':mmss(t.real);
+  }
 }
 
 /* アチーブメントの対象アイテムIDを解決（node/item/zoneのリンクから） */
@@ -769,22 +914,25 @@ function renderProgress(){
   }).join('');
 
   wrap.innerHTML=`<div class="prog">
-    <h5>📋 収集進捗</h5>
+    <h5>${ICON.check} 収集進捗</h5>
     ${classRows}
     ${achRows?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">${achRows}</div>`:''}
   </div>`;
 }
 
+function refreshViews(){renderAreaNav();renderList();}
 document.getElementById('segClass').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
-  state.cls=b.dataset.v;renderList();
+  state.cls=b.dataset.v;refreshViews();
 });
-document.getElementById('fType').addEventListener('change',e=>{state.type=e.target.value;renderList();});
-document.getElementById('fArea').addEventListener('change',e=>{state.area=e.target.value;renderList();});
-document.getElementById('fPatch').addEventListener('change',e=>{state.patch=e.target.value;renderList();});
-document.getElementById('fUse').addEventListener('change',e=>{state.use=e.target.value;renderList();});
-document.getElementById('fText').addEventListener('input',e=>{state.text=e.target.value;renderList();});
+document.getElementById('fType').addEventListener('change',e=>{state.type=e.target.value;refreshViews();});
+document.getElementById('fArea').addEventListener('change',e=>{state.area=e.target.value;refreshViews();});
+document.getElementById('fPatch').addEventListener('change',e=>{state.patch=e.target.value;refreshViews();});
+document.getElementById('fUse').addEventListener('change',e=>{state.use=e.target.value;refreshViews();});
+document.getElementById('fText').addEventListener('input',e=>{state.text=e.target.value;refreshViews();});
+areaAllEl.addEventListener('click',()=>{state.area='all';document.getElementById('fArea').value='all';refreshViews();});
+areaNavEl.addEventListener('click',e=>{const b=e.target.closest('[data-area]');if(!b)return;state.area=b.dataset.area;document.getElementById('fArea').value=state.area;refreshViews();});
 document.getElementById('segView').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
@@ -798,21 +946,21 @@ listEl.addEventListener('toggle',e=>{
 
 document.addEventListener('click',e=>{
   const fav=e.target.closest('[data-fav]');
-  if(fav){e.stopPropagation();const id=fav.dataset.fav;state.favs.has(id)?state.favs.delete(id):state.favs.add(id);renderList();if(state.selected===id)renderDetail();return;}
+  if(fav){e.stopPropagation();const id=fav.dataset.fav;state.favs.has(id)?state.favs.delete(id):state.favs.add(id);savePreferences();renderList();if(state.selected===id)renderDetail();return;}
   const al=e.target.closest('[data-alarm]');
-  if(al){const id=al.dataset.alarm;state.alarms.has(id)?state.alarms.delete(id):state.alarms.add(id);renderDetail();renderSchedule();toast(state.alarms.has(id)?'アラームを登録しました':'アラームを解除しました');return;}
+  if(al){const id=al.dataset.alarm;state.alarms.has(id)?state.alarms.delete(id):state.alarms.add(id);savePreferences();renderDetail();renderSchedule();toast(state.alarms.has(id)?'アラームを登録しました':'アラームを解除しました');return;}
   const obt=e.target.closest('[data-obtain]');
-  if(obt){e.stopPropagation();const id=obt.dataset.obtain;state.obtained.has(id)?state.obtained.delete(id):state.obtained.add(id);saveObtained();renderDetail();renderProgress();if(state.viewMode==='catalog')renderList();return;}
+  if(obt){e.stopPropagation();const id=obt.dataset.obtain;state.obtained.has(id)?state.obtained.delete(id):state.obtained.add(id);savePreferences();renderDetail();renderProgress();if(state.viewMode==='catalog')renderList();return;}
   const catNode=e.target.closest('.cat-node');
   if(catNode){state.selected=catNode.dataset.id;renderList();renderDetail();return;}
-  const card=e.target.closest('.card');
+  const card=e.target.closest('.spot-row');
   if(card){state.selected=card.dataset.id;renderList();renderDetail();}
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
   const catNode=e.target.closest('.cat-node');
   if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderList();renderDetail();return;}
-  const card=e.target.closest('.card');
+  const card=e.target.closest('.spot-row');
   if(!card)return;
   e.preventDefault();
   state.selected=card.dataset.id;renderList();renderDetail();
@@ -854,15 +1002,14 @@ document.getElementById('notifyToggle').addEventListener('click',async e=>{
   e.currentTarget.classList.toggle('on',notify.on);
 });
 
-function tickClocks(){
-  const et=eorzeaNow(),lt=new Date();
+function tickClocks(et=eorzeaNow()){
+  const lt=new Date();
   document.getElementById('etClock').textContent=`${pad(et.h)}:${pad(et.m)}`;
   document.getElementById('ltClock').textContent=`${pad(lt.getHours())}:${pad(lt.getMinutes())}`;
 }
-function checkAlarms(){
-  const sod=eorzeaNow().sod;
+function checkAlarms(sod=eorzeaNow().sod){
   state.alarms.forEach(id=>{
-    const n=NODES.find(x=>x.id===id);const t=nodeTiming(n.windows,sod);
+    const n=NODES_BY_ID.get(id);if(!n)return;const t=nodeTiming(n.windows,sod);
     if(t.state==='live'&&!state.notified.has(id)){
       state.notified.add(id);
       toast(`「${nodeTitle(n)}」が採取可能になりました`);
@@ -871,9 +1018,18 @@ function checkAlarms(){
     if(t.state!=='live')state.notified.delete(id);
   });
 }
-renderList();renderDetail();renderSchedule();renderProgress();tickClocks();
-setInterval(tickClocks,1000);
-setInterval(()=>{renderList();if(state.selected)renderDetail();renderSchedule();checkAlarms();},1000);
+renderAreaNav();renderList();renderDetail();renderSchedule();renderProgress();
+function tick(){
+  const et=eorzeaNow();
+  tickClocks(et);
+  refreshTimeList(et.sod);
+  refreshDetailTiming(et.sod);
+  refreshScheduleTiming(et.sod);
+  checkAlarms(et.sod);
+  if(et.s===0)renderAreaNav();
+}
+tick();
+setInterval(tick,1000);
 
 }
 </script>

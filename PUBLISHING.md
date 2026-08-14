@@ -13,7 +13,7 @@ DNS レコードも証明書も自動で付く。費用ゼロ・追加のドメ�
 ```
 GitHub リポジトリ ──push──▶ Cloudflare Pages が自動ビルド・公開
                             └─ saisyu.eorzeanfishing.com（サブドメイン）
-GitHub Actions ──毎日──▶ 上流データを取り直して push（＝再ビルドのきっかけ）
+GitHub Actions ──毎日──▶ 上流データを検証 ──POST──▶ Deploy Hook ──▶ Cloudflare Pages が再ビルド
 ```
 
 釣り図鑑と別リポジトリ・別 Pages プロジェクトにする。親ドメインは共有し、
@@ -37,7 +37,7 @@ git push -u origin main
 ```
 
 > `dist/` と `tools/.cache/` は `.gitignore` 済み。ビルド結果とキャッシュは毎回作り直すので
-> リポジトリに入れない。`data/achievement-links.json` は入れる（手動データ）。
+> リポジトリに入れない。`data/achievement-links.json` と `app/static/ogp.png` は入れる（手動データとSNS共有画像）。
 
 ---
 
@@ -85,11 +85,17 @@ git push -u origin main
 
 ---
 
-## 手順5：自動更新の確認
+## 手順5：日次更新用のDeploy Hookを設定する
 
-`.github/workflows/build.yml` が毎日正午（JST）に走り、上流データを取り直して push する。
-Cloudflare Pages がその push を拾って再ビルドするので、放っておけば最新に追従する。
-パッチ直後など待てないときは **Actions タブ → Run workflow** で手動実行。
+Cloudflare PagesのDeploy Hookは、リポジトリ外で保護すべき**秘密URL**です。GitHubのソースには書かず、ActionsのSecretとして登録します。
+
+1. Cloudflare Dashboard → **Workers & Pages** → 対象プロジェクト → **Settings** → **Builds** → **Add deploy hook** を開く
+2. 名前を `github-daily-refresh`、対象ブランチを `main` にして作成し、表示されたURLをコピーする
+3. GitHub リポジトリ → **Settings** → **Secrets and variables** → **Actions** → **New repository secret** を開く
+4. 名前を `CLOUDFLARE_PAGES_DEPLOY_HOOK`、値をコピーしたURLとして保存する
+5. GitHub Actionsで **ビルドと公開** → **Run workflow** を実行し、Cloudflare PagesのDeploymentsにDeploy Hook起点の新しいビルドが出ることを確認する
+
+以後、ワークフローは毎日正午（JST）に上流データを取り直してビルド検証し、成功時だけDeploy HookへPOSTします。Cloudflare Pagesが`main`ブランチの最新ソースを再ビルドするため、データ更新を公開サイトへ反映できます。パッチ直後など待てないときも、**Actions タブ → Run workflow** で同じ処理を手動実行できます。
 
 ---
 

@@ -1,16 +1,17 @@
 name: ビルドと公開
 
 on:
-  # 毎日正午（JST）に上流データを取り直す。パッチで採取ポイントが増減しても追従する。
+  # 毎日正午（JST）に上流データを取り直し、Cloudflare Pagesの本番ビルドを起動する。
   schedule:
     - cron: '0 3 * * *'
-  # 手動実行。パッチ直後はこれを押すのが早い
+  # パッチ直後などに、上流データの確認とCloudflare Pagesの本番ビルドを手動で起動する。
   workflow_dispatch:
+  # 通常のソース更新時はCloudflareのGit連携がmainブランチを自動デプロイする。
   push:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -22,8 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # リポジトリの Settings → Secrets and variables → Actions → Variables で SITE_URL を設定する。
-      # 未設定でもビルドは通る（OGP/canonical が既定ドメインになるだけ）。
+      # GitHub Variables の SITE_URL。未設定でもビルドは通るが、本番URLを必ず設定すること。
       SITE_URL: ${{ vars.SITE_URL }}
     steps:
       - uses: actions/checkout@v4
@@ -33,10 +33,25 @@ jobs:
       - name: サイトを生成（上流データを取り直す）
         run: node tools/build.mjs --refresh
 
-      # 生成物はリポジトリに置かない（毎ビルドで作り直す）ので、コミットは不要。
-      # 日次のスケジュール実行そのものが再ビルドのきっかけになる。
+      # schedule / workflow_dispatch のときだけ、Cloudflare PagesのGit連携ビルドを起動する。
+      # URLは認証不要の秘密情報のため、GitHub Actions Secretとしてのみ保存する。
+      - name: Cloudflare Pages の本番ビルドを起動
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          CLOUDFLARE_PAGES_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$CLOUDFLARE_PAGES_DEPLOY_HOOK" ]; then
+            echo "CLOUDFLARE_PAGES_DEPLOY_HOOK が未設定です。GitHub Actions の Secret に登録してください。" >&2
+            exit 1
+          fi
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 \
+            --request POST "$CLOUDFLARE_PAGES_DEPLOY_HOOK"
+          echo "Cloudflare Pages の本番ビルドを起動しました。"
 
-      # GitHub Pages で公開する場合のみ。Cloudflare Pages を使うなら不要。
+      # 生成物はリポジトリに置かない。Cloudflare Pagesはデプロイフックで
+      # mainブランチの最新ソースを再ビルドする。
+
+      # GitHub Pages を選ぶ場合のみ、生成物をGitHub Pagesへデプロイする。
       - uses: actions/configure-pages@v5
         if: vars.DEPLOY_GITHUB_PAGES == 'true'
       - uses: actions/upload-pages-artifact@v3
