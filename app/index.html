@@ -218,6 +218,8 @@
   .ilv{flex:none;font-family:var(--mono);font-size:11px;color:var(--faint)}
   .irow.hidden{background:rgba(123,178,85,.05)}
   .irow.hidden .ilv{color:var(--btn)}
+  .irow.empty .inm{color:var(--faint);opacity:.5}
+  .itemlist.hiddenlist{margin-top:10px;border-color:rgba(123,178,85,.3)}
 
   .sec-label{
     font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--gold);
@@ -484,13 +486,21 @@ function renderDetail(){
       ${n.use.length?`<dt>USE</dt><dd class="chips">${n.use.map(u=>`<span class="chip use">${(LAB.use&&LAB.use[u])||u}</span>`).join('')}</dd>`:''}
       ${n.folklore?`<dt>伝承録</dt><dd>${n.folklore}</dd>`:''}
     </dl>
-    <div class="itemlist">${n.items.map(i=>`
-      <div class="irow${i.hidden?' hidden':''}">
-        ${i.icon?`<img class="iico" src="${i.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">`:'<span class="iico ph"></span>'}
-        <span class="inm">${i.hidden?'<b>HIDDEN</b> ':''}${i.name}${i.collectable?' ◆':''}</span>
-        <span class="ilv">Lv${n.level}${i.hidden?'★'.repeat(i.stars):''}</span>
-      </div>`).join('')}
+    <div class="itemlist">${(n.slots||n.items.filter(i=>!i.hidden)).map((s)=>s?`
+      <div class="irow">
+        <img class="iico" src="${s.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">
+        <span class="inm">${s.name}${s.collectable?' ◆':''}</span>
+        <span class="ilv">Lv${n.level}</span>
+      </div>`:`
+      <div class="irow empty"><span class="iico ph"></span><span class="inm">-</span></div>`).join('')}
     </div>
+    ${n.items.some(i=>i.hidden)?`<div class="itemlist hiddenlist">${n.items.filter(i=>i.hidden).map(i=>`
+      <div class="irow hidden">
+        ${i.icon?`<img class="iico" src="${i.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">`:'<span class="iico ph"></span>'}
+        <span class="inm"><b>HIDDEN</b> ${i.name}${i.collectable?' ◆':''}</span>
+        <span class="ilv">Lv${n.level}${'★'.repeat(i.stars)}</span>
+      </div>`).join('')}
+    </div>`:''}
     ${others.length?`<div class="note">「${head.name}」は他 ${others.length} か所でも採取可能（逆引き）</div>`:''}
     ${achs.length?`<div class="sec-label">Achievement Guide</div>${achs.map(a=>`
       <div class="ach"><h4>${ICON.medal}${a.name}</h4>

@@ -64,6 +64,7 @@ data/achievement-links.json  唯一の手動データ：アチーブメントの
 | 地図画像・座標変換 | Teamcraft `maps.json`（XIVAPI v2アセット配信） | ノードの`map`IDから画像URLと`size_factor`を解決。座標をマップ画像上の%位置に変換 |
 | アチーブメント名称・条件文 | xivapi/ffxiv-datamining `ja/Achievement.csv` | 採集系を名称で絞り、`Name`/`Description` を取得 |
 | アイテムアイコン | xivapi/ffxiv-datamining `ja/Item.csv`（`Icon`列）→ XIVAPI v2アセット配信 | アイコンIDから `ui/icon/xxx000/xxxNNN.tex` のパスを組み立てて画像URL化 |
+| 採取枠の位置（空き枠含む8枠） | xivapi/ffxiv-datamining `en/GatheringPointBase.csv`＋`en/GatheringItem.csv` | ノードの`base`IDで`Item[0]`〜`Item[7]`を解決。Teamcraft側の`items`との突合で全225ノード完全一致を確認済み |
 
 **唯一の手動データ**は `data/achievement-links.json`。アチーブメントの名称・条件文は自動で入るので、
 ここには「どのノード/エリア/アイテムに紐づくか（link）」と「攻略メモ（tip）」だけを書く。

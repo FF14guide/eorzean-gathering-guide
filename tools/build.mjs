@@ -47,6 +47,8 @@ const SOURCES = {
   'patch-names.json':      `${TC}/patch-names.json`,
   'Achievement_ja.csv':    `${DM}/ja/Achievement.csv`,
   'Item_ja.csv':           `${DM}/ja/Item.csv`,
+  'GatheringPointBase.csv': `${DM}/en/GatheringPointBase.csv`,
+  'GatheringItem.csv':      `${DM}/en/GatheringItem.csv`,
 };
 
 // 採集系アチーブメントを名称で絞る語彙（DoL のみ拾う）
@@ -156,6 +158,25 @@ async function main() {
     return `https://v2.xivapi.com/api/asset?path=ui/icon/${folder}/${file}.tex&format=png`;
   };
 
+  // ─── 採取枠の位置（ゲーム本来の8枠構造） ───
+  // GatheringPointBase.Item[0..7] は GatheringItem 行への参照（0=空き枠）。
+  // GatheringItem.Item が実アイテムID。位置(枠番号)を保持したまま復元する。
+  const gpBase = new Map(parseCsv(raw['GatheringPointBase.csv']).map((r) => [r['#'], r]));
+  const gItem  = new Map(parseCsv(raw['GatheringItem.csv']).map((r) => [r['#'], r]));
+  const resolveSlots = (baseId) => {
+    const b = gpBase.get(String(baseId));
+    if (!b) return null;
+    const slots = [];
+    for (let i = 0; i < 8; i++) {
+      const giId = b[`Item[${i}]`];
+      if (!giId || giId === '0') { slots.push(null); continue; }
+      const gi = gItem.get(giId);
+      const itemId = gi?.Item;
+      slots.push(itemId && itemId !== '0' ? parseInt(itemId, 10) : null);
+    }
+    return slots;
+  };
+
   // ─── ノード正規化 ─────────────────────────────────────────────
   const LABEL = {
     node_type: { unspoiled: '未知', legendary: '伝説', ephemeral: '幻想', folklore: '伝承' },
@@ -179,6 +200,10 @@ async function main() {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
       itemInfo.get(it).jobs.add(cls);
     }
+    const rawSlots = resolveSlots(n.base);
+    const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : {
+      id: `it_${itemId}`, name: itemJa(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
+    }) : null;
     runtimeNodes.push({
       id: `nd_${id}`, class: cls, node_type: nodeType(n), level: n.level,
       area: placeJa(n.zoneid), aetheryte: a ? placeJa(a.nameid) : '',
@@ -187,6 +212,7 @@ async function main() {
       windows: windows(n).map((w) => { const [s, e] = w.split('-').map(Number); return [s, e]; }),
       patch: nodePatch(n.items || []),
       folklore: n.folklore ? itemJa(n.folklore) : '',
+      slots,
       items: visibleIds.map((it) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it), hidden: false, icon: iconUrl(it) }))
         .concat(hiddenIds.map((it, i) => ({ id: `it_${it}`, name: itemJa(it), collectable: !!coll[it], use: usesFor(it), hidden: true, stars: i + 1, icon: iconUrl(it) }))),
       use: [...new Set(allIds.flatMap((it) => usesFor(it)))],
