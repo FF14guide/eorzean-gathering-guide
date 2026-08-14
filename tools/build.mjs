@@ -114,6 +114,15 @@ async function main() {
   });
   const placeNames = (id) => localized(places, id);
   const itemNames  = (id) => localized(items, id, `#${id}`);
+  // ディアデム諸島の第二次・第三次復興用アイテムは、現在は採取・使用対象外。
+  // 日本語名を主判定にしつつ、4言語のデータ差異にも対応する。
+  const isObsoleteDiademItem = (id) => {
+    const n = itemNames(id);
+    return /第二次復興用|第三次復興用/.test(n.ja)
+      || /Grade [23].*Skybuilders|Skybuilders.*Grade [23]/i.test(n.en)
+      || /\((2e|3e) phase\)/i.test(n.fr)
+      || /Stufe [23].*Skybuilders|Skybuilders.*Stufe [23]/i.test(n.de);
+  };
   const placeJa = (id) => placeNames(id).ja;
   const itemJa  = (id) => itemNames(id).ja;
 
@@ -196,7 +205,8 @@ async function main() {
       if (!giId || giId === '0') { slots.push(null); continue; }
       const gi = gItem.get(giId);
       const itemId = gi?.Item;
-      slots.push(itemId && itemId !== '0' ? parseInt(itemId, 10) : null);
+      const parsedId = itemId && itemId !== '0' ? parseInt(itemId, 10) : null;
+      slots.push(parsedId != null && !isObsoleteDiademItem(parsedId) ? parsedId : null);
     }
     return slots;
   };
@@ -222,9 +232,10 @@ async function main() {
     const gm = effMapId != null ? gameMaps[effMapId] : null;
     // ゲーム内座標(1-41付近)→画像上の%位置。釣り図鑑と同じ変換式。
     const mapPct = (coord) => (((coord - 1) * ((gm?.size_factor ?? 100) / 100)) / 41) * 100;
-    const visibleIds = n.items || [];
-    const hiddenIds  = n.hiddenItems || [];
+    const visibleIds = (n.items || []).filter((it) => !isObsoleteDiademItem(it));
+    const hiddenIds  = (n.hiddenItems || []).filter((it) => !isObsoleteDiademItem(it));
     const allIds = visibleIds.concat(hiddenIds);
+    if (!allIds.length) continue;
     for (const it of allIds) {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
       itemInfo.get(it).jobs.add(cls);
@@ -282,7 +293,7 @@ async function main() {
     const x = 21.5 + worldX / 50;
     const y = 21.5 + worldY / 50;
     const a = nearestAeth({ map: gm.id, x, y, zoneid: gm.placename_id });
-    const itemIds = resolveSlots(String(r.GatheringPointBase))?.filter((id) => id != null && items[id]) || [];
+    const itemIds = resolveSlots(String(r.GatheringPointBase))?.filter((id) => id != null && items[id] && !isObsoleteDiademItem(id)) || [];
     if (!itemIds.length) continue;
     for (const it of itemIds) {
       if (!itemInfo.has(it)) itemInfo.set(it, { jobs: new Set() });
