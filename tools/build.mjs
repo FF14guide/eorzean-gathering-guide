@@ -122,6 +122,10 @@ async function main() {
   };
   const nodeType = (n) => (n.ephemeral ? 'ephemeral' : n.folklore ? 'legendary' : 'unspoiled');
   const classOf = (t) => (t <= 1 ? 'MIN' : 'BTN');
+  // ゲーム本来の採集手帳の4分類。0=採掘(主道具) 1=砕岩(副道具) 2=伐採(主道具) 3=草刈(副道具)
+  const TOOL_LABEL = { 0: '採掘', 1: '砕岩', 2: '伐採', 3: '草刈' };
+  const TOOL_MAIN  = { 0: true, 1: false, 2: true, 3: false }; // true=主道具 false=副道具
+  const toolOf = (t) => ({ id: t, label: TOOL_LABEL[t], main: TOOL_MAIN[t] });
 
   // ─── 用途タグ（精選 / スクリップ色）を外部データから導出 ───────────
   const useLabels = {};
@@ -189,6 +193,7 @@ async function main() {
     const n = nodes[id];
     if (!n.limited || n.type > 3) continue;        // 時間限定の陸ノードのみ（漁除外）
     const cls = classOf(n.type);
+    const tool = toolOf(n.type);
     const a = nearestAeth(n);
     // Teamcraft側で zoneid/map が 0（未設定）のノードが稀にある。
     // 最寄りエーテライト自身の zoneid/map で補う（対象は現行データで6件）。
@@ -209,7 +214,7 @@ async function main() {
       id: `it_${itemId}`, name: itemJa(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
     }) : null;
     runtimeNodes.push({
-      id: `nd_${id}`, class: cls, node_type: nodeType(n), level: n.level,
+      id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, node_type: nodeType(n), level: n.level,
       area: gm ? placeJa(gm.placename_id) : placeJa(effZoneId), aetheryte: a ? placeJa(a.nameid) : '',
       x: n.x, y: n.y,
       map: gm ? { image: gm.image, px: mapPct(n.x), py: mapPct(n.y) } : null,

@@ -244,6 +244,51 @@
   .irow.hidden{background:rgba(123,178,85,.05)}
   .irow.hidden .ilv{color:var(--btn)}
   .irow.vacant{padding:4px 12px}
+  .obtain{flex:none;width:22px;height:22px;border-radius:6px;border:1px solid var(--line);background:var(--bg2);color:transparent;cursor:pointer;display:grid;place-items:center;transition:.15s}
+  .obtain:hover{border-color:var(--gold-line)}
+  .obtain.on{background:var(--live);border-color:var(--live);color:#06210f}
+
+  /* ---------- Catalog view (Version > Map > Node) ---------- */
+  .cat-ver{border:1px solid var(--line);border-radius:11px;margin-bottom:9px;background:var(--bg2);overflow:hidden}
+  .cat-ver>summary{list-style:none;cursor:pointer;padding:11px 14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:13.5px;color:var(--gold)}
+  .cat-ver>summary::-webkit-details-marker{display:none}
+  .cat-ver>summary::before{content:'▸';font-size:11px;color:var(--faint);transition:transform .15s}
+  .cat-ver[open]>summary::before{transform:rotate(90deg)}
+  .cat-areas{padding:0 10px 10px}
+  .cat-area{border:1px solid var(--line);border-radius:9px;margin-top:7px;background:var(--bg3);overflow:hidden}
+  .cat-area>summary{list-style:none;cursor:pointer;padding:8px 12px;display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink)}
+  .cat-area>summary::-webkit-details-marker{display:none}
+  .cat-area>summary::before{content:'▸';font-size:10px;color:var(--faint);transition:transform .15s}
+  .cat-area[open]>summary::before{transform:rotate(90deg)}
+  .cat-area-name{font-weight:700}
+  .cat-cnt{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .cat-nodes{border-top:1px solid var(--line)}
+  .cat-node{display:flex;align-items:center;gap:8px;padding:7px 12px;border-top:1px solid var(--line);cursor:pointer;font-size:12px}
+  .cat-node:first-child{border-top:0}
+  .cat-node:hover{background:rgba(231,178,62,.06)}
+  .cat-node[aria-selected="true"]{background:var(--gold-soft)}
+  .cat-nm{color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .cat-time{flex:none;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:5px}
+  .cat-time.clive{color:var(--live);background:rgba(74,222,128,.12)}
+  .cat-time.csoon{color:var(--soon);background:rgba(231,178,62,.12)}
+  .cat-time.cfar{color:var(--faint);background:var(--bg2)}
+  .log-sub{font-style:normal;font-size:10px;color:var(--faint);margin-left:4px;font-weight:400}
+  .log-item{display:flex;align-items:center;gap:9px;padding:7px 12px;border-top:1px solid var(--line);font-size:12.5px}
+  .log-item:first-child{border-top:0}
+  .log-item .iico{width:24px;height:24px}
+  .log-item .cat-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .log-area{display:block;margin-top:1px;font-size:10px;color:var(--faint)}
+  .hidmark{font-style:normal;font-family:var(--mono);font-size:9px;font-weight:700;color:var(--btn);background:rgba(123,178,85,.15);border:1px solid rgba(123,178,85,.4);border-radius:5px;padding:1px 5px;margin-right:4px}
+
+  /* ---------- Progress panel ---------- */
+  .prog{margin:0 0 14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .prog h5{margin:0 0 10px;font-size:12px;color:var(--gold);font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase}
+  .prog-row{margin-bottom:9px}
+  .prog-row:last-child{margin-bottom:0}
+  .prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:4px}
+  .prog-label b{color:var(--ink)}
+  .prog-bar{height:7px;border-radius:99px;background:var(--bg3);overflow:hidden}
+  .prog-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--live));border-radius:99px}
   .irow.vacant .inm{color:var(--faint);opacity:.4;font-size:11px}
   .itemlist.hiddenlist{margin-top:10px;border-color:rgba(123,178,85,.35)}
 
@@ -323,6 +368,11 @@
       <button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button>
       <button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button>
     </div>
+    <div class="seg" id="segView" role="group" aria-label="表示">
+      <button data-v="time" aria-pressed="true">時間順</button>
+      <button data-v="catalog" aria-pressed="false">図鑑順</button>
+      <button data-v="log" aria-pressed="false">採集手帳</button>
+    </div>
     <select id="fType"><option value="all">全種別</option></select>
     <select id="fArea"><option value="all">全エリア</option></select>
     <select id="fPatch"><option value="all">全拡張</option></select>
@@ -332,6 +382,7 @@
     <div class="count" id="count"></div>
   </div>
   <div id="wrapSched"></div>
+  <div id="wrapProgress"></div>
   <div class="grid">
     <div class="list" id="list"></div>
     <aside class="detail" id="detail">
@@ -402,7 +453,15 @@ const winLabel=w=>`ET ${pad(w[0])}:00–${pad(w[1]%24)}:00`;
 const nodeTitle=n=>(n.items[0]&&n.items[0].name)||n.area||n.id;
 
 /* ---- state ---- */
-const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,favs:new Set(),alarms:new Set(),notified:new Set()};
+function loadObtained(){
+  try{ return new Set(JSON.parse(localStorage.getItem('gh_obtained')||'[]')); }
+  catch(e){ return new Set(); }
+}
+function saveObtained(){
+  try{ localStorage.setItem('gh_obtained', JSON.stringify([...state.obtained])); }catch(e){}
+}
+const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,viewMode:'time',
+  favs:new Set(),alarms:new Set(),notified:new Set(),obtained:loadObtained()};
 
 (function initFilters(){
   const areaMinPatch=new Map();
@@ -440,6 +499,7 @@ const ICON={
   starO:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 2.6 5.6 6.1.7-4.5 4.1 1.2 6L12 16.9 6.6 19.5l1.2-6L3.3 9.3l6.1-.7Z"/></svg>',
   bell:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
   medal:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="6"/><path d="m9 8-3-6M15 8l3-6M12 12v4M10 14h4"/></svg>',
+  check:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12.5 9.5 18 20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 
 const listEl=document.getElementById('list'),detailEl=document.getElementById('detail'),countEl=document.getElementById('count');
@@ -461,7 +521,112 @@ function filtered(){
   });
 }
 
+const catOpen=new Set(); // 開いているバージョン/マップの折りたたみ状態を再描画をまたいで保持
+function renderCatalog(){
+  const sod=eorzeaNow().sod;
+  const nodes=filtered();
+  countEl.textContent=`${nodes.length} 件 / 全${NODES.length}`;
+
+  // バージョン(拡張)でグルーピング
+  const byVer=new Map();
+  nodes.forEach(n=>{
+    const maj=Math.floor(parseFloat(n.patch))||0;
+    if(!byVer.has(maj))byVer.set(maj,[]);
+    byVer.get(maj).push(n);
+  });
+  const vers=[...byVer.keys()].sort((a,b)=>a-b);
+
+  listEl.innerHTML=vers.map(ver=>{
+    const verNodes=byVer.get(ver);
+    const byArea=new Map();
+    verNodes.forEach(n=>{ if(!byArea.has(n.area))byArea.set(n.area,[]); byArea.get(n.area).push(n); });
+    const areas=[...byArea.keys()].sort((a,b)=>a.localeCompare(b,'ja'));
+    const verKey=`v${ver}`;
+
+    const areasHtml=areas.map(area=>{
+      const areaNodes=byArea.get(area).sort((a,b)=>a.level-b.level);
+      const areaKey=`${verKey}:${area}`;
+      const objCount=areaNodes.reduce((s,n)=>s+n.items.filter(i=>state.obtained.has(i.id)).length,0);
+      const totCount=areaNodes.reduce((s,n)=>s+n.items.length,0);
+      return `<details class="cat-area" data-key="${areaKey}" ${catOpen.has(areaKey)?'open':''}>
+        <summary><span class="cat-area-name">${area}</span><span class="cat-cnt">${areaNodes.length}件${totCount?` ・ 取得${objCount}/${totCount}`:''}</span></summary>
+        <div class="cat-nodes">${areaNodes.map(n=>{
+          const t=nodeTiming(n.windows,sod);
+          const clsTag=n.class==='MIN'?'<span class="tag tmin">採掘</span>':'<span class="tag tbtn">園芸</span>';
+          const timeTxt=t.state==='live'?'採取可':`${Math.round(t.real/60)}分後`;
+          const timeClass=t.state==='live'?'clive':(t.real<600?'csoon':'cfar');
+          const names=n.items.filter(i=>!i.hidden).map(i=>i.name).join('・');
+          return `<div class="cat-node" data-id="${n.id}" role="button" tabindex="0" aria-selected="${state.selected===n.id}">
+            ${clsTag}<span class="tag lv">Lv${n.level}</span>
+            <span class="cat-nm">${names}</span>
+            <span class="cat-time ${timeClass}">${timeTxt}</span>
+          </div>`;
+        }).join('')}</div>
+      </details>`;
+    }).join('');
+
+    return `<details class="cat-ver" data-key="${verKey}" ${catOpen.has(verKey)?'open':''}>
+      <summary><span class="cat-ver-name">Patch ${ver}.x</span><span class="cat-cnt">${verNodes.length}件</span></summary>
+      <div class="cat-areas">${areasHtml}</div>
+    </details>`;
+  }).join('');
+}
+
+/* 採集手帳ビュー：ゲーム本来の4分類（採掘/砕岩/伐採/草刈）→レベル帯→アイテム */
+const TOOL_ORDER=[0,1,2,3];
+function levelBucket(lv){ const s=Math.floor((lv-1)/5)*5+1; return {s, e:s+4, label:`Lv${s}-${s+4}`}; }
+function renderLog(){
+  const nodes=filtered();
+  countEl.textContent=`${nodes.length} 件 / 全${NODES.length}`;
+
+  listEl.innerHTML=TOOL_ORDER.map(toolId=>{
+    const toolNodes=nodes.filter(n=>n.tool===toolId);
+    if(!toolNodes.length)return '';
+    const sample=NODES.find(n=>n.tool===toolId);
+    const label=sample?.toolLabel||'';
+    const mainSub=sample?.toolMain?'主道具':'副道具';
+    const toolKey=`log:${toolId}`;
+
+    // レベル帯でグルーピングし、帯ごとにユニークなアイテムを集約
+    const byBucket=new Map();
+    toolNodes.forEach(n=>{
+      const b=levelBucket(n.level);
+      if(!byBucket.has(b.label))byBucket.set(b.label,{s:b.s,items:new Map()});
+      const bucket=byBucket.get(b.label);
+      n.items.forEach(it=>{
+        if(!bucket.items.has(it.id))bucket.items.set(it.id,{...it,lv:n.level,nodeId:n.id,area:n.area});
+      });
+    });
+    const buckets=[...byBucket.entries()].sort((a,b)=>a[1].s-b[1].s);
+    const total=new Set(toolNodes.flatMap(n=>n.items.map(i=>i.id)));
+    const gotTotal=[...total].filter(id=>state.obtained.has(id)).length;
+
+    const bucketsHtml=buckets.map(([blabel,b])=>{
+      const bKey=`${toolKey}:${blabel}`;
+      const itemNum=id=>parseInt(String(id).replace(/^it_/,''),10)||0;
+      const its=[...b.items.values()].sort((a,b2)=>a.lv-b2.lv||itemNum(a.id)-itemNum(b2.id));
+      const got=its.filter(i=>state.obtained.has(i.id)).length;
+      return `<details class="cat-area" data-key="${bKey}" ${catOpen.has(bKey)?'open':''}>
+        <summary><span class="cat-area-name">${blabel}</span><span class="cat-cnt">取得${got}/${its.length}</span></summary>
+        <div class="cat-nodes">${its.map(it=>`
+          <div class="log-item">
+            <img class="iico" src="${it.icon||''}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">
+            <span class="cat-nm">${it.hidden?'<i class="hidmark">HIDDEN</i> ':''}${it.name}${it.collectable?' ◆':''}<i class="log-area">Lv${it.lv} ・ ${it.area}</i></span>
+            <button class="obtain${state.obtained.has(it.id)?' on':''}" data-obtain="${it.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>
+          </div>`).join('')}</div>
+      </details>`;
+    }).join('');
+
+    return `<details class="cat-ver" data-key="${toolKey}" ${catOpen.has(toolKey)?'open':''}>
+      <summary><span class="cat-ver-name">${label}<i class="log-sub">（${mainSub}）</i></span><span class="cat-cnt">取得${gotTotal}/${total.size}</span></summary>
+      <div class="cat-areas">${bucketsHtml}</div>
+    </details>`;
+  }).join('');
+}
+
 function renderList(){
+  if(state.viewMode==='catalog'){ renderCatalog(); return; }
+  if(state.viewMode==='log'){ renderLog(); return; }
   const sod=eorzeaNow().sod;
   const rows=filtered().map(n=>({n,t:nodeTiming(n.windows,sod)}));
   rows.sort((a,b)=>{
@@ -532,6 +697,7 @@ function renderDetail(){
         <img class="iico" src="${s.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">
         <span class="inm">${s.name}${s.collectable?' ◆':''}</span>
         <span class="ilv">Lv${n.level}</span>
+        <button class="obtain${state.obtained.has(s.id)?' on':''}" data-obtain="${s.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>
       </div>`:`
       <div class="irow vacant"><span class="islot">${idx+1}</span><span class="inm">-</span></div>`).join('')}
     </div>
@@ -540,6 +706,7 @@ function renderDetail(){
         ${i.icon?`<img class="iico" src="${i.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">`:'<span class="iico ph"></span>'}
         <span class="inm"><b>HIDDEN</b> ${i.name}${i.collectable?' ◆':''}</span>
         <span class="ilv">Lv${n.level}${'★'.repeat(i.stars)}</span>
+        <button class="obtain${state.obtained.has(i.id)?' on':''}" data-obtain="${i.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>
       </div>`).join('')}
     </div>`:''}
     ${others.length?`<div class="note">「${head.name}」は他 ${others.length} か所でも採取可能（逆引き）</div>`:''}
@@ -563,6 +730,51 @@ function renderSchedule(){
     :'<div class="empty2">気になるポイントの詳細で「アラーム」を押すと、ここに追加され、採取可能になった瞬間に通知します。</div>'}</div>`;
 }
 
+/* アチーブメントの対象アイテムIDを解決（node/item/zoneのリンクから） */
+function achTargetItems(a){
+  const ids=new Set();
+  if(a.link_type==='item') a.link_ids.forEach(id=>ids.add(id));
+  if(a.link_type==='node') a.link_ids.forEach(nid=>{ const n=NODES.find(x=>x.id===nid); n?.items.forEach(i=>ids.add(i.id)); });
+  if(a.link_type==='zone') NODES.filter(n=>a.link_ids.includes(n.area)).forEach(n=>n.items.forEach(i=>ids.add(i.id)));
+  return [...ids];
+}
+function renderProgress(){
+  const wrap=document.getElementById('wrapProgress');
+  const byJob={MIN:new Set(),BTN:new Set()};
+  DATA.items.forEach(it=>{
+    if(it.job==='MIN'||it.job==='BOTH')byJob.MIN.add(it.id);
+    if(it.job==='BTN'||it.job==='BOTH')byJob.BTN.add(it.id);
+  });
+  const classRows=['MIN','BTN'].map(cls=>{
+    const total=byJob[cls].size;
+    const got=[...byJob[cls]].filter(id=>state.obtained.has(id)).length;
+    const pct=total?Math.round(got/total*100):0;
+    return `<div class="prog-row">
+      <div class="prog-label"><span>${LAB.class[cls]}の取得種類</span><b>${got} / ${total}</b></div>
+      <div class="prog-bar"><i style="width:${pct}%"></i></div>
+    </div>`;
+  }).join('');
+
+  const achList=(DATA.achievements||[]).filter(a=>a.link_ids&&a.link_ids.length);
+  const achRows=achList.map(a=>{
+    const targets=achTargetItems(a);
+    if(!targets.length)return '';
+    const got=targets.filter(id=>state.obtained.has(id)).length;
+    const pct=Math.round(got/targets.length*100);
+    const done=got>=targets.length;
+    return `<div class="prog-row">
+      <div class="prog-label"><span>${done?'🏅 ':''}${a.name}</span><b>${got} / ${targets.length}</b></div>
+      <div class="prog-bar"><i style="width:${pct}%;${done?'background:var(--live)':''}"></i></div>
+    </div>`;
+  }).join('');
+
+  wrap.innerHTML=`<div class="prog">
+    <h5>📋 収集進捗</h5>
+    ${classRows}
+    ${achRows?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">${achRows}</div>`:''}
+  </div>`;
+}
+
 document.getElementById('segClass').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
@@ -573,17 +785,33 @@ document.getElementById('fArea').addEventListener('change',e=>{state.area=e.targ
 document.getElementById('fPatch').addEventListener('change',e=>{state.patch=e.target.value;renderList();});
 document.getElementById('fUse').addEventListener('change',e=>{state.use=e.target.value;renderList();});
 document.getElementById('fText').addEventListener('input',e=>{state.text=e.target.value;renderList();});
+document.getElementById('segView').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
+  state.viewMode=b.dataset.v;renderList();
+});
+listEl.addEventListener('toggle',e=>{
+  const d=e.target.closest('details[data-key]');
+  if(!d)return;
+  if(d.open)catOpen.add(d.dataset.key); else catOpen.delete(d.dataset.key);
+},true);
 
 document.addEventListener('click',e=>{
   const fav=e.target.closest('[data-fav]');
   if(fav){e.stopPropagation();const id=fav.dataset.fav;state.favs.has(id)?state.favs.delete(id):state.favs.add(id);renderList();if(state.selected===id)renderDetail();return;}
   const al=e.target.closest('[data-alarm]');
   if(al){const id=al.dataset.alarm;state.alarms.has(id)?state.alarms.delete(id):state.alarms.add(id);renderDetail();renderSchedule();toast(state.alarms.has(id)?'アラームを登録しました':'アラームを解除しました');return;}
+  const obt=e.target.closest('[data-obtain]');
+  if(obt){e.stopPropagation();const id=obt.dataset.obtain;state.obtained.has(id)?state.obtained.delete(id):state.obtained.add(id);saveObtained();renderDetail();renderProgress();if(state.viewMode==='catalog')renderList();return;}
+  const catNode=e.target.closest('.cat-node');
+  if(catNode){state.selected=catNode.dataset.id;renderList();renderDetail();return;}
   const card=e.target.closest('.card');
   if(card){state.selected=card.dataset.id;renderList();renderDetail();}
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
+  const catNode=e.target.closest('.cat-node');
+  if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderList();renderDetail();return;}
   const card=e.target.closest('.card');
   if(!card)return;
   e.preventDefault();
@@ -643,7 +871,7 @@ function checkAlarms(){
     if(t.state!=='live')state.notified.delete(id);
   });
 }
-renderList();renderDetail();renderSchedule();tickClocks();
+renderList();renderDetail();renderSchedule();renderProgress();tickClocks();
 setInterval(tickClocks,1000);
 setInterval(()=>{renderList();if(state.selected)renderDetail();renderSchedule();checkAlarms();},1000);
 
