@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0C1526">
 <title>エオルゼア採集手帳 — Eorzean Gathering Guide</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-192.png" sizes="192x192" type="image/png">
+<link rel="icon" href="favicon-512.png" sizes="512x512" type="image/png">
 <meta name="description" content="FF14の採掘師・園芸師の時間限定ノードを、いつ・どこで・何が取れるかで一覧。エオルゼア時間でカウントダウンし、用途・アチーブメントまでガイドする非公式データベース。">
 <link rel="canonical" href="__SITE_URL__/">
 <meta property="og:type" content="website">
@@ -274,7 +280,18 @@
 <body>
 <header>
   <div class="brand">
-    <div class="glyph">採</div>
+    <div class="glyph"><svg viewBox="0 0 32 32" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#1a1300">
+        <g transform="rotate(-35 16 16) translate(-1 -6)">
+          <path d="M3 11 C 6 2, 26 2, 29 11 C 24 8 8 8 3 11 Z"/>
+          <rect x="14.6" y="9" width="2.8" height="21" rx="1.4"/>
+        </g>
+        <g transform="rotate(35 16 16) translate(1 -6) scale(-1,1) translate(-32,0)">
+          <path d="M20 4 C 30 5, 31 21, 19 26 C 27 20 26 9 17 8 C 12.5 7.5 9 9.5 7 13 L 4 10.5 C 7 5.5 13.5 3 20 4 Z"/>
+          <rect x="4.5" y="19" width="2.8" height="11" rx="1.4" transform="rotate(-40 5.9 24.5)"/>
+        </g>
+      </g>
+    </svg></div>
     <div class="txt">
       <div class="eyebrow">Eorzean Gathering Guide</div>
       <h1>エオルゼア採集手帳</h1>
@@ -379,7 +396,13 @@ const nodeTitle=n=>(n.items[0]&&n.items[0].name)||n.area||n.id;
 const state={cls:'all',type:'all',area:'all',patch:'all',use:'all',text:'',selected:null,favs:new Set(),alarms:new Set(),notified:new Set()};
 
 (function initFilters(){
-  const areas=[...new Set(NODES.map(n=>n.area).filter(Boolean))].sort();
+  const areaMinPatch=new Map();
+  NODES.forEach(n=>{
+    if(!n.area)return;
+    const p=parseFloat(n.patch)||999;
+    if(!areaMinPatch.has(n.area)||p<areaMinPatch.get(n.area))areaMinPatch.set(n.area,p);
+  });
+  const areas=[...areaMinPatch.keys()].sort((a,b)=>areaMinPatch.get(a)-areaMinPatch.get(b)||a.localeCompare(b,'ja'));
   const uses=[...new Set(NODES.flatMap(n=>n.use))];
   const fType=document.getElementById('fType'),fArea=document.getElementById('fArea'),fUse=document.getElementById('fUse'),fPatch=document.getElementById('fPatch');
   for(const k of ['unspoiled','legendary','ephemeral','folklore'])

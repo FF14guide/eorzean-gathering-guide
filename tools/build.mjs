@@ -52,7 +52,7 @@ const SOURCES = {
 };
 
 // 採集系アチーブメントを名称で絞る語彙（DoL のみ拾う）
-const ACH_KEYWORD = /採集|採掘|園芸|収集|幻想|伝説|エオルゼア|名匠|ギャザ|マイスター|大地|自然|カーマ|土地神|恵み/;
+const ACH_KEYWORD = /採集|採掘|園芸|収集|刻限|伝説|エオルゼア|名匠|ギャザ|マイスター|大地|自然|カーマ|土地神|恵み/;
 
 const log = (...a) => console.log('·', ...a);
 const sz = (t) => `${(t.length / 1024).toFixed(0)} KB`;
@@ -179,7 +179,7 @@ async function main() {
 
   // ─── ノード正規化 ─────────────────────────────────────────────
   const LABEL = {
-    node_type: { unspoiled: '未知', legendary: '伝説', ephemeral: '幻想', folklore: '伝承' },
+    node_type: { unspoiled: '未知', legendary: '伝説', ephemeral: '刻限', folklore: '伝承' },
     use: useLabels,
     class: { MIN: '採掘師', BTN: '園芸師' },
   };
