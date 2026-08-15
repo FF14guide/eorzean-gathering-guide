@@ -363,7 +363,7 @@
 
   /* ---------- v3: compact timetable ---------- */
   .list:has(.spot-row){gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0b1729}
-  .spot-row{position:relative;display:grid;grid-template-columns:70px 42px minmax(0,1fr) auto 40px 40px;align-items:center;gap:8px;min-height:44px;padding:5px 8px;border:0;border-top:1px solid rgba(151,178,220,.12);background:transparent;color:var(--ink);cursor:pointer;transition:background .14s var(--ease-out),box-shadow .14s var(--ease-out)}
+  .spot-row{position:relative;display:grid;grid-template-columns:70px 42px minmax(0,1fr) auto 40px 40px;align-items:center;gap:6px;min-height:44px;white-space:nowrap;overflow:hidden;padding:5px 8px;border:0;border-top:1px solid rgba(151,178,220,.12);background:transparent;color:var(--ink);cursor:pointer;transition:background .14s var(--ease-out),box-shadow .14s var(--ease-out)}
   .spot-row:first-child{border-top:0}.spot-row:hover{background:rgba(133,185,245,.08)}.spot-row[aria-selected="true"]{background:#173150;box-shadow:inset 3px 0 0 var(--sky)}.spot-row:focus-visible{z-index:1;outline:2px solid var(--sky);outline-offset:-2px}
   .spot-row__time{display:flex;flex-direction:column;gap:1px;min-width:0;font-family:var(--mono);line-height:1.1}.spot-row__remain{font-size:12px;font-weight:800;color:#c8d8ed;white-space:nowrap}.spot-row__et{font-size:9.5px;font-weight:400;color:#7993b6;white-space:nowrap}.state-live .spot-row__remain{color:var(--mint)}.state-soon .spot-row__remain{color:var(--amber)}
   .spot-row__job{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:#101e34}.spot-row__job svg{width:14px;height:14px}.spot-row__job.min{color:#eea36f}.spot-row__job.btn{color:#a7dc89}
@@ -380,7 +380,7 @@
   .filter-popover{grid-template-columns:repeat(3,minmax(0,1fr))}.filter-popover .wide{grid-column:span 1}.filter-popover select{height:34px}
   .area-rail__head{align-items:flex-start}.area-rail__title{line-height:1.15}.area-rail__title small{display:block;margin-top:3px;color:#6d88ab;font-size:9px;font-weight:600;letter-spacing:.04em}.area-rail__hint{padding-top:2px}
   .area-groups{gap:7px}.area-group>summary{padding-bottom:5px}.area-spot{display:grid;grid-template-columns:25px minmax(0,1fr) auto;gap:6px;align-items:start;width:100%;padding:6px 6px;border:0;border-radius:7px;background:transparent;color:var(--dim);text-align:left;cursor:pointer}.area-spot:hover{background:rgba(133,185,245,.08);color:var(--ink)}.area-spot[aria-pressed="true"]{background:#193454;color:#fff}.area-spot__tool{width:22px;height:22px;border:1px solid rgba(151,178,220,.16);border-radius:5px;background:#0c182a;object-fit:cover}.area-spot__items{min-width:0;overflow:visible;text-overflow:clip;white-space:normal;overflow-wrap:anywhere;line-height:1.35;font-size:10.5px;font-weight:700}.area-spot__meta{font:9px var(--mono);color:#7896bb;white-space:nowrap}.area-spot[aria-pressed="true"] .area-spot__meta{color:#b7d7ff}
-  .spot-row{grid-template-columns:70px 42px minmax(0,1fr) auto 72px 24px}.spot-row__job img{width:18px;height:18px;object-fit:cover;border-radius:4px}.spot-row__price{min-width:64px;text-align:right;font:10px var(--mono);color:#9bc9b4;white-space:nowrap;display:block;height:auto}.spot-row__price.loading{color:#7690b4}.spot-row__price.price-empty{color:#637b9d}.spot-row__price b{font-size:11px;color:#c8edd7}.spot-row__price small{display:block;color:#6f89ab;font:8px var(--sans)}
+  .spot-row{grid-template-columns:70px 42px minmax(0,1fr) auto 72px 24px}.spot-row__job img{width:18px;height:18px;object-fit:cover;border-radius:4px}.spot-row__price{min-width:0;max-width:72px;text-align:right;font:10px var(--mono);color:#9bc9b4;white-space:nowrap;display:block;height:auto;overflow:hidden;text-overflow:ellipsis}.spot-row__price small{display:none}.spot-row__price.loading{color:#7690b4}.spot-row__price.price-empty{color:#637b9d}.spot-row__price b{font-size:11px;color:#c8edd7}.spot-row__price small{display:none!important}
   .tool-badge{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:6px;padding:2px 5px;background:#0b1729;color:#aac0db;font-size:10px;font-weight:800}.tool-badge img{width:16px;height:16px;border-radius:4px;object-fit:cover}.tool-badge small{color:#7590b4;font-size:9px}
   .item-price{margin-left:auto;min-width:82px;text-align:right;font:10px var(--mono);color:#9bc9b4;white-space:nowrap}.item-price strong{color:#c8edd7;font-size:11px}.item-price small{display:block;color:#718bad;font:9px var(--sans)}.item-price.price-empty{color:#637b9d}.market-detail{margin:8px 0 0;color:#7792b5;font-size:10px}.market-detail b{color:#9bc9b4}.market-detail.error{color:#efabb0}
   @media(max-width:1080px){.marketbar{flex-wrap:wrap}.marketbar__title{min-width:100%}.marketbar__status{margin-left:auto}.spot-row{grid-template-columns:70px 42px minmax(0,1fr) auto 70px 24px}}
@@ -917,7 +917,7 @@ function renderList(){
     const names=n.items.filter(i=>!i.hidden).map(i=>i.name+(i.collectable?' ◆':'')).join(' ／ ')||'取得物を確認';
     const kind=(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','');
     const toolLabel=`${n.toolMain?'主道具':'副道具'}：${n.toolLabel}`;
-    return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
+    return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" role="button" tabindex="0" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
       <div class="spot-row__time"><span class="spot-row__remain"><span data-countdown>${mmss(t.real)}</span> <span data-timing-label>${compactTimingLabel(t)}</span></span><span class="spot-row__et" data-timing-window>${compactWindowLabel(t.win)}</span></div>
       <span class="spot-row__job" aria-label="${toolLabel}" title="${toolLabel}"><img src="${n.toolIcon||''}" alt="${toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"></span>
       <div class="spot-row__main"><span class="spot-row__items">${names}</span><span class="spot-row__area">${n.area}</span></div>
@@ -1145,6 +1145,7 @@ document.addEventListener('click',e=>{
   const catNode=e.target.closest('.cat-node');
   if(catNode){state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
+  if(card){state.selected=card.dataset.id;renderList();renderDetail();return;}
   const scheduleRow=e.target.closest('[data-schedule-id]');
   if(scheduleRow){state.selected=scheduleRow.dataset.scheduleId;renderAreaNav();renderList();renderDetail();return;}
 });
@@ -1152,6 +1153,8 @@ document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
   const catNode=e.target.closest('.cat-node');
   if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
+  const card=e.target.closest('.spot-row');
+  if(card){e.preventDefault();state.selected=card.dataset.id;renderList();renderDetail();return;}
   const scheduleRow=e.target.closest('[data-schedule-id]');
   if(!scheduleRow)return;
   e.preventDefault();
