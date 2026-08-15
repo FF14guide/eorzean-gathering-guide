@@ -283,6 +283,12 @@
   /* ---------- Progress panel ---------- */
   .prog{margin:0 0 14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
   .prog h5{margin:0 0 10px;font-size:12px;color:var(--gold);font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase}
+  .progress-drawer{margin:0 0 14px;border:1px solid var(--line);border-radius:12px;background:rgba(8,18,34,.72)}
+  .progress-drawer>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;cursor:pointer;color:var(--ink);font-size:12px;font-weight:700;list-style:none}
+  .progress-drawer>summary::-webkit-details-marker{display:none}
+  .progress-drawer>summary::before{content:'＋';color:var(--gold);font-family:var(--mono);font-size:14px}
+  .progress-drawer[open]>summary::before{content:'−'}
+  .progress-drawer>summary small{margin-left:auto;color:var(--faint);font-size:10px;font-weight:500}
   .prog-row{margin-bottom:9px}
   .prog-row:last-child{margin-bottom:0}
   .prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:4px}
@@ -456,9 +462,10 @@
         <div><h2 id="resultTitle">採集スケジュール</h2><p id="resultCaption">ET時刻・最新素材・Marketboard価格で、次に向かう採取場を決められます。</p></div>
         <div class="count" id="count"></div>
       </div>
-      <details class="utility-drawer">
-        <summary><span>個人メモと収集進捗</span><small>必要なときだけ開く</small></summary>
-        <div class="utility-drawer__body"><div id="wrapSched"></div><div id="wrapProgress"></div></div>
+      <div class="utility-drawer__body"><div id="wrapSched"></div></div>
+      <details class="progress-drawer">
+        <summary><span>収集進捗</span><small>職種別の取得種類数</small></summary>
+        <div class="utility-drawer__body"><div id="wrapProgress"></div></div>
       </details>
       <div class="grid">
         <div class="list" id="list"></div>
@@ -1038,31 +1045,27 @@ function achTargetItems(a){
 }
 function renderProgress(){
   const wrap=document.getElementById('wrapProgress');
-  const byJob={MIN:new Set(),BTN:new Set()};
-  DATA.items.forEach(it=>{
-    if(it.job==='MIN'||it.job==='BOTH')byJob.MIN.add(it.id);
-    if(it.job==='BTN'||it.job==='BOTH')byJob.BTN.add(it.id);
+  const byTool={採掘:new Set(),砕岩:new Set(),伐採:new Set(),草刈:new Set()};
+  NODES.forEach(node=>{
+    const tool=node.toolLabel;
+    if(!byTool[tool])return;
+    (node.items||[]).forEach(item=>byTool[tool].add(item.id));
   });
-  const classRows=['MIN','BTN'].map(cls=>{
-    const total=byJob[cls].size;
-    const got=[...byJob[cls]].filter(id=>state.obtained.has(id)).length;
+  const toolRows=Object.keys(byTool).map(tool=>{
+    const total=byTool[tool].size;
+    const got=[...byTool[tool]].filter(id=>state.obtained.has(id)).length;
     const pct=total?Math.round(got/total*100):0;
+    const label=TOOL_NAMES[state.locale]?.[tool]||tool;
+    const suffix=state.locale==='ja'?'種類':state.locale==='de'?' Typen':state.locale==='fr'?' types':' types';
     return `<div class="prog-row">
-      <div class="prog-label"><span>${LAB.class[cls]}の取得種類</span><b>${got} / ${total}</b></div>
+      <div class="prog-label"><span>${label}</span><b>${got} / ${total}${suffix}</b></div>
       <div class="prog-bar"><i style="width:${pct}%"></i></div>
     </div>`;
   }).join('');
 
-  const achList=(DATA.achievements||[]).filter(a=>a.link_ids&&a.link_ids.length);
-  const achRows=achList.map(a=>`<div class="prog-row ach-condition-row">
-      <div class="prog-label"><span>${a.name}</span><b>条件</b></div>
-      <div class="ach-condition">${a.condition||'条件文を確認してください'}</div>
-    </div>`).join('');
-
   wrap.innerHTML=`<div class="prog">
     <h5>${ICON.check} 収集進捗</h5>
-    ${classRows}
-    ${achRows?`<div class="progress-achievements"><div class="progress-achievements__title">関連アチーブメント（アイテム取得数とは別のゲーム内条件）</div>${achRows}</div>`:''}
+    ${toolRows}
   </div>`;
 }
 
