@@ -88,7 +88,7 @@
     background:var(--bg3);border:1px solid var(--line);border-radius:9px;padding:8px 12px;color:var(--dim);cursor:pointer;transition:.15s;
   }
   .notifybtn:hover{border-color:var(--gold-line);color:var(--ink)}
-  .notifybtn:focus-visible,.btn:focus-visible,.area-all:focus-visible,.area-btn:focus-visible,.sched .row button:focus-visible,.spot-row__fav:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+  .notifybtn:focus-visible,.btn:focus-visible,.area-all:focus-visible,.area-btn:focus-visible,.sched .row:focus-visible,.sched .row button:focus-visible,.spot-row__fav:focus-visible,.spot-row__alarm:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
   .notifybtn.on{background:var(--gold);color:#1a1300;border-color:var(--gold)}
   .clock{
     background:var(--bg3);border:1px solid var(--line);border-radius:10px;
@@ -363,14 +363,14 @@
 
   /* ---------- v3: compact timetable ---------- */
   .list:has(.spot-row){gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0b1729}
-  .spot-row{position:relative;display:grid;grid-template-columns:70px 42px minmax(0,1fr) auto 40px;align-items:center;gap:8px;min-height:44px;padding:5px 8px;border:0;border-top:1px solid rgba(151,178,220,.12);background:transparent;color:var(--ink);cursor:pointer;transition:background .14s var(--ease-out),box-shadow .14s var(--ease-out)}
+  .spot-row{position:relative;display:grid;grid-template-columns:70px 42px minmax(0,1fr) auto 40px 40px;align-items:center;gap:8px;min-height:44px;padding:5px 8px;border:0;border-top:1px solid rgba(151,178,220,.12);background:transparent;color:var(--ink);cursor:pointer;transition:background .14s var(--ease-out),box-shadow .14s var(--ease-out)}
   .spot-row:first-child{border-top:0}.spot-row:hover{background:rgba(133,185,245,.08)}.spot-row[aria-selected="true"]{background:#173150;box-shadow:inset 3px 0 0 var(--sky)}.spot-row:focus-visible{z-index:1;outline:2px solid var(--sky);outline-offset:-2px}
   .spot-row__time{display:flex;flex-direction:column;gap:1px;min-width:0;font-family:var(--mono);line-height:1.1}.spot-row__remain{font-size:12px;font-weight:800;color:#c8d8ed;white-space:nowrap}.spot-row__et{font-size:9.5px;font-weight:400;color:#7993b6;white-space:nowrap}.state-live .spot-row__remain{color:var(--mint)}.state-soon .spot-row__remain{color:var(--amber)}
   .spot-row__job{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:#101e34}.spot-row__job svg{width:14px;height:14px}.spot-row__job.min{color:#eea36f}.spot-row__job.btn{color:#a7dc89}
-  .spot-row__main{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap}.spot-row__items{overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#e7eef9}.spot-row__area{flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;color:#738daf;font-size:10.5px}.spot-row__kind{font-family:var(--mono);font-size:9px;color:#8fa7c7;border:1px solid rgba(151,178,220,.16);border-radius:5px;padding:2px 4px;white-space:nowrap}  .spot-row__fav{min-width:40px;min-height:40px;display:grid;place-items:center;padding:3px!important;margin:0!important;color:#6e86a9}.spot-row__fav svg{width:14px;height:14px}.spot-row.state-live::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--mint);box-shadow:0 0 8px rgba(103,212,161,.6)}
+  .spot-row__main{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap}.spot-row__items{overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#e7eef9}.spot-row__area{flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;color:#738daf;font-size:10.5px}.spot-row__kind{font-family:var(--mono);font-size:9px;color:#8fa7c7;border:1px solid rgba(151,178,220,.16);border-radius:5px;padding:2px 4px;white-space:nowrap}  .spot-row__fav,.spot-row__alarm{min-width:40px;min-height:40px;display:grid;place-items:center;padding:3px!important;margin:0!important;color:#6e86a9}.spot-row__fav svg,.spot-row__alarm svg{width:14px;height:14px}.spot-row__alarm.on{color:var(--soon)}.spot-row__fav:hover,.spot-row__alarm:hover{color:var(--gold)}.spot-row.state-live::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--mint);box-shadow:0 0 8px rgba(103,212,161,.6)}
   .result-pane .grid:has(.spot-row){grid-template-columns:minmax(380px,.92fr) minmax(330px,1.08fr)}
   @media(max-width:1080px){.result-pane .grid:has(.spot-row){grid-template-columns:1fr}.spot-row__area{max-width:45%}}
-  @media(max-width:640px){.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 22px;gap:6px;min-height:42px;padding:5px 7px}.spot-row__job{width:25px;height:25px}.spot-row__job svg{width:13px;height:13px}.spot-row__area,.spot-row__kind{display:none}.spot-row__items{font-size:11.5px}.spot-row__remain{font-size:11px}.spot-row__et{font-size:9px}}
+  @media(max-width:640px){.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 58px 40px 40px;gap:6px;min-height:44px;padding:5px 7px}.spot-row__job{width:25px;height:25px}.spot-row__job svg{width:13px;height:13px}.spot-row__area,.spot-row__kind{display:none}.spot-row__items{font-size:11.5px}.spot-row__remain{font-size:11px}.spot-row__et{font-size:9px}}
 
   /* ---------- v4: material schedule & marketboard ---------- */
   .schedule-chip button{color:#e8c579}.schedule-chip button[aria-pressed="true"]{background:#4a3820;color:#fff3d0}
@@ -384,7 +384,7 @@
   .tool-badge{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:6px;padding:2px 5px;background:#0b1729;color:#aac0db;font-size:10px;font-weight:800}.tool-badge img{width:16px;height:16px;border-radius:4px;object-fit:cover}.tool-badge small{color:#7590b4;font-size:9px}
   .item-price{margin-left:auto;min-width:82px;text-align:right;font:10px var(--mono);color:#9bc9b4;white-space:nowrap}.item-price strong{color:#c8edd7;font-size:11px}.item-price small{display:block;color:#718bad;font:9px var(--sans)}.item-price.price-empty{color:#637b9d}.market-detail{margin:8px 0 0;color:#7792b5;font-size:10px}.market-detail b{color:#9bc9b4}.market-detail.error{color:#efabb0}
   @media(max-width:1080px){.marketbar{flex-wrap:wrap}.marketbar__title{min-width:100%}.marketbar__status{margin-left:auto}.spot-row{grid-template-columns:70px 42px minmax(0,1fr) auto 70px 24px}}
-  @media(max-width:640px){.marketbar{gap:7px;margin-bottom:12px}.marketbar select{min-width:0;flex:1}.marketbar button{padding:0 8px}.marketbar__status{display:none}.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 58px 22px}.spot-row__price{min-width:0;font-size:9px}.spot-row__price b{font-size:10px}.spot-row__kind{display:none}.area-spot{padding:6px}.filter-popover{grid-template-columns:1fr 1fr}.filter-popover .wide{grid-column:auto}}
+  @media(max-width:640px){.marketbar{gap:7px;margin-bottom:12px}.marketbar select{min-width:0;flex:1}.marketbar button{padding:0 8px}.marketbar__status{display:none}.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 58px 40px 40px}.spot-row__price{min-width:0;font-size:9px;overflow:hidden;text-overflow:ellipsis}.spot-row__price b{font-size:10px}.spot-row__kind{display:none}.area-spot{padding:6px}.filter-popover{grid-template-columns:1fr 1fr}.filter-popover .wide{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -917,13 +917,14 @@ function renderList(){
     const names=n.items.filter(i=>!i.hidden).map(i=>i.name+(i.collectable?' ◆':'')).join(' ／ ')||'取得物を確認';
     const kind=(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','');
     const toolLabel=`${n.toolMain?'主道具':'副道具'}：${n.toolLabel}`;
-    return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" role="button" tabindex="0" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
+    return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
       <div class="spot-row__time"><span class="spot-row__remain"><span data-countdown>${mmss(t.real)}</span> <span data-timing-label>${compactTimingLabel(t)}</span></span><span class="spot-row__et" data-timing-window>${compactWindowLabel(t.win)}</span></div>
       <span class="spot-row__job" aria-label="${toolLabel}" title="${toolLabel}"><img src="${n.toolIcon||''}" alt="${toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"></span>
       <div class="spot-row__main"><span class="spot-row__items">${names}</span><span class="spot-row__area">${n.area}</span></div>
       <span class="spot-row__kind">${kind}</span>
       ${priceCell(primaryItem(n),true)}
-      <button class="fav spot-row__fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="${state.favs.has(n.id)?'お気に入りを解除':'お気に入りに追加'}">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
+      <button class="fav spot-row__fav ${state.favs.has(n.id)?'on':''}" data-fav="${n.id}" aria-label="${state.favs.has(n.id)?'お気に入りを解除':'お気に入りに追加'}" title="${state.favs.has(n.id)?'お気に入りを解除':'お気に入りに追加'}">${state.favs.has(n.id)?ICON.star:ICON.starO}</button>
+      <button class="fav spot-row__alarm ${state.alarms.has(n.id)?'on':''}" data-alarm="${n.id}" aria-label="${state.alarms.has(n.id)?'アラームを解除':'アラームを登録'}" title="${state.alarms.has(n.id)?'アラームを解除':'アラームを登録'}">${ICON.bell}</button>
     </div>`;
   }).join('');
   localizePage();
@@ -1020,7 +1021,7 @@ function renderSchedule(){
     .sort((a,b)=>(a.t.state==='live'?0:1)-(b.t.state==='live'?0:1)||a.t.real-b.t.real);
   wrap.innerHTML=`<div class="sched">
     <h5>${ICON.bell} マイスケジュール<span class="cnt">${items.length}</span></h5>
-    ${items.length?`<div class="sched-grid">${items.map(({n,t})=>`<div class="row${t.state==='live'?' live':''}" data-schedule-id="${n.id}" data-schedule-state="${t.state}">
+    ${items.length?`<div class="sched-grid">${items.map(({n,t})=>`<div class="row${t.state==='live'?' live':''}" data-schedule-id="${n.id}" data-schedule-state="${t.state}" role="button" tabindex="0" aria-label="${n.area} ${n.items[0]?.name||''} の詳細を表示">
         <span class="t" data-schedule-countdown>${t.state==='live'?'採取可':mmss(t.real)}</span>
         <span class="nm">${n.items[0]?.name||n.area}<i>${n.area}</i></span>
         <span class="stype ${n.node_type}">${(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','')}</span>
@@ -1144,16 +1145,17 @@ document.addEventListener('click',e=>{
   const catNode=e.target.closest('.cat-node');
   if(catNode){state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
-  if(card){state.selected=card.dataset.id;renderAreaNav();renderList();renderDetail();}
+  const scheduleRow=e.target.closest('[data-schedule-id]');
+  if(scheduleRow){state.selected=scheduleRow.dataset.scheduleId;renderAreaNav();renderList();renderDetail();return;}
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
   const catNode=e.target.closest('.cat-node');
   if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
-  const card=e.target.closest('.spot-row');
-  if(!card)return;
+  const scheduleRow=e.target.closest('[data-schedule-id]');
+  if(!scheduleRow)return;
   e.preventDefault();
-  state.selected=card.dataset.id;renderAreaNav();renderList();renderDetail();
+  state.selected=scheduleRow.dataset.scheduleId;renderAreaNav();renderList();renderDetail();
 });
 
 let toastTimer;
