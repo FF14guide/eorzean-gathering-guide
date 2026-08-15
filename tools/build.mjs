@@ -169,6 +169,7 @@ async function main() {
         tags.add(color); useLabels[color] = color + 'スクリップ';
       }
     }
+    if (!tags.size) { tags.add('素材'); useLabels['素材'] = '素材用'; }
     return [...tags];
   };
 
