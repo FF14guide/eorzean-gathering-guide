@@ -196,6 +196,16 @@ async function main() {
   // GatheringItem.Item が実アイテムID。位置(枠番号)を保持したまま復元する。
   const gpBase = new Map(parseCsv(raw['GatheringPointBase.csv']).map((r) => [r['#'], r]));
   const gItem  = new Map(parseCsv(raw['GatheringItem.csv']).map((r) => [r['#'], r]));
+  // GatheringItemLevel は一般素材ではアイテムレベルであり、採取手帳のレベルではない。
+  // シャード・クリスタル・クラスターだけはゲーム内の固定採取レベルとして扱う。
+  const ELEMENTAL_GATHERING_LEVELS = new Map([
+    [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1],
+    [8, 26], [9, 26], [10, 26], [11, 26], [12, 26], [13, 26],
+    [14, 50], [15, 50], [16, 50], [17, 50], [18, 50], [19, 50],
+    [10099, 50], [10335, 50],
+  ]);
+  const itemGatheringLevel = (itemId, fallbackLevel) => ELEMENTAL_GATHERING_LEVELS.get(Number(itemId)) || Number(fallbackLevel) || null;
+
   const resolveSlotDetails = (baseId) => {
     const b = gpBase.get(String(baseId));
     if (!b) return null;
@@ -208,7 +218,7 @@ async function main() {
       const parsedId = itemId && itemId !== '0' ? parseInt(itemId, 10) : null;
       slots.push(parsedId != null && !isObsoleteDiademItem(parsedId) ? {
         itemId: parsedId,
-        gatheringLevel: Number(gi?.GatheringItemLevel) || Number(b.GatheringLevel) || null,
+        gatheringLevel: itemGatheringLevel(parsedId, b.GatheringLevel),
       } : null);
     }
     return slots;
@@ -249,7 +259,7 @@ async function main() {
     const rawSlots = rawSlotDetails?.map((slot) => slot?.itemId ?? null) || null;
     const makeItem = (itemId, extra = {}) => ({
       id: `it_${itemId}`, name: itemJa(itemId), names: itemNames(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
-      gatheringLevel: levelByItem.get(itemId) || Number(n.level) || null, ...extra,
+      gatheringLevel: itemGatheringLevel(itemId, n.level), ...extra,
     });
     const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : makeItem(itemId)) : null;
     runtimeNodes.push({
@@ -309,7 +319,7 @@ async function main() {
       itemInfo.get(it).jobs.add(gatheringType <= 1 ? 'MIN' : 'BTN');
     }
     const tool = toolOf(gatheringType);
-    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: slot.gatheringLevel || Number(b.GatheringLevel) || null }));
+    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: itemGatheringLevel(slot.itemId, b.GatheringLevel) }));
     const patch = nodePatch(itemIds);
     runtimeNodes.push({
       id: `nd_normal_${key.replace(/[^a-zA-Z0-9_:-]/g, '_')}`, class: gatheringType <= 1 ? 'MIN' : 'BTN', tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon,
