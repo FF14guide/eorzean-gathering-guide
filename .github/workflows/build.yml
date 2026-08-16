@@ -1,7 +1,7 @@
 name: ビルドと公開
 
 on:
-  # 毎日正午（JST）に上流データを取り直し、Cloudflare Pagesの本番ビルドを起動する。
+  # 毎日正午（JST）に上流データを確認し、差分がある場合だけ公開する。
   schedule:
     - cron: '0 3 * * *'
   # パッチ直後などに、上流データの確認とCloudflare Pagesの本番ビルドを手動で起動する。
@@ -11,7 +11,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -33,10 +33,31 @@ jobs:
       - name: サイトを生成（上流データを取り直す）
         run: node tools/build.mjs --refresh
 
-      # schedule / workflow_dispatch のときだけ、Cloudflare PagesのGit連携ビルドを起動する。
+      - name: 上流データの状態を記録
+        id: upstream
+        run: |
+          node tools/record-upstream-state.mjs
+          if git ls-files --error-unmatch tools/upstream-state.json >/dev/null 2>&1 && git diff --quiet -- tools/upstream-state.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "上流データに変更はありません。"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "上流データの変更を検知しました。"
+          fi
+
+      - name: 上流データ状態をコミット
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/upstream-state.json
+          git commit -m "chore: update upstream game data state"
+          git push origin HEAD:main
+
+      # schedule は差分検知時、workflow_dispatch は常にCloudflare Pagesの本番ビルドを起動する。
       # URLは認証不要の秘密情報のため、GitHub Actions Secretとしてのみ保存する。
       - name: Cloudflare Pages の本番ビルドを起動
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: (github.event_name == 'schedule' && steps.upstream.outputs.changed == 'true') || github.event_name == 'workflow_dispatch'
         env:
           CLOUDFLARE_PAGES_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK }}
         run: |
@@ -48,8 +69,8 @@ jobs:
             --request POST "$CLOUDFLARE_PAGES_DEPLOY_HOOK"
           echo "Cloudflare Pages の本番ビルドを起動しました。"
 
-      # 生成物はリポジトリに置かない。Cloudflare Pagesはデプロイフックで
-      # mainブランチの最新ソースを再ビルドする。
+      # 生成物はリポジトリに置かない。状態ファイルだけを差分検知用に管理し、
+      # Cloudflare Pagesはmainブランチの最新ソースを再ビルドする。
 
       # GitHub Pages を選ぶ場合のみ、生成物をGitHub Pagesへデプロイする。
       - uses: actions/configure-pages@v5
