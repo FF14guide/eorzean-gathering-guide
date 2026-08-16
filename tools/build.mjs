@@ -48,6 +48,15 @@ const SOURCES = {
   'Achievement_ja.csv':    `${DM}/ja/Achievement.csv`,
   'Item_ja.csv':           `${DM}/ja/Item.csv`,
   'GatheringPoint.csv':     `${DM}/en/GatheringPoint.csv`,
+  'GatheringPointBonus.csv': `${DM}/en/GatheringPointBonus.csv`,
+  'GatheringPointBonusType_ja.csv': `${DM}/ja/GatheringPointBonusType.csv`,
+  'GatheringPointBonusType_en.csv': `${DM}/en/GatheringPointBonusType.csv`,
+  'GatheringPointBonusType_de.csv': `${DM}/de/GatheringPointBonusType.csv`,
+  'GatheringPointBonusType_fr.csv': `${DM}/fr/GatheringPointBonusType.csv`,
+  'GatheringCondition_ja.csv': `${DM}/ja/GatheringCondition.csv`,
+  'GatheringCondition_en.csv': `${DM}/en/GatheringCondition.csv`,
+  'GatheringCondition_de.csv': `${DM}/de/GatheringCondition.csv`,
+  'GatheringCondition_fr.csv': `${DM}/fr/GatheringCondition.csv`,
   'ExportedGatheringPoint.csv': `${DM}/en/ExportedGatheringPoint.csv`,
   'GatheringPointBase.csv': `${DM}/en/GatheringPointBase.csv`,
   'GatheringItem.csv':      `${DM}/en/GatheringItem.csv`,
@@ -103,6 +112,13 @@ async function main() {
   const rrev   = JSON.parse(raw['reverse-reduction.json']);
   const ipatch = JSON.parse(raw['item-patch.json']);
   const gpRows = parseCsv(raw['GatheringPoint.csv']);
+  const gpBonusRows = new Map(parseCsv(raw['GatheringPointBonus.csv']).map((r) => [r['#'], r]));
+  const readLocalizedSheet = (prefix) => {
+    const tables = Object.fromEntries(['ja', 'en', 'de', 'fr'].map((lang) => [lang, new Map(parseCsv(raw[`${prefix}_${lang}.csv`]).map((r) => [r['#'], r.Text || '']))]));
+    return (id) => ({ ja: tables.ja.get(String(id)) || '', en: tables.en.get(String(id)) || tables.ja.get(String(id)) || '', de: tables.de.get(String(id)) || tables.en.get(String(id)) || tables.ja.get(String(id)) || '', fr: tables.fr.get(String(id)) || tables.en.get(String(id)) || tables.ja.get(String(id)) || '' });
+  };
+  const bonusTypeText = readLocalizedSheet('GatheringPointBonusType');
+  const conditionText = readLocalizedSheet('GatheringCondition');
   const exportedGp = new Map(parseCsv(raw['ExportedGatheringPoint.csv']).map((r) => [r['#'], r]));
   const pnames = JSON.parse(raw['patch-names.json']);
 
@@ -114,6 +130,23 @@ async function main() {
   });
   const placeNames = (id) => localized(places, id);
   const itemNames  = (id) => localized(items, id, `#${id}`);
+  const fillBonusText = (text, value) => String(text || '').replace(/UNKNOWN/g, String(value)).trim();
+  const bonusForId = (id) => {
+    const row = gpBonusRows.get(String(id));
+    if (!row) return null;
+    return {
+      id: Number(id),
+      effect: Object.fromEntries(Object.entries(bonusTypeText(row.BonusType)).map(([lang, text]) => [lang, fillBonusText(text, row.BonusValue)])),
+      condition: Object.fromEntries(Object.entries(conditionText(row.Condition)).map(([lang, text]) => [lang, fillBonusText(text, row.ConditionValue)])),
+    };
+  };
+  const bonusesForBase = (baseId) => {
+    const ids = new Set();
+    gpRows.filter((r) => String(r.GatheringPointBase || '') === String(baseId)).forEach((r) => {
+      for (const key of ['GatheringPointBonus[0]', 'GatheringPointBonus[1]']) if (r[key] && r[key] !== '0') ids.add(r[key]);
+    });
+    return [...ids].map(bonusForId).filter(Boolean);
+  };
   // ディアデム諸島の第二次・第三次復興用アイテムは、現在は採取・使用対象外。
   // 日本語名を主判定にしつつ、4言語のデータ差異にも対応する。
   const isObsoleteDiademItem = (id) => {
@@ -256,11 +289,12 @@ async function main() {
       itemInfo.get(it).jobs.add(cls);
     }
     const rawSlotDetails = resolveSlotDetails(n.base);
+    const nodeBonuses = bonusesForBase(n.base);
     const levelByItem = new Map((rawSlotDetails || []).filter(Boolean).map((slot) => [slot.itemId, slot.gatheringLevel]));
     const rawSlots = rawSlotDetails?.map((slot) => slot?.itemId ?? null) || null;
     const makeItem = (itemId, extra = {}) => ({
       id: `it_${itemId}`, name: itemJa(itemId), names: itemNames(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
-      gatheringLevel: itemGatheringLevel(itemId, n.level), ...extra,
+      gatheringLevel: itemGatheringLevel(itemId, n.level), bonuses: nodeBonuses, ...extra,
     });
     const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : makeItem(itemId)) : null;
     runtimeNodes.push({
@@ -276,6 +310,7 @@ async function main() {
       items: visibleIds.map((it) => makeItem(it, { hidden: false }))
         .concat(hiddenIds.map((it, i) => makeItem(it, { hidden: true, stars: i + 1 }))),
       use: [...new Set(allIds.flatMap((it) => usesFor(it)))],
+      bonuses: nodeBonuses,
       achievements: [],
     });
   }
@@ -320,7 +355,8 @@ async function main() {
       itemInfo.get(it).jobs.add(gatheringType <= 1 ? 'MIN' : 'BTN');
     }
     const tool = toolOf(gatheringType);
-    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: itemGatheringLevel(slot.itemId, b.GatheringLevel) }));
+    const nodeBonuses = bonusesForBase(r.GatheringPointBase);
+    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: itemGatheringLevel(slot.itemId, b.GatheringLevel), bonuses: nodeBonuses }));
     const patch = nodePatch(itemIds);
     runtimeNodes.push({
       id: `nd_normal_${key.replace(/[^a-zA-Z0-9_:-]/g, '_')}`, class: gatheringType <= 1 ? 'MIN' : 'BTN', tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon,
@@ -328,7 +364,7 @@ async function main() {
       area: placeJa(gm.placename_id), areaNames: placeNames(gm.placename_id),
       map: { image: gm.image, px: normalMapPct(x, gm), py: normalMapPct(y, gm), id: gm.id, names: placeNames(gm.placename_id) },
       aetheryte: a ? placeJa(a.nameid) : '', aetheryteNames: a ? placeNames(a.nameid) : {ja:'',en:'',de:'',fr:''},
-      x, y, windows: [], patch, folklore: '', slots: names, items: names, use: [...new Set(itemIds.flatMap(it => usesFor(it)))], achievements: [],
+      x, y, windows: [], patch, folklore: '', slots: names, items: names, bonuses: nodeBonuses, use: [...new Set(itemIds.flatMap(it => usesFor(it)))], achievements: [],
     });
   }
 

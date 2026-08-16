@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sourceCount": 15,
+  "sourceCount": 24,
   "latestPatch": "7.5",
   "previousPatch": "7.4",
   "patches": [
@@ -139,6 +139,42 @@
     "GatheringPoint.csv": {
       "sha256": "838b106f058c97f8e1a786ab975a2a77c36546599f4e7c83a156412bfeb4d569",
       "bytes": 205935
+    },
+    "GatheringPointBonus.csv": {
+      "sha256": "71f467ca823523582885f965dd6d58b4dbac71685bb1caa007ac60dfa2b835d8",
+      "bytes": 23798
+    },
+    "GatheringPointBonusType_ja.csv": {
+      "sha256": "49e423da62306d2efddddbcad682dae24b213bb50bd8ae7162d463871106fb41",
+      "bytes": 1314
+    },
+    "GatheringPointBonusType_en.csv": {
+      "sha256": "4dfc7d1e7e3805e42048e25cb82a593c84593acac0fa57790a3a72064c247bf0",
+      "bytes": 1158
+    },
+    "GatheringPointBonusType_de.csv": {
+      "sha256": "fc8bc69d23da945acc236bf1635f31e406ca75deb9918e0d089866e0432daa8b",
+      "bytes": 1028
+    },
+    "GatheringPointBonusType_fr.csv": {
+      "sha256": "29c051801e6f40730c18e2f102285e8abcae4561fcfc62ecd1766dca7498368c",
+      "bytes": 1141
+    },
+    "GatheringCondition_ja.csv": {
+      "sha256": "20fa9063ea4236013d86f470d955e5f342a11788438caf896c4833d7865c3270",
+      "bytes": 446
+    },
+    "GatheringCondition_en.csv": {
+      "sha256": "8c5ae85b46fda76ff2f28c77d094a85fceca7c1ae35aaa8722517f746856b771",
+      "bytes": 381
+    },
+    "GatheringCondition_de.csv": {
+      "sha256": "46be75afa9ec3f676914bf5590ad387e2e16fadff6cd25a5f4c0daa2931ab946",
+      "bytes": 434
+    },
+    "GatheringCondition_fr.csv": {
+      "sha256": "0facd58d53add0a2dd4a85a92d2c17fbedeef8e4dec5e20e0c57696debbc55b8",
+      "bytes": 412
     },
     "ExportedGatheringPoint.csv": {
       "sha256": "ff35bc2b956ada9938b5d634ad0aede762c1e0caa74d8c38c31e7428a5c34ed5",

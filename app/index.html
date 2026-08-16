@@ -240,6 +240,8 @@
   .iico{width:26px;height:26px;flex:none;border-radius:6px;background:var(--bg2);border:1px solid var(--line);object-fit:cover}
   .iico.ph{display:none}
   .inm{flex:1;min-width:0;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item-bonus{display:inline-flex;align-items:center;max-width:220px;margin-left:7px;padding:1px 6px;border:1px solid rgba(239,190,76,.45);border-radius:5px;color:var(--gold);background:rgba(239,190,76,.1);font-size:10px;line-height:1.45;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item-bonus::before{content:'✦';margin-right:4px;font-size:9px}
   .inm b{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;color:var(--btn);background:rgba(123,178,85,.15);border:1px solid rgba(123,178,85,.4);border-radius:5px;padding:1px 5px;margin-right:6px;font-style:normal}
   .ilv{flex:none;font-family:var(--mono);font-size:11px;color:var(--faint)}
   .irow.hidden{background:rgba(123,178,85,.05)}
@@ -951,6 +953,15 @@ function refreshTimeList(sod){
   }
 }
 
+function htmlEsc(value){return String(value??'').replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));}
+function itemBonusHtml(item){
+  const lang=state.locale||'ja';
+  return (item.bonuses||[]).map(b=>{
+    const effect=b.effect?.[lang]||b.effect?.ja||'';
+    const condition=b.condition?.[lang]||b.condition?.ja||'';
+    return effect?`<span class="item-bonus" title="${htmlEsc(condition)}">${htmlEsc(effect)}${condition?`（${htmlEsc(condition)}）`:''}</span>`:'';
+  }).join('');
+}
 function renderDetail(){
   const n=NODES_BY_ID.get(state.selected);
   if(!n){detailEl.innerHTML='<div class="empty">← 左のポイントを選ぶと<br>取得物・座標・アチーブメント攻略を表示します</div>';return;}
@@ -990,7 +1001,7 @@ function renderDetail(){
       <div class="irow">
         <span class="islot">${idx+1}</span>
         <img class="iico" src="${s.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">
-        <span class="inm">${s.name}${s.collectable?' ◆':''}</span>
+        <span class="inm">${htmlEsc(s.name)}${s.collectable?' ◆':''}${itemBonusHtml(s)}</span>
         <span class="ilv">Lv${n.level}</span>
         ${priceCell(s)}
         <button class="obtain${state.obtained.has(s.id)?' on':''}" data-obtain="${s.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>
@@ -1000,7 +1011,7 @@ function renderDetail(){
     ${n.items.some(i=>i.hidden)?`<div class="itemlist hiddenlist">${n.items.filter(i=>i.hidden).map(i=>`
       <div class="irow hidden">
         ${i.icon?`<img class="iico" src="${i.icon}" alt="" loading="lazy" onerror="this.classList.add('ph');this.removeAttribute('src')">`:'<span class="iico ph"></span>'}
-        <span class="inm"><b>HIDDEN</b> ${i.name}${i.collectable?' ◆':''}</span>
+        <span class="inm"><b>HIDDEN</b> ${htmlEsc(i.name)}${i.collectable?' ◆':''}${itemBonusHtml(i)}</span>
         <span class="ilv">Lv${n.level}${'★'.repeat(i.stars)}</span>
         ${priceCell(i)}
         <button class="obtain${state.obtained.has(i.id)?' on':''}" data-obtain="${i.id}" aria-label="取得済みにする" title="取得済みにする">${ICON.check}</button>

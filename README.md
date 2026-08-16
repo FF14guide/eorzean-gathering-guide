@@ -95,7 +95,7 @@ data/achievement-links.json  唯一の手動データ：アチーブメントの
 node tools/build.mjs --refresh
 ```
 
-上流（Teamcraft / datamining）が更新されていれば、新エリアのノードとアイテムが自動で入る。公開中のGitHub Actionsは毎日正午（JST）に15ソースを再取得し、各ソースのSHA-256と最新・準最新パッチを `tools/upstream-state.json` に記録する。差分を検知した場合だけ状態ファイルを自動コミットし、Cloudflare Pagesを再ビルドするため、パッチ後のデータ更新が自動で本番へ反映される。差分がない日は公開処理を行わない。パッチ直後に確認したい場合は、Actionsの `ビルドと公開` を手動実行できる。初回公開前はGitHub Actions Secret `CLOUDFLARE_PAGES_DEPLOY_HOOK` と、ワークフローがコミットできる `contents: write` 権限を確認すること。詳しくは [PUBLISHING.md](PUBLISHING.md) を参照。
+上流（Teamcraft / datamining）が更新されていれば、新エリアのノードとアイテムが自動で入る。公開中のGitHub Actionsは毎日正午（JST）に24ソースを再取得し、各ソースのSHA-256と最新・準最新パッチを `tools/upstream-state.json` に記録する。差分を検知した場合だけ状態ファイルを自動コミットし、Cloudflare Pagesを再ビルドするため、パッチ後のデータ更新が自動で本番へ反映される。差分がない日は公開処理を行わない。パッチ直後に確認したい場合は、Actionsの `ビルドと公開` を手動実行できる。初回公開前はGitHub Actions Secret `CLOUDFLARE_PAGES_DEPLOY_HOOK` と、ワークフローがコミットできる `contents: write` 権限を確認すること。詳しくは [PUBLISHING.md](PUBLISHING.md) を参照。
 
 ## 公開する
 
