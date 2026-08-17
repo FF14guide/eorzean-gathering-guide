@@ -1329,8 +1329,8 @@ notifyToggle.addEventListener('click',async e=>{
 
 function tickClocks(et=eorzeaNow()){
   const lt=new Date();
-  const h=et.h, m=et.m;
-  const frac=(h+m/60)/24;
+  const h=et.h, m=et.m, s=et.s;
+  const frac=(h*3600+m*60+s)/86400;
   const R=14, C=17, circ=2*Math.PI*R;
   const ring=document.getElementById('etring');
   if(ring)ring.innerHTML=`
