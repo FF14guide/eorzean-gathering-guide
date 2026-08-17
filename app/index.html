@@ -1335,7 +1335,7 @@ function tickClocks(et=eorzeaNow()){
   const ring=document.getElementById('etring');
   if(ring)ring.innerHTML=`
     <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="var(--line)" stroke-width="2.5"/>
-    <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="var(--aqua)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="${(circ*frac).toFixed(2)} ${circ.toFixed(2)}" transform="rotate(-90 ${C} ${C})"/>
+    <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="#4fdcec" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="${(circ*frac).toFixed(2)} ${circ.toFixed(2)}" transform="rotate(-90 ${C} ${C})"/>
     <circle cx="${C}" cy="${C}" r="2" fill="${h>=6&&h<18?'var(--gold)':'var(--faint)'}"/>`;
   document.getElementById('etClock').textContent=`${pad(h)}:${pad(m)}`;
   document.getElementById('ltClock').textContent=`${pad(lt.getHours())}:${pad(lt.getMinutes())}`;
