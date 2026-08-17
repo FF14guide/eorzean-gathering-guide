@@ -463,6 +463,31 @@
     .area-spot__items{font-size:9px}
   }
   @media(min-width:761px){.area-rail{padding:12px 12px 24px!important;border:0;border-right:1px solid var(--border);border-radius:0!important;background:#0b1729!important}}
+  /* ---------- fishing-guide clock alignment ---------- */
+  @media(min-width:761px){
+    header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:18px}
+    .brand{grid-column:1;grid-row:1}
+    .area-menu-toggle{grid-column:3;grid-row:1}
+    .clocks{grid-column:2;grid-row:1;justify-self:start;gap:10px;margin-left:4px}
+    .clock-dial{width:34px;height:34px}
+    .clock-read b{font-size:16px;letter-spacing:.04em}
+    .clock-read div{font-size:9px;letter-spacing:.16em}
+    .clock-read.lt{padding-left:10px}
+  }
+  @media(max-width:760px){
+    header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:8px;row-gap:8px}
+    .brand{grid-column:1;grid-row:1;min-width:0}
+    .area-menu-toggle{grid-column:2;grid-row:1;margin-left:0}
+    .clocks{grid-column:1/-1;grid-row:2;justify-self:start;width:100%;gap:10px;min-width:0;overflow-x:auto;padding:2px 0 1px;scrollbar-width:none}
+    .clocks::-webkit-scrollbar{display:none}
+    .clock{display:flex;gap:7px}
+    .clock-dial{width:26px;height:26px}
+    .clock-read b{font-size:14px;letter-spacing:.03em}
+    .clock-read div{font-size:8px;letter-spacing:.14em}
+    .clock-read.lt{padding-left:8px}
+    .language-switch select{min-height:36px}
+    .notifybtn{min-height:36px}
+  }
 </style>
 </head>
 <body>
