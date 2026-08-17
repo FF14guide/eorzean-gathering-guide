@@ -410,7 +410,8 @@
     .result-pane{min-width:0;width:100%}
     .detail-columns{grid-template-columns:minmax(0,1.22fr) minmax(320px,.98fr);gap:16px}
   }
-  @media(min-width:1081px){.result-pane .grid:has(.spot-row){grid-template-columns:minmax(440px,.88fr) minmax(520px,1.12fr);gap:16px}}
+  @media(min-width:761px){.result-pane__content{min-width:0}.result-pane .grid:has(.spot-row){grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}}
+  @media(min-width:1081px){.result-pane .grid:has(.spot-row){grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}}
   /* compact spot tree: inspired by the Fish Guide navigation */
   .area-rail{padding:8px;border-radius:12px}
   .area-rail__head{padding:4px 6px 8px}
@@ -473,55 +474,31 @@
 </header>
 
 <div class="wrap">
-  <section class="command-bar" aria-label="採取場所の検索と絞り込み">
-    <label class="searchbox">
-      <span class="sr-only">アイテム名または採取場所を検索</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.2 4.2"/></svg>
-      <input type="search" id="fText" placeholder="アイテム名・採取場所で検索">
-    </label>
-      <div class="mode-groups">
-        <div class="quick-seg" id="segClass" role="group" aria-label="ジョブ">
-          <button data-c="all" data-v="all" aria-pressed="true">全て</button>
-          <button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button>
-          <button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button>
-        </div>
-        <div class="quick-seg schedule-chip" id="segLatest" role="group" aria-label="最新素材スケジュール"><button data-latest="latest" aria-pressed="false">最新素材</button><button data-latest="previous" aria-pressed="false">準最新素材</button></div>
-        <div class="quick-seg" id="segView" role="group" aria-label="表示方法">
-          <button data-v="time" aria-pressed="true">スケジュール</button>
-          <button data-v="catalog" aria-pressed="false">場所</button>
-          <button data-v="log" aria-pressed="false">手帳</button>
-        </div>
-      </div>
-      <div class="target-focus" id="targetTypeFocus" role="group" aria-label="対象種別"></div>
-    <details class="filterbox">
-      <summary class="filter-trigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>絞り込み</summary>
-      <div class="filter-popover">
-        <label><span class="sr-only">種別</span><select id="fType"><option value="all">全種別</option></select></label>
-        <label><span class="sr-only">エリア</span><select id="fArea"><option value="all">全エリア</option></select></label>
-        <label><span class="sr-only">拡張</span><select id="fPatch"><option value="all">全拡張</option></select></label>
-        <label><span class="sr-only">用途</span><select id="fUse"><option value="all">全用途</option></select></label>
-        <label><span class="sr-only">並び順</span><select id="fSort"><option value="time">時刻順</option><option value="patch-desc">パッチが新しい順</option><option value="patch-asc">パッチが古い順</option><option value="price-desc">最安価格が高い順</option></select></label>
-      </div>
-    </details>
-  </section>
-
-  <section class="marketbar" aria-label="Marketboard価格の対象ワールド">
-    <div class="marketbar__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 10h8M8 14h8M12 6v12"/></svg>Marketboard価格</div>
-    <select id="fMarketDc" aria-label="データセンター" disabled><option>読み込み中…</option></select>
-    <select id="fMarketWorld" aria-label="ワールド" disabled><option>DC集計</option></select>
-    <button id="refreshMarket" type="button" disabled>価格を更新</button>
-    <span class="marketbar__status" id="marketStatus">価格データを準備中</span>
-  </section>
-
   <div class="app-shell">
     <aside class="area-rail" id="areaRail" aria-label="採取エリア一覧">
-      <div class="area-rail__head"><div class="area-rail__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2v14l-4 2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg><span>採取場と取得物<small>場所ごとの採取素材</small></span></div><span class="area-rail__hint">SPOTS</span></div>
+      <div class="area-rail__head"><div class="area-rail__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg><span>採取場と取得物<small>場所ごとの採取素材</small></span></div><span class="area-rail__hint">SPOTS</span></div>
       <button class="area-all" id="areaAll" aria-pressed="true"><span>すべての採取場</span><span id="areaAllCount"></span></button>
       <div class="area-groups" id="areaNav"></div>
     </aside>
     <div class="area-rail-backdrop" id="areaRailBackdrop" aria-hidden="true"></div>
 
     <main class="result-pane">
+      <section class="command-bar" aria-label="採取場所の検索と絞り込み">
+        <label class="searchbox">
+          <span class="sr-only">アイテム名または採取場所を検索</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.2 4.2"/></svg>
+          <input type="search" id="fText" placeholder="アイテム名・採取場所で検索">
+        </label>
+        <div class="mode-groups">
+          <div class="quick-seg" id="segClass" role="group" aria-label="ジョブ"><button data-c="all" data-v="all" aria-pressed="true">全て</button><button data-c="min" data-v="MIN" aria-pressed="false">採掘師</button><button data-c="btn" data-v="BTN" aria-pressed="false">園芸師</button></div>
+          <div class="quick-seg schedule-chip" id="segLatest" role="group" aria-label="最新素材スケジュール"><button data-latest="latest" aria-pressed="false">最新素材</button><button data-latest="previous" aria-pressed="false">準最新素材</button></div>
+          <div class="quick-seg" id="segView" role="group" aria-label="表示方法"><button data-v="time" aria-pressed="true">スケジュール</button><button data-v="catalog" aria-pressed="false">場所</button><button data-v="log" aria-pressed="false">手帳</button></div>
+        </div>
+        <div class="target-focus" id="targetTypeFocus" role="group" aria-label="対象種別"></div>
+        <details class="filterbox"><summary class="filter-trigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>絞り込み</summary><div class="filter-popover"><label><span class="sr-only">種別</span><select id="fType"><option value="all">全種別</option></select></label><label><span class="sr-only">エリア</span><select id="fArea"><option value="all">全エリア</option></select></label><label><span class="sr-only">拡張</span><select id="fPatch"><option value="all">全拡張</option></select></label><label><span class="sr-only">用途</span><select id="fUse"><option value="all">全用途</option></select></label><label><span class="sr-only">並び順</span><select id="fSort"><option value="time">時刻順</option><option value="patch-desc">パッチが新しい順</option><option value="patch-asc">パッチが古い順</option><option value="price-desc">最安価格が高い順</option></select></label></div></details>
+      </section>
+      <section class="marketbar" aria-label="Marketboard価格の対象ワールド"><div class="marketbar__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 10h8M8 14h8M12 6v12"/></svg>Marketboard価格</div><select id="fMarketDc" aria-label="データセンター" disabled><option>読み込み中…</option></select><select id="fMarketWorld" aria-label="ワールド" disabled><option>DC集計</option></select><button id="refreshMarket" type="button" disabled>価格を更新</button><span class="marketbar__status" id="marketStatus">価格データを準備中</span></section>
+      <div class="result-pane__content">
       <div class="result-header">
         <div><h2 id="resultTitle">採集スケジュール</h2><p id="resultCaption">ET時刻・最新素材・Marketboard価格で、次に向かう採取場を決められます。</p></div>
         <div class="count" id="count"></div>
@@ -536,6 +513,7 @@
         <aside class="detail" id="detail">
           <div class="empty">場所を選ぶと、地図・座標・取得物を<br>まとめて確認できます</div>
         </aside>
+      </div>
       </div>
     </main>
   </div>
