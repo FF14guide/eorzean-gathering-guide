@@ -376,6 +376,16 @@
   .spot-row__main{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap}.spot-row__items{overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#e7eef9}.spot-row__area{flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;color:#738daf;font-size:10.5px}.spot-row__kind{font-family:var(--mono);font-size:9px;color:#8fa7c7;border:1px solid rgba(151,178,220,.16);border-radius:5px;padding:2px 4px;white-space:nowrap}  .spot-row__fav,.spot-row__alarm{min-width:40px;min-height:40px;display:grid;place-items:center;padding:3px!important;margin:0!important;color:#6e86a9}.spot-row__fav svg,.spot-row__alarm svg{width:14px;height:14px}.spot-row__alarm.on{color:var(--soon)}.spot-row__fav:hover,.spot-row__alarm:hover{color:var(--gold)}.spot-row.state-live::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--mint);box-shadow:0 0 8px rgba(103,212,161,.6)}
   .result-pane .grid:has(.spot-row){grid-template-columns:minmax(380px,.92fr) minmax(330px,1.08fr)}
   @media(max-width:1080px){.result-pane .grid:has(.spot-row){grid-template-columns:1fr}.spot-row__area{max-width:45%}}
+  @media(max-width:760px){
+    .detail{padding:12px;border-radius:11px}
+    .d-head h2{font-size:18px;line-height:1.25}.d-sub{font-size:10px;line-height:1.45;overflow-wrap:anywhere}.tool-badge{white-space:normal;max-width:100%;line-height:1.35}
+    .d-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.d-actions .btn{justify-content:center;min-height:40px;padding:7px 6px}
+    .d-bonuses{margin-top:7px;padding:7px}.d-bonus{padding:2px 6px;font-size:10px}
+    .d-eta{margin:9px 0;padding:8px 9px}.d-eta .num{font-size:19px}.d-eta .meta{font-size:10.5px}
+    .mapbox{margin:10px 0}.mapbox .inner{padding-top:64%;min-height:220px;max-height:340px}
+    .meta{gap:4px 5px;margin:8px 0}.meta .m{max-width:100%;padding:4px 6px;font-size:10px;overflow:hidden;text-overflow:ellipsis}
+    .itemlist{margin:10px 0}.irow{gap:5px;min-width:0;padding:5px 7px}.irow.vacant{padding:3px 7px}.iico{width:24px;height:24px}.inm{font-size:12px}.ilv{font-size:10px}.item-price{min-width:64px;max-width:78px;overflow:hidden;text-overflow:ellipsis}.item-price small{font-size:8px}.obtain{width:26px;height:26px}
+  }
   @media(max-width:640px){.spot-row{grid-template-columns:62px 34px minmax(0,1fr) 58px 40px 40px;gap:6px;min-height:44px;padding:5px 7px}.spot-row__job{width:25px;height:25px}.spot-row__job svg{width:13px;height:13px}.spot-row__area,.spot-row__kind{display:none}.spot-row__items{font-size:11.5px}.spot-row__remain{font-size:11px}.spot-row__et{font-size:9px}}
 
   /* ---------- v4: material schedule & marketboard ---------- */
