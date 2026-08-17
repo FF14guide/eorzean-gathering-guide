@@ -432,6 +432,13 @@
   .area-map>summary{padding:7px 6px 7px 10px;font-size:11px!important;font-weight:600!important;color:var(--dim)!important}
   .area-map>summary:hover{color:var(--ink)!important;background:rgba(46,74,125,.22)}
   .area-map .area-group__body{padding:0 0 3px 0;border-left:2px solid rgba(133,185,245,.16)}
+  .area-region{border-bottom:1px solid rgba(151,178,220,.07);margin:0;padding:0 0 1px 7px}
+  .area-region>summary{display:flex;align-items:center;gap:6px;padding:5px 6px 5px 9px;font-size:10.5px;font-weight:600;color:var(--faint);cursor:pointer;list-style:none}
+  .area-region>summary::-webkit-details-marker{display:none}
+  .area-region>summary::before{content:'›';font-size:15px;line-height:10px;color:#7895bc;transition:transform .18s var(--ease-out)}
+  .area-region[open]>summary::before{transform:rotate(90deg)}
+  .area-region>summary:hover{color:var(--ink);background:rgba(46,74,125,.18)}
+  .area-region .area-group__body{padding:0;border-left:2px solid rgba(133,185,245,.12)}
   .area-spot{display:flex;align-items:center;gap:6px;padding:5px 6px 5px 10px;border-left:2px solid transparent;border-radius:0;background:transparent;min-height:30px}
   .area-spot:hover{background:rgba(46,74,125,.3);color:var(--ink)}
   .area-spot[aria-pressed="true"]{color:#e9f6ff;background:rgba(79,220,236,.10);border-left-color:#4fdcec;font-weight:600}
@@ -764,6 +771,8 @@ const EXPANSION_NAMES={2:{ja:'新生エオルゼア',en:'A Realm Reborn',de:'A R
 const UI={ja:{all:'すべての採取場',spots:'採取場',map:'MAP',gathered:'取得',gatherable:'取得物を確認',gathering:'採集',schedule:'採集スケジュール',search:'アイテム名・採取場所で検索',browse:'場所から探す',browseCaption:'拡張とエリアから、目的の採取場所を探せます。',handbook:'採集手帳',handbookCaption:'公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。'},en:{all:'All gathering spots',spots:'Spots',map:'MAP',gathered:'Collected',gatherable:'View items',gathering:'Gathering',schedule:'Gathering schedule',search:'Search items or locations',browse:'Browse by location',browseCaption:'Find gathering spots by expansion and area.',handbook:'Gathering handbook',handbookCaption:'Track collection progress by official tool type and level range.'},de:{all:'Alle Sammelstellen',spots:'Sammelstellen',map:'Karte',gathered:'Gesammelt',gatherable:'Gegenstände anzeigen',gathering:'Sammeln',schedule:'Sammelplan',search:'Gegenstände oder Orte suchen',browse:'Nach Ort suchen',browseCaption:'Sammelstellen nach Erweiterung und Gebiet finden.',handbook:'Sammelhandbuch',handbookCaption:'Fortschritt nach Werkzeugtyp und Stufenbereich verfolgen.'},fr:{all:'Tous les points de récolte',spots:'Points',map:'Carte',gathered:'Obtenus',gatherable:'Voir les objets',gathering:'Récolte',schedule:'Planning de récolte',search:'Rechercher objets ou lieux',browse:'Chercher par lieu',browseCaption:'Trouvez les points par extension et par zone.',handbook:'Carnet de récolte',handbookCaption:'Suivez la progression par outil et tranche de niveaux.'}};
 const ui=k=>UI[state.locale]?.[k]||UI.ja[k]||k;
 const nlabel=(obj,fallback='')=>obj?.names?.[state.locale]||obj?.[state.locale]||obj?.name||fallback;
+const regionKey=n=>String(n.aetheryteNames?.ja||n.aetheryte||`${n.x}:${n.y}`);
+const regionLabel=n=>{const base=nlabel(n.aetheryteNames,n.aetheryte||n.area);const suffix={ja:'周辺',en:' area',de:'-Gebiet',fr:' — zone'}[state.locale]||'周辺';return base?`${base}${suffix}`:nlabel(n.areaNames,n.area)};
 const TOOL_NAMES={ja:{採掘:'採掘',砕岩:'砕岩',伐採:'伐採',草刈:'草刈'},en:{採掘:'Mining',砕岩:'Quarrying',伐採:'Logging',草刈:'Harvesting'},de:{採掘:'Bergbau',砕岩:'Steinbruch',伐採:'Holzfällerei',草刈:'Ernten'},fr:{採掘:'Minage',砕岩:'Extraction',伐採:'Abattage',草刈:'Récolte'}};
 const toolDisplay=n=>{const name=TOOL_NAMES[state.locale]?.[n.toolLabel]||n.toolLabel;return state.locale==='ja'?`${n.toolMain?'主':'副'}${name}`:`${n.toolMain?'Main':'Off-hand'} ${name}`};
 const FIXED_I18N={
@@ -829,11 +838,21 @@ function renderAreaNav(){
     return `<details class="area-group" ${isOpen?'open':''}><summary>${expansionLabel(major)}<span class="area-group__count">${nodeCount}${ui('spots')}</span></summary><div class="area-group__body">${maps.map(([mapKey,nodes])=>{
       const mapName=nlabel(nodes[0].map,nodes[0].area);
       const mapOpen=selected&&String(selected.map?.id??`${selected.area}:${selected.x}:${selected.y}`)===mapKey;
-      return `<details class="area-map" ${mapOpen?'open':''}><summary>${mapName}<span class="area-group__count">${nodes.length}${ui('spots')}</span></summary><div class="area-group__body">${nodes.slice().sort((a,b)=>a.area.localeCompare(b.area,state.locale)||a.level-b.level||a.id.localeCompare(b.id)).map(n=>{
-        const names=n.items.map(i=>`${i.hidden?'★ ':''}${nlabel(i)}`).join('・')||ui('gatherable');
-        const spotName=nlabel(n.areaNames,n.area);
-        return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${spotName} ／ ${names}"><img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"><span class="area-spot__name">${spotName}</span><span class="area-spot__items">${names}</span><span class="area-spot__meta">${toolDisplay(n)}</span></button>`;
+      const regionGroups=new Map();
+      nodes.forEach(n=>{const key=regionKey(n);if(!regionGroups.has(key))regionGroups.set(key,[]);regionGroups.get(key).push(n);});
+      const selectedRegion=selected?regionKey(selected):'';
+      const regions=[...regionGroups.entries()].sort((a,b)=>regionLabel(a[1][0]).localeCompare(regionLabel(b[1][0]),state.locale));
+      return `<details class="area-map" ${mapOpen?'open':''}><summary>${mapName}<span class="area-group__count">${nodes.length}${ui('spots')}</span></summary><div class="area-group__body">${regions.map(([region,regionNodes])=>{
+        const regionOpen=selectedRegion===region;
+        return `<details class="area-region" ${regionOpen?'open':''}><summary>${regionLabel(regionNodes[0])}<span class="area-group__count">${regionNodes.length}${ui('spots')}</span></summary><div class="area-group__body">${regionNodes.slice().sort((a,b)=>a.level-b.level||a.id.localeCompare(b.id)).map(n=>{
+          const visibleItems=n.items.filter(i=>!i.hidden);
+          const names=n.items.map(i=>`${i.hidden?'★ ':''}${nlabel(i)}`).join('・')||ui('gatherable');
+          const spotName=visibleItems[0]?nlabel(visibleItems[0]):(n.items[0]?nlabel(n.items[0]):ui('gatherable'));
+          const rest=visibleItems.slice(1).map(i=>nlabel(i)).join('・');
+          return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${regionLabel(n)} ／ ${names}"><img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"><span class="area-spot__name">${spotName}</span><span class="area-spot__items">${rest}</span><span class="area-spot__meta">${toolDisplay(n)}</span></button>`;
+        }).join('')}</div></details>`;
       }).join('')}</div></details>`;
+
     }).join('')}</div></details>`;
   }).join('');
 }
@@ -998,7 +1017,7 @@ function refreshTimeList(sod){
     const n=NODES_BY_ID.get(card.dataset.id);if(!n)continue;
     const t=nodeTiming(n.windows,sod),sc=timingClass(t);
     // 採取可／待機の切替時だけ並び替えを含む全体描画を行う。
-    if(card.dataset.timingState!==t.state){renderAreaNav();renderList();return;}
+    if(card.dataset.timingState!==t.state){renderList();return;}
     card.classList.remove('state-live','state-soon','state-far');card.classList.add(sc);
     card.querySelector('[data-countdown]').textContent=mmss(t.real);
     card.querySelector('[data-timing-label]').textContent=compactTimingLabel(t);
@@ -1225,7 +1244,7 @@ document.addEventListener('click',e=>{
   const obt=e.target.closest('[data-obtain]');
   if(obt){e.stopPropagation();const id=obt.dataset.obtain;state.obtained.has(id)?state.obtained.delete(id):state.obtained.add(id);savePreferences();renderDetail();renderProgress();if(state.viewMode==='catalog')renderList();return;}
   const catNode=e.target.closest('.cat-node');
-  if(catNode){state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
+  if(catNode){state.selected=catNode.dataset.id;renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
   if(card){state.selected=card.dataset.id;renderList();renderDetail();return;}
   const scheduleRow=e.target.closest('[data-schedule-id]');
@@ -1234,7 +1253,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
   const catNode=e.target.closest('.cat-node');
-  if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
+  if(catNode){e.preventDefault();state.selected=catNode.dataset.id;renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
   if(card){e.preventDefault();state.selected=card.dataset.id;renderList();renderDetail();return;}
   const scheduleRow=e.target.closest('[data-schedule-id]');
