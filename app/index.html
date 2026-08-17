@@ -1225,9 +1225,9 @@ document.addEventListener('click',e=>{
   const catNode=e.target.closest('.cat-node');
   if(catNode){state.selected=catNode.dataset.id;renderAreaNav();renderList();renderDetail();return;}
   const card=e.target.closest('.spot-row');
-  if(card){state.selected=card.dataset.id;renderAreaNav();renderList();renderDetail();return;}
+  if(card){state.selected=card.dataset.id;renderList();renderDetail();return;}
   const scheduleRow=e.target.closest('[data-schedule-id]');
-  if(scheduleRow){state.selected=scheduleRow.dataset.scheduleId;renderAreaNav();renderList();renderDetail();return;}
+  if(scheduleRow){state.selected=scheduleRow.dataset.scheduleId;renderList();renderDetail();return;}
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
@@ -1238,7 +1238,7 @@ document.addEventListener('keydown',e=>{
   const scheduleRow=e.target.closest('[data-schedule-id]');
   if(!scheduleRow)return;
   e.preventDefault();
-  state.selected=scheduleRow.dataset.scheduleId;renderAreaNav();renderList();renderDetail();
+  state.selected=scheduleRow.dataset.scheduleId;renderList();renderDetail();
 });
 
 let toastTimer;
