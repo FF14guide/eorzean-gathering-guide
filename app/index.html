@@ -429,6 +429,22 @@
   .area-spot__items{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow-wrap:normal;line-height:1.25;font-size:10.5px;font-weight:600}
   .area-spot__meta{margin-left:auto;flex:none;font:8.5px var(--mono);color:#7896bb;white-space:nowrap}
   .area-spot[aria-pressed="true"] .area-spot__meta{color:#b7d7ff}
+  .area-menu-toggle,.area-rail-backdrop{display:none}
+  .area-spot__name{flex:none;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:11px;font-weight:800}
+  .area-spot__items{flex:1;min-width:0;color:#7896bb;font-size:9.5px;font-weight:500}
+  .area-spot[aria-pressed="true"] .area-spot__name{color:#e9f6ff}
+  @media(max-width:760px){
+    body.area-menu-open{overflow:hidden}
+    .area-menu-toggle{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:40px;margin-left:auto;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:rgba(5,12,24,.72);color:var(--ink);font:800 11px var(--sans);cursor:pointer}
+    .area-menu-toggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+    .area-menu-toggle[aria-expanded="true"]{border-color:var(--sky);background:#172b48;color:#fff}
+    .area-rail{position:fixed!important;z-index:60;left:0;top:0;bottom:0;width:min(86vw,330px)!important;max-height:none!important;margin:0!important;padding:12px!important;border-radius:0 14px 14px 0!important;transform:translateX(-105%);transition:transform .22s var(--ease-out);overflow-y:auto!important;overflow-x:hidden!important;background:#0c172a!important;box-shadow:12px 0 30px rgba(0,0,0,.35)}
+    .area-rail.is-open{transform:translateX(0)}
+    .area-rail-backdrop{position:fixed;z-index:50;inset:0;background:rgba(2,8,18,.62);backdrop-filter:blur(2px)}
+    .area-rail-backdrop.is-open{display:block}
+    .area-spot__name{max-width:45%;font-size:11px}
+    .area-spot__items{font-size:9px}
+  }
 </style>
 </head>
 <body>
@@ -444,6 +460,7 @@
       <h1>エオルゼア採集図鑑</h1>
     </div>
   </div>
+  <button class="area-menu-toggle" id="areaMenuToggle" type="button" aria-controls="areaRail" aria-expanded="false" aria-label="採取場ナビを開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>採取場</span></button>
   <div class="clocks">
     <label class="language-switch"><span class="sr-only">表示言語</span><select id="localeSelect" aria-label="表示言語"><option value="ja">日本語</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
     <button class="notifybtn" id="notifyToggle" aria-pressed="false" title="採取可能になったらデスクトップ通知でお知らせ">
@@ -497,11 +514,12 @@
   </section>
 
   <div class="app-shell">
-    <aside class="area-rail" aria-label="採取エリア一覧">
+    <aside class="area-rail" id="areaRail" aria-label="採取エリア一覧">
       <div class="area-rail__head"><div class="area-rail__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 6 7-3 7 3 4-2v14l-4 2-7-3-7 3Z"/><path d="M10 3v15m7-12v15"/></svg><span>採取場と取得物<small>場所ごとの採取素材</small></span></div><span class="area-rail__hint">SPOTS</span></div>
       <button class="area-all" id="areaAll" aria-pressed="true"><span>すべての採取場</span><span id="areaAllCount"></span></button>
       <div class="area-groups" id="areaNav"></div>
     </aside>
+    <div class="area-rail-backdrop" id="areaRailBackdrop" aria-hidden="true"></div>
 
     <main class="result-pane">
       <div class="result-header">
@@ -750,6 +768,9 @@ const ICON={
 
 const listEl=document.getElementById('list'),detailEl=document.getElementById('detail'),countEl=document.getElementById('count');
 const areaNavEl=document.getElementById('areaNav'),areaAllEl=document.getElementById('areaAll'),areaAllCountEl=document.getElementById('areaAllCount');
+const areaRailEl=document.getElementById('areaRail'),areaMenuToggleEl=document.getElementById('areaMenuToggle'),areaRailBackdropEl=document.getElementById('areaRailBackdrop');
+function setAreaMenu(open){if(!areaRailEl||!areaMenuToggleEl||!areaRailBackdropEl)return;areaRailEl.classList.toggle('is-open',open);areaRailBackdropEl.classList.toggle('is-open',open);areaMenuToggleEl.setAttribute('aria-expanded',String(open));document.body.classList.toggle('area-menu-open',open);}
+function closeAreaMenu(){setAreaMenu(false);}
 const resultTitleEl=document.getElementById('resultTitle'),resultCaptionEl=document.getElementById('resultCaption');
 const EXPANSION_NAMES={2:{ja:'新生エオルゼア',en:'A Realm Reborn',de:'A Realm Reborn',fr:'Un royaume renaissant'},3:{ja:'蒼天のイシュガルド',en:'Heavensward',de:'Heavensward',fr:'Heavensward'},4:{ja:'紅蓮のリベレーター',en:'Stormblood',de:'Stormblood',fr:'Stormblood'},5:{ja:'漆黒のヴィランズ',en:'Shadowbringers',de:'Shadowbringers',fr:'Shadowbringers'},6:{ja:'暁月のフィナーレ',en:'Endwalker',de:'Endwalker',fr:'Endwalker'},7:{ja:'黄金のレガシー',en:'Dawntrail',de:'Dawntrail',fr:'Dawntrail'}};
 const UI={ja:{all:'すべての採取場',spots:'採取場',map:'MAP',gathered:'取得',gatherable:'取得物を確認',gathering:'採集',schedule:'採集スケジュール',search:'アイテム名・採取場所で検索',browse:'場所から探す',browseCaption:'拡張とエリアから、目的の採取場所を探せます。',handbook:'採集手帳',handbookCaption:'公式の主道具・副道具分類とレベル帯ごとの収集進捗を確認できます。'},en:{all:'All gathering spots',spots:'Spots',map:'MAP',gathered:'Collected',gatherable:'View items',gathering:'Gathering',schedule:'Gathering schedule',search:'Search items or locations',browse:'Browse by location',browseCaption:'Find gathering spots by expansion and area.',handbook:'Gathering handbook',handbookCaption:'Track collection progress by official tool type and level range.'},de:{all:'Alle Sammelstellen',spots:'Sammelstellen',map:'Karte',gathered:'Gesammelt',gatherable:'Gegenstände anzeigen',gathering:'Sammeln',schedule:'Sammelplan',search:'Gegenstände oder Orte suchen',browse:'Nach Ort suchen',browseCaption:'Sammelstellen nach Erweiterung und Gebiet finden.',handbook:'Sammelhandbuch',handbookCaption:'Fortschritt nach Werkzeugtyp und Stufenbereich verfolgen.'},fr:{all:'Tous les points de récolte',spots:'Points',map:'Carte',gathered:'Obtenus',gatherable:'Voir les objets',gathering:'Récolte',schedule:'Planning de récolte',search:'Rechercher objets ou lieux',browse:'Chercher par lieu',browseCaption:'Trouvez les points par extension et par zone.',handbook:'Carnet de récolte',handbookCaption:'Suivez la progression par outil et tranche de niveaux.'}};
@@ -822,8 +843,8 @@ function renderAreaNav(){
       const mapOpen=selected&&String(selected.map?.id??`${selected.area}:${selected.x}:${selected.y}`)===mapKey;
       return `<details class="area-map" ${mapOpen?'open':''}><summary>${mapName}<span class="area-group__count">${nodes.length}${ui('spots')}</span></summary><div class="area-group__body">${nodes.slice().sort((a,b)=>a.area.localeCompare(b.area,state.locale)||a.level-b.level||a.id.localeCompare(b.id)).map(n=>{
         const names=n.items.map(i=>`${i.hidden?'★ ':''}${nlabel(i)}`).join('・')||ui('gatherable');
-        const toolKind=n.toolMain?'主':'副';
-        return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${nlabel(n.areaNames,n.area)} ／ ${names}"><img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"><span class="area-spot__items">${names}</span><span class="area-spot__meta">${toolDisplay(n)}</span></button>`;
+        const spotName=nlabel(n.areaNames,n.area);
+        return `<button class="area-spot" data-id="${n.id}" aria-pressed="${state.selected===n.id}" title="${spotName} ／ ${names}"><img class="area-spot__tool" src="${n.toolIcon||''}" alt="${n.toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"><span class="area-spot__name">${spotName}</span><span class="area-spot__items">${names}</span><span class="area-spot__meta">${toolDisplay(n)}</span></button>`;
       }).join('')}</div></details>`;
     }).join('')}</div></details>`;
   }).join('');
@@ -1192,8 +1213,11 @@ marketDcEl.addEventListener('change',()=>{localStorage.setItem('eorzean_gatherin
 marketWorldEl.addEventListener('change',refreshMarketPrices);
 marketRefreshEl.addEventListener('click',refreshMarketPrices);
 document.getElementById('fText').addEventListener('input',e=>{state.text=e.target.value;refreshViews();});
-areaAllEl.addEventListener('click',()=>{state.area='all';state.selected=null;document.getElementById('fArea').value='all';refreshViews();renderDetail();});
-areaNavEl.addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;state.selected=b.dataset.id;renderAreaNav();renderList();renderDetail();});
+areaAllEl.addEventListener('click',()=>{state.area='all';state.selected=null;document.getElementById('fArea').value='all';refreshViews();renderDetail();closeAreaMenu();});
+areaNavEl.addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;state.selected=b.dataset.id;renderAreaNav();renderList();renderDetail();closeAreaMenu();});
+areaMenuToggleEl?.addEventListener('click',()=>setAreaMenu(!areaRailEl.classList.contains('is-open')));
+areaRailBackdropEl?.addEventListener('click',closeAreaMenu);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAreaMenu();});
 document.getElementById('segView').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
