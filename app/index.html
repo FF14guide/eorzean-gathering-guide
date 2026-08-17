@@ -929,10 +929,12 @@ function renderList(){
     const sc=timingClass(t);
     const names=n.items.filter(i=>!i.hidden).map(i=>i.name+(i.collectable?' ◆':'')).join(' ／ ')||'取得物を確認';
     const kind=(LAB.node_type[n.node_type]||n.node_type).replace('の採取場','');
-    const toolLabel=`${n.toolMain?'主道具':'副道具'}：${n.toolLabel}`;
+    const mainItem=primaryItem(n);
+    const itemIcon=mainItem?.icon||'';
+    const itemLabel=mainItem?.name||ui('取得物を確認');
     return `<div class="spot-row ${sc}" data-id="${n.id}" data-timing-state="${t.state}" aria-selected="${state.selected===n.id}" role="button" tabindex="0" title="${n.area} ／ ${n.aetheryte} ／ ${winLabel(t.win)}">
       <div class="spot-row__time"><span class="spot-row__remain"><span data-countdown>${mmss(t.real)}</span> <span data-timing-label>${compactTimingLabel(t)}</span></span><span class="spot-row__et" data-timing-window>${compactWindowLabel(t.win)}</span></div>
-      <span class="spot-row__job" aria-label="${toolLabel}" title="${toolLabel}"><img src="${n.toolIcon||''}" alt="${toolLabel}" loading="lazy" onerror="this.style.visibility='hidden'"></span>
+      <span class="spot-row__job" aria-label="${itemLabel}" title="${itemLabel}"><img src="${itemIcon||''}" alt="${itemLabel}" loading="lazy" onerror="this.style.visibility='hidden'"></span>
       <div class="spot-row__main"><span class="spot-row__items">${names}</span><span class="spot-row__area">${n.area}</span></div>
       <span class="spot-row__kind">${kind}</span>
       ${priceCell(primaryItem(n),true)}
