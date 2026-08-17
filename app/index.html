@@ -412,6 +412,13 @@
   }
   @media(min-width:761px){.result-pane__content{min-width:0}.result-pane .grid:has(.spot-row){grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}}
   @media(min-width:1081px){.result-pane .grid:has(.spot-row){grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}}
+  @media(min-width:761px){
+    .wrap{max-width:none;width:100%;padding:0}
+    .app-shell{grid-template-columns:300px minmax(0,1fr);gap:0;min-height:calc(100vh - 72px);align-items:stretch}
+    .area-rail{position:sticky;top:72px;width:300px;max-height:calc(100vh - 72px);height:calc(100vh - 72px);box-sizing:border-box;overflow-y:auto;overflow-x:hidden;padding:12px 12px 24px;border:0;border-right:1px solid var(--border);border-radius:0;background:#0b1729}
+    .area-rail__head{padding:4px 6px 11px}
+    .result-pane{padding:0 24px 64px}
+  }
   /* compact spot tree: inspired by the Fish Guide navigation */
   .area-rail{padding:8px;border-radius:12px}
   .area-rail__head{padding:4px 6px 8px}
@@ -446,6 +453,7 @@
     .area-spot__name{max-width:45%;font-size:11px}
     .area-spot__items{font-size:9px}
   }
+  @media(min-width:761px){.area-rail{padding:12px 12px 24px!important;border:0;border-right:1px solid var(--border);border-radius:0!important;background:#0b1729!important}}
 </style>
 </head>
 <body>
