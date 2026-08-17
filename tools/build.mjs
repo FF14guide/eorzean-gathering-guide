@@ -211,8 +211,18 @@ async function main() {
     const nm = (pnames[ipatch[itemId]] && (pnames[ipatch[itemId]].en || pnames[ipatch[itemId]].ja)) || '';
     const m = nm.match(/(\d+\.\d+)/); return m ? parseFloat(m[1]) : null;
   };
-  const nodePatch = (ids) => { const vs = ids.map(itemVersion).filter((v) => v != null); return vs.length ? Math.max(...vs).toFixed(1) : ''; };
-
+    const nodePatch = (ids) => { const vs = ids.map(itemVersion).filter((v) => v != null); return vs.length ? Math.max(...vs).toFixed(1) : ''; };
+  // 7.4伝説ノードの場所単位ブレイクポイント。公式GatheringPointBonusに独立行がない条件は、
+  // Teamcraft / Icy Veinsの7.4ノード基準を採取場所単位で保持する。
+  const PATCH74_LOCATION_BONUSES = [
+    { id: 'patch74-visible', effect: { ja: '採取場が表示される', en: 'Node becomes visible', de: 'Sammelstelle wird sichtbar', fr: 'Point de récolte visible' }, condition: { ja: '技術力 5090以上', en: 'Perception ≥ 5090', de: 'Expertise min. 5090', fr: 'Savoir-faire ≧ 5090' }, source: 'patch74-breakpoint' },
+    { id: 'patch74-yield', effect: { ja: '獲得数＋1', en: 'Gathering Yield +1', de: 'Sammelertrag +1', fr: 'Rendement de récolte +1' }, condition: { ja: '獲得力 5400以上', en: 'Gathering ≥ 5400', de: 'Sammelgeschick min. 5400', fr: 'Collecte ≧ 5400' }, source: 'patch74-breakpoint' },
+    { id: 'patch74-integrity', effect: { ja: '採取回数・耐久＋1', en: 'Gathering Attempts / Integrity +1', de: 'Sammelversuche / Ausdauer +1', fr: 'Tentatives / intégrité de récolte +1' }, condition: { ja: 'GP 960以上', en: 'Max GP ≥ 960', de: 'Max. GP min. 960', fr: 'GP max. ≧ 960' }, source: 'patch74-breakpoint' },
+  ];
+  const bonusesForNode = (baseId, patch, type) => [
+    ...bonusesForBase(baseId),
+    ...(patch === '7.4' && type === 'legendary' ? PATCH74_LOCATION_BONUSES : []),
+  ];
   // ─── アイテムアイコン（xivapi-datamining Item.csv の Icon列 → XIVAPI v2アセットURL） ───
   const itemCsv = parseCsv(raw['Item_ja.csv']);
   const iconIdByItem = new Map(itemCsv.map((r) => [r['#'], r.Icon]).filter(([, i]) => i && i !== '0'));
@@ -289,22 +299,24 @@ async function main() {
       itemInfo.get(it).jobs.add(cls);
     }
     const rawSlotDetails = resolveSlotDetails(n.base);
-    const nodeBonuses = bonusesForBase(n.base);
+    const nodeKind = nodeType(n);
+    const patch = nodePatch(n.items || []);
+    const nodeBonuses = bonusesForNode(n.base, patch, nodeKind);
     const levelByItem = new Map((rawSlotDetails || []).filter(Boolean).map((slot) => [slot.itemId, slot.gatheringLevel]));
     const rawSlots = rawSlotDetails?.map((slot) => slot?.itemId ?? null) || null;
     const makeItem = (itemId, extra = {}) => ({
       id: `it_${itemId}`, name: itemJa(itemId), names: itemNames(itemId), collectable: !!coll[itemId], use: usesFor(itemId), icon: iconUrl(itemId),
-      gatheringLevel: itemGatheringLevel(itemId, n.level), bonuses: nodeBonuses, ...extra,
+      gatheringLevel: itemGatheringLevel(itemId, n.level), ...extra,
     });
     const slots = rawSlots ? rawSlots.map((itemId) => itemId == null ? null : makeItem(itemId)) : null;
     runtimeNodes.push({
-      id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon, node_type: nodeType(n), level: n.level,
+      id: `nd_${id}`, class: cls, tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon, node_type: nodeKind, level: n.level,
       area: gm ? placeJa(gm.placename_id) : placeJa(effZoneId), areaNames: gm ? placeNames(gm.placename_id) : placeNames(effZoneId),
       map: gm ? { image: gm.image, px: mapPct(n.x), py: mapPct(n.y), id: effMapId, names: placeNames(gm.placename_id) } : null,
       aetheryte: a ? placeJa(a.nameid) : '', aetheryteNames: a ? placeNames(a.nameid) : {ja:'',en:'',de:'',fr:''},
       x: n.x, y: n.y,
       windows: windows(n).map((w) => { const [s, e] = w.split('-').map(Number); return [s, e]; }),
-      patch: nodePatch(n.items || []),
+      patch,
       folklore: n.folklore ? itemJa(n.folklore) : '',
       slots,
       items: visibleIds.map((it) => makeItem(it, { hidden: false }))
@@ -356,7 +368,7 @@ async function main() {
     }
     const tool = toolOf(gatheringType);
     const nodeBonuses = bonusesForBase(r.GatheringPointBase);
-    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: itemGatheringLevel(slot.itemId, b.GatheringLevel), bonuses: nodeBonuses }));
+    const names = itemDetails.map((slot) => ({ id: `it_${slot.itemId}`, name: itemJa(slot.itemId), names: itemNames(slot.itemId), collectable: !!coll[slot.itemId], use: usesFor(slot.itemId), hidden: false, icon: iconUrl(slot.itemId), gatheringLevel: itemGatheringLevel(slot.itemId, b.GatheringLevel) }));
     const patch = nodePatch(itemIds);
     runtimeNodes.push({
       id: `nd_normal_${key.replace(/[^a-zA-Z0-9_:-]/g, '_')}`, class: gatheringType <= 1 ? 'MIN' : 'BTN', tool: tool.id, toolLabel: tool.label, toolMain: tool.main, toolIcon: tool.icon,
