@@ -1,0 +1,17 @@
+添付ZIP調査メモ（2026-08-17）
+
+対象: /home/ubuntu/upload/eorzean-fish-guide.zip
+展開先: /tmp/eorzean-fish-guide
+対象ファイル: /tmp/eorzean-fish-guide/app/index.html
+
+確認できたこと:
+- 時計は釣り図鑑のindex.htmlへインライン実装されている。
+- 円形時計の更新関数はdrawRingで、初期化時にdrawRing()を呼び、1秒間隔でdrawRing()・tickCountdowns()・updateTitle()・updateMobar()を実行している。
+- タイムゾーン変更時にもdrawRing()を呼び出している。
+- ヘッダー高さをResizeObserverで計測し、--header-h CSS変数へ反映している。
+- URL: https://eorzeanfishing.com/
+
+採集図鑑側の現状との比較:
+- 採集図鑑は.clock-dial SVG、#etClockArc、#etClock、#ltClockを持ち、tickClocks()でET/ローカル時刻と円弧strokeDashoffsetを更新している。
+- 既存の採集側実装は釣り図鑑の見た目に近い円形時計をすでに持っているが、添付ZIPからdrawRingのDOM・計算・CSSをさらに正確に抽出して統合する必要がある。
+- 今回はZIPのHTMLを直接参照して移植し、既存の採集時間計算と多言語対応を維持する。

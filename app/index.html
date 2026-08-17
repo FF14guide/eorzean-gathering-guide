@@ -91,9 +91,8 @@
   .notifybtn:focus-visible,.btn:focus-visible,.area-all:focus-visible,.area-btn:focus-visible,.sched .row:focus-visible,.sched .row button:focus-visible,.spot-row__fav:focus-visible,.spot-row__alarm:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
   .notifybtn.on{background:var(--gold);color:#1a1300;border-color:var(--gold)}
   .clock{display:flex;align-items:center;gap:8px;min-width:0;padding:0;background:transparent;border:0;border-radius:0;text-align:left}
-  .clock-dial{width:34px;height:34px;flex:none;display:block;transform:rotate(-90deg)}
-  .clock-dial .track{fill:none;stroke:rgba(99,123,166,.28);stroke-width:2}
-  .clock-dial .arc{fill:none;stroke:var(--aqua);stroke-width:2;stroke-linecap:round;stroke-dasharray:100.53;stroke-dashoffset:0;transition:stroke-dashoffset .25s linear}
+  .clock-dial{width:34px;height:34px;flex:none;display:block}
+  .clock-dial circle{vector-effect:non-scaling-stroke}
   .clock-read{line-height:1.25}
   .clock-read b{display:block;font-family:var(--mono);font-size:16px;letter-spacing:.04em;font-weight:700;color:var(--gold);line-height:1.25}
   .clock-read div{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--faint);line-height:1.25}
@@ -505,7 +504,7 @@
   </div>
   <button class="area-menu-toggle" id="areaMenuToggle" type="button" aria-controls="areaRail" aria-expanded="false" aria-label="採取場ナビを開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>採取場</span></button>
   <div class="clocks">
-    <div class="clock et" aria-label="エオルゼア時間"><svg class="clock-dial" viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="16"/><circle class="arc" id="etClockArc" cx="18" cy="18" r="16"/></svg><div class="clock-read"><b id="etClock">--:--</b><div>EORZEA</div></div></div>
+    <div class="clock et" aria-label="エオルゼア時間"><svg class="clock-dial" width="34" height="34" viewBox="0 0 34 34" id="etring" aria-hidden="true"></svg><div class="clock-read"><b id="etClock">--:--</b><div>EORZEA</div></div></div>
     <div class="clock-read lt" aria-label="ローカル時間"><b id="ltClock">--:--</b><div>AUTO</div></div>
     <label class="language-switch"><span class="sr-only">表示言語</span><select id="localeSelect" aria-label="表示言語"><option value="ja">日本語</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
     <button class="notifybtn" id="notifyToggle" aria-pressed="false" title="採取可能になったらデスクトップ通知でお知らせ">
@@ -1330,10 +1329,16 @@ notifyToggle.addEventListener('click',async e=>{
 
 function tickClocks(et=eorzeaNow()){
   const lt=new Date();
-  document.getElementById('etClock').textContent=`${pad(et.h)}:${pad(et.m)}`;
+  const h=et.h, m=et.m;
+  const frac=(h+m/60)/24;
+  const R=14, C=17, circ=2*Math.PI*R;
+  const ring=document.getElementById('etring');
+  if(ring)ring.innerHTML=`
+    <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="var(--line)" stroke-width="2.5"/>
+    <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="var(--aqua)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="${(circ*frac).toFixed(2)} ${circ.toFixed(2)}" transform="rotate(-90 ${C} ${C})"/>
+    <circle cx="${C}" cy="${C}" r="2" fill="${h>=6&&h<18?'var(--gold)':'var(--faint)'}"/>`;
+  document.getElementById('etClock').textContent=`${pad(h)}:${pad(m)}`;
   document.getElementById('ltClock').textContent=`${pad(lt.getHours())}:${pad(lt.getMinutes())}`;
-  const arc=document.getElementById('etClockArc');
-  if(arc)arc.style.strokeDashoffset=String(100.53*(1-(et.sod/86400)));
 }
 function checkAlarms(sod=eorzeaNow().sod){
   state.alarms.forEach(id=>{
