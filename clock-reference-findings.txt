@@ -1,0 +1,20 @@
+時計UI比較メモ（2026-08-17）
+
+参照URL: https://eorzeanfishing.com/
+
+釣り図鑑の実測値:
+- 時計はカード枠・背景なしのヘッダー内インライン表示。
+- エオルゼア時計は円形の進捗インジケーターの右に表示。
+- 時刻数字はRoboto Mono系のモノスペース、16px、font-weight 700、letter-spacing .04em。
+- EORZEA/AUTOラベルはモノスペース、9px、letter-spacing .16em、淡い青灰色。
+- ローカル時計は左ボーダーで区切り、padding-left 10px。ローカル時刻はシアン系。
+- 実測クラス: .clock-read b = 16px/20px monospace, 700; .clock-read div = 9px/11.25px monospace; .clock-read.lt = padding-left:10px; border-left:1px solid edge-soft。
+- 釣り図鑑のスマホ基準: 円形インジケーター26px、時刻14px、ラベル9px程度、ローカル時計は表示。
+
+採集図鑑への実装方針:
+- 時計カードの枠・背景・角丸を除去。
+- SVG円形インジケーターを追加し、エオルゼア時刻の1日進行率でstrokeDashoffsetを更新。
+- エオルゼア時刻→EORZEA、ローカル時刻→AUTOの順で表示。
+- 言語選択・通知は時計の後ろへ配置。
+- 既存のetClock/ltClock IDとtickClocksを維持し、etClockArcだけ進捗更新対象として追加。
+- 参照ページのブラウザ実測は上記の通り。
