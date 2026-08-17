@@ -841,6 +841,8 @@ function filtered(skipArea=false){
 
 const catOpen=new Set(); // 開いているバージョン/マップの折りたたみ状態を再描画をまたいで保持
 function renderAreaNav(){
+  const openKeys=new Set([...areaNavEl.querySelectorAll('details[data-nav-key][open]')].map(d=>d.dataset.navKey));
+  const preserveOpen=openKeys.size>0;
   const groups=new Map();
   filtered(true).forEach(n=>{
     const major=Math.floor(parseFloat(n.patch))||0;
@@ -857,18 +859,21 @@ function renderAreaNav(){
   areaNavEl.innerHTML=majors.map(major=>{
     const mapGroups=groups.get(major);
     const nodeCount=[...mapGroups.values()].reduce((s,ns)=>s+ns.length,0);
-    const isOpen=selected&&Math.floor(parseFloat(selected.patch))===major || major===majors.at(-1);
+    const majorKey=`major:${major}`;
+    const isOpen=preserveOpen?openKeys.has(majorKey):(selected&&Math.floor(parseFloat(selected.patch))===major || major===majors.at(-1));
     const maps=[...mapGroups.entries()].sort((a,b)=>nlabel(a[1][0].map,a[1][0].area).localeCompare(nlabel(b[1][0].map,b[1][0].area),state.locale));
-    return `<details class="area-group" ${isOpen?'open':''}><summary>${expansionLabel(major)}<span class="area-group__count">${nodeCount}${ui('spots')}</span></summary><div class="area-group__body">${maps.map(([mapKey,nodes])=>{
+    return `<details class="area-group" data-nav-key="${majorKey}" ${isOpen?'open':''}><summary>${expansionLabel(major)}<span class="area-group__count">${nodeCount}${ui('spots')}</span></summary><div class="area-group__body">${maps.map(([mapKey,nodes])=>{
       const mapName=nlabel(nodes[0].map,nodes[0].area);
-      const mapOpen=selected&&String(selected.map?.id??`${selected.area}:${selected.x}:${selected.y}`)===mapKey;
+      const mapNavKey=`${majorKey}:map:${mapKey}`;
+      const mapOpen=preserveOpen?openKeys.has(mapNavKey):(selected&&String(selected.map?.id??`${selected.area}:${selected.x}:${selected.y}`)===mapKey);
       const regionGroups=new Map();
       nodes.forEach(n=>{const key=regionKey(n);if(!regionGroups.has(key))regionGroups.set(key,[]);regionGroups.get(key).push(n);});
       const selectedRegion=selected?regionKey(selected):'';
       const regions=[...regionGroups.entries()].sort((a,b)=>regionLabel(a[1][0]).localeCompare(regionLabel(b[1][0]),state.locale));
-      return `<details class="area-map" ${mapOpen?'open':''}><summary>${mapName}<span class="area-group__count">${nodes.length}${ui('spots')}</span></summary><div class="area-group__body">${regions.map(([region,regionNodes])=>{
-        const regionOpen=selectedRegion===region;
-        return `<details class="area-region" ${regionOpen?'open':''}><summary>${regionLabel(regionNodes[0])}<span class="area-group__count">${regionNodes.length}${ui('spots')}</span></summary><div class="area-group__body">${regionNodes.slice().sort((a,b)=>a.level-b.level||a.id.localeCompare(b.id)).map(n=>{
+      return `<details class="area-map" data-nav-key="${mapNavKey}" ${mapOpen?'open':''}><summary>${mapName}<span class="area-group__count">${nodes.length}${ui('spots')}</span></summary><div class="area-group__body">${regions.map(([region,regionNodes])=>{
+        const regionNavKey=`${mapNavKey}:region:${region}`;
+        const regionOpen=preserveOpen?openKeys.has(regionNavKey):selectedRegion===region;
+        return `<details class="area-region" data-nav-key="${regionNavKey}" ${regionOpen?'open':''}><summary>${regionLabel(regionNodes[0])}<span class="area-group__count">${regionNodes.length}${ui('spots')}</span></summary><div class="area-group__body">${regionNodes.slice().sort((a,b)=>a.level-b.level||a.id.localeCompare(b.id)).map(n=>{
           const visibleItems=n.items.filter(i=>!i.hidden);
           const names=n.items.map(i=>`${i.hidden?'★ ':''}${nlabel(i)}`).join('・')||ui('gatherable');
           const spotName=visibleItems[0]?nlabel(visibleItems[0]):(n.items[0]?nlabel(n.items[0]):ui('gatherable'));
