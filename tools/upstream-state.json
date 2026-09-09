@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "sourceCount": 24,
-  "latestPatch": "7.5",
-  "previousPatch": "7.4",
+  "latestPatch": "7.56",
+  "previousPatch": "7.5",
   "patches": [
     "2.0",
     "2.1",
@@ -89,7 +89,8 @@
     "7.31",
     "7.35",
     "7.4",
-    "7.5"
+    "7.5",
+    "7.56"
   ],
   "sources": {
     "nodes.json": {
@@ -97,20 +98,20 @@
       "bytes": 385209
     },
     "items.json": {
-      "sha256": "74e95f4a3c18846ab947d05fbf842f3fba7a7457d6ad45ebddf24652803b1673",
-      "bytes": 9703488
+      "sha256": "369768ac85fc2982543cb02b6abd56b5de4fb580d6e709f721bcaecf7c412ecb",
+      "bytes": 9715482
     },
     "places.json": {
-      "sha256": "50d7c95a0a5564bb4bb89d838b14ae89d791459f588b9ab6f3c289788598be71",
-      "bytes": 774568
+      "sha256": "9c7b3193f37a75727b0a315c72950a21b762e14c1c990c2fe47f8280e343d4af",
+      "bytes": 775471
     },
     "aetherytes.json": {
       "sha256": "ec1a6a1dac6e7dc2e8511ae8cfc870921330ad85aa045ceb1d88e2d2bfa1c804",
       "bytes": 57243
     },
     "maps.json": {
-      "sha256": "80b971988c63fe92457aaadc035afe9335a56443bbb7a39bd2d5a088509f82f8",
-      "bytes": 514908
+      "sha256": "c6b56f3a564aca7cf3b98d7a169f8ef625240cbeaa3e18b73f1e42a6ad47213c",
+      "bytes": 516006
     },
     "collectables.json": {
       "sha256": "ff1358cb35858c48e7d01f90f44c0e55656c0966298f89db45cf0485b4461a22",
@@ -121,20 +122,20 @@
       "bytes": 2238
     },
     "item-patch.json": {
-      "sha256": "38ea37608b895a2b2f4281c7fbfa5fb3f5d936c9ee8a3eeabb4a136c9dea4c66",
-      "bytes": 735837
+      "sha256": "eee628788f48eedd9857239e9fd9605356da3cddab96d6afe9880d196f89d9da",
+      "bytes": 752509
     },
     "patch-names.json": {
-      "sha256": "96cd3c91356a546c468ea424ef8918c064316dcfce53feaac735e0e1485a900f",
-      "bytes": 30455
+      "sha256": "f79fcfdb8082acff05ec78aa798c20b85d1643ba0bd45bac8182f35443dfec18",
+      "bytes": 30712
     },
     "Achievement_ja.csv": {
-      "sha256": "ba6275f2ea205f2f4b78e0381f2c30960fa031bc71150a5f7ca2ae13007f2d82",
-      "bytes": 733873
+      "sha256": "5f34dfdca1f01712ce5e442fb0fb894876654a6d5cae4a272acd887ff769b164",
+      "bytes": 739867
     },
     "Item_ja.csv": {
-      "sha256": "99fcb36bccc362774d2cab8c3c3ac101a0a309dfcf4d24d4ea29698363e1c4f2",
-      "bytes": 19370229
+      "sha256": "b198264923261454c94cc1bc42876b77aa318d96ee6f35ecaa34506ba085e3b4",
+      "bytes": 19385762
     },
     "GatheringPoint.csv": {
       "sha256": "838b106f058c97f8e1a786ab975a2a77c36546599f4e7c83a156412bfeb4d569",
@@ -185,8 +186,8 @@
       "bytes": 45282
     },
     "GatheringItem.csv": {
-      "sha256": "22adcf017ddf15778687199b19272fc4df5a2d6f393b5501f34309304209b97a",
-      "bytes": 97981
+      "sha256": "53fdd67ad7bbd0da4c1490f5d6f3cc5e1dc207ff850fde0b25cbad655c562687",
+      "bytes": 97986
     }
   }
 }
