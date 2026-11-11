@@ -130,12 +130,12 @@
       "bytes": 30969
     },
     "Achievement_ja.csv": {
-      "sha256": "7c179c62be85ab00ace226142663d2096809f5911e4b85a3fb512fce2aacfb9d",
-      "bytes": 739865
+      "sha256": "ef0e498ad2ebd9fe9bb42e383309dbd25c41f68c0b4f4d9e99679790798bbb1c",
+      "bytes": 739974
     },
     "Item_ja.csv": {
-      "sha256": "b198264923261454c94cc1bc42876b77aa318d96ee6f35ecaa34506ba085e3b4",
-      "bytes": 19385762
+      "sha256": "296d188e512fb8e81ceae07839ad2f37873deda873558dd03fe4e6f59291b710",
+      "bytes": 19386647
     },
     "GatheringPoint.csv": {
       "sha256": "838b106f058c97f8e1a786ab975a2a77c36546599f4e7c83a156412bfeb4d569",
